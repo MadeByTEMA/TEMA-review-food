@@ -9,6 +9,5 @@ public class App {
 
       System.out.println("먹어봐따에 오신걸 환영합니다.");
       System.out.println("111");
-      System.out.println("222");
     }
 }
