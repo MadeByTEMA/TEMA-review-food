@@ -8,5 +8,6 @@ public class App {
     public static void main(String[] args) {
 
       System.out.println("먹어봐따에 오신걸 환영합니다.");
+      System.out.println("111");
     }
 }
