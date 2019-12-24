@@ -5,17 +5,20 @@
 package tema.frr.chicken;
 
 import java.util.Scanner;
+import tema.frr.chicken.handler.*;
 
 public class App {
 
   static Scanner keyboard = new Scanner(System.in);
 
+
   public static void main(String[] args) {
-    String command; 
-    
+
     ClientHandler.keyboard = keyboard;
     WritingReviewHandler.keyboard = keyboard;
-    
+
+    String command;
+
     do {
       System.out.println("명령> ");
       command = keyboard.nextLine();
@@ -24,6 +27,7 @@ public class App {
         case "/client/add":
           ClientHandler.addClient();
           break;
+
         case "/client/list":
           ClientHandler.listClient();
           break;
@@ -42,6 +46,9 @@ public class App {
           }
       } 
     } while (!command.equalsIgnoreCase("quit"));
+
     System.out.println("안녕!");
+
+    keyboard.close();
   }
 }

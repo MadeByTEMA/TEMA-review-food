@@ -1,28 +1,18 @@
-package tema.frr.chicken;
+package tema.frr.chicken.handler;
 
 import java.util.Scanner;
+import tema.frr.chicken.domain.*;
 
 public class WritingReviewHandler {
 
-  static class writingReviewDTO {
-    String category;
-    String storeName;
-    String menu;
-    int price;
-    int starQuality;
-    int starQuantity;
-    int starPrice;
-    int starTotalSum = starQuality + starQuantity + starPrice;
-    String review;
-  }
 
   static final int REVIEW_SIZE = 100_000;
-  static writingReviewDTO[] reviews = new writingReviewDTO[REVIEW_SIZE];
+  static WritingReview[] reviews = new WritingReview[REVIEW_SIZE];
   static int reviewCount = 0;
-  static Scanner keyboard;
-  
-  static void addWritingReview() { 
-    writingReviewDTO r = new writingReviewDTO();
+  public static Scanner keyboard;
+
+  public static void addWritingReview() { 
+    WritingReview r = new WritingReview();
 
     System.out.println("가게명을 입력해주세요.");
     r.storeName = keyboard.nextLine();
@@ -53,12 +43,12 @@ public class WritingReviewHandler {
     System.out.println("저장하였습니다.");
   }
 
-static void listWritingReview() {
-  for (int i = 0; i < reviewCount; i++) {
-    writingReviewDTO r = reviews[i];
-    System.out.printf("%s, %s, %s, %s, %s\n", r.storeName, r.menu, r.price, r.starQuality, r.starQuantity);
+  public static void listWritingReview() {
+    for (int i = 0; i < reviewCount; i++) {
+      WritingReview r = reviews[i];
+      System.out.printf("%s, %s, %s, %s, %s\n", r.storeName, r.menu, r.price, r.starQuality, r.starQuantity);
+    }
+
   }
-  
-}
-  
+
 }

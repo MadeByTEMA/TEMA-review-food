@@ -1,27 +1,19 @@
-package tema.frr.chicken;
+package tema.frr.chicken.handler;
 
 import java.sql.Date;
 import java.util.Scanner;
+import tema.frr.chicken.domain.*;
 
 public class ClientHandler {
-  static class clientDTO {
-    String id;
-    String pwd;
-    String name;
-    Date birthday;
-    String sex;
-    String tel;
-    String address;
-    Date signUpDate;
-  }
-
+  
+  
   static final int CLIENT_SIZE = 100_000;
-  static clientDTO[] clients = new clientDTO[CLIENT_SIZE];
+  static Client[] clients = new Client[CLIENT_SIZE];
   static int clountCount = 0;
-  static Scanner keyboard;
+  public static Scanner keyboard;
 
-  static void addClient() {
-    clientDTO c = new clientDTO();
+  public static void addClient() {
+    Client c = new Client();
 
     System.out.println("ID를 입력해주세요.");
     c.id = keyboard.nextLine();
@@ -51,9 +43,9 @@ public class ClientHandler {
     System.out.println("저장하였습니다.");
   }
 
-  static void listClient() {
+  public static void listClient() {
     for (int i = 0; i < clountCount; i++) {
-      clientDTO c = clients[i];
+      Client c = clients[i];
       System.out.printf("%s, %s, %s, %s, %s, %s\n", c.id, c.name, c.birthday, c.sex, c.tel, c.signUpDate);
     }
   }
