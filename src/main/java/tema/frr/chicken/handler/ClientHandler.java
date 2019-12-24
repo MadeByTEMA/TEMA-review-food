@@ -6,13 +6,13 @@ import tema.frr.chicken.domain.*;
 
 public class ClientHandler {
   
+  Client[] clients = new Client[CLIENT_SIZE];
+  int clountCount = 0;
   
   static final int CLIENT_SIZE = 100_000;
-  static Client[] clients = new Client[CLIENT_SIZE];
-  static int clountCount = 0;
   public static Scanner keyboard;
 
-  public static void addClient() {
+  public static void addClient(ClientHandler clientHandler) {
     Client c = new Client();
 
     System.out.println("ID를 입력해주세요.");
@@ -38,14 +38,14 @@ public class ClientHandler {
 
     c.signUpDate = new Date(System.currentTimeMillis());
 
-    clients[clountCount++] = c;
+    clientHandler.clients[clientHandler.clountCount++] = c;
 
     System.out.println("저장하였습니다.");
   }
 
-  public static void listClient() {
-    for (int i = 0; i < clountCount; i++) {
-      Client c = clients[i];
+  public static void listClient(ClientHandler clientHandler) {
+    for (int i = 0; i < clientHandler.clountCount; i++) {
+      Client c = clientHandler.clients[i];
       System.out.printf("%s, %s, %s, %s, %s, %s\n", c.id, c.name, c.birthday, c.sex, c.tel, c.signUpDate);
     }
   }

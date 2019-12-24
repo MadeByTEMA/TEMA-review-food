@@ -5,13 +5,13 @@ import tema.frr.chicken.domain.*;
 
 public class WritingReviewHandler {
 
+  WritingReview[] reviews = new WritingReview[REVIEW_SIZE];
+  int reviewCount = 0;
 
   static final int REVIEW_SIZE = 100_000;
-  static WritingReview[] reviews = new WritingReview[REVIEW_SIZE];
-  static int reviewCount = 0;
   public static Scanner keyboard;
 
-  public static void addWritingReview() { 
+  public static void addWritingReview(WritingReviewHandler writingReviewHandler) { 
     WritingReview r = new WritingReview();
 
     System.out.println("가게명을 입력해주세요.");
@@ -38,14 +38,14 @@ public class WritingReviewHandler {
     System.out.println("후기를 입력해주세요.");
     r.review = keyboard.nextLine();
 
-    reviews[reviewCount++] = r;
+    writingReviewHandler.reviews[writingReviewHandler.reviewCount++] = r;
 
     System.out.println("저장하였습니다.");
   }
 
-  public static void listWritingReview() {
-    for (int i = 0; i < reviewCount; i++) {
-      WritingReview r = reviews[i];
+  public static void listWritingReview(WritingReviewHandler writingReviewHandler) {
+    for (int i = 0; i < writingReviewHandler.reviewCount; i++) {
+      WritingReview r = writingReviewHandler.reviews[i];
       System.out.printf("%s, %s, %s, %s, %s\n", r.storeName, r.menu, r.price, r.starQuality, r.starQuantity);
     }
 

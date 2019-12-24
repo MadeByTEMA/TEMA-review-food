@@ -11,13 +11,15 @@ public class App {
 
   static Scanner keyboard = new Scanner(System.in);
 
- 
+  
   public static void main(String[] args) {
 
     ClientHandler.keyboard = keyboard;
     WritingReviewHandler.keyboard = keyboard;
-    WritingReviewHandler2.keyboard = keyboard;
 
+    WritingReviewHandler writingReviewHandler1 = new WritingReviewHandler();
+    WritingReviewHandler writingReviewHandler2 = new WritingReviewHandler();
+    
     String command;
 
     do {
@@ -34,19 +36,19 @@ public class App {
           break;
 
         case "/writingReview/add":
-          WritingReviewHandler.addWritingReview();
+          WritingReviewHandler.addWritingReview(writingReviewHandler1);
           break;
 
         case "/writingReview/list":
-          WritingReviewHandler.listWritingReview();
+          WritingReviewHandler.listWritingReview(writingReviewHandler1);
           break;
-
+          
         case "/writingReview2/add":
-          WritingReviewHandler2.addWritingReview();
+          WritingReviewHandler.addWritingReview(writingReviewHandler2);
           break;
 
         case "/writingReview2/list":
-          WritingReviewHandler2.listWritingReview();
+          WritingReviewHandler.listWritingReview(writingReviewHandler2);
           break;
           
         default:
