@@ -17,22 +17,23 @@ public class App {
     ClientHandler.keyboard = keyboard;
     WritingReviewHandler.keyboard = keyboard;
 
+    ClientHandler clientHandler = new ClientHandler();
     WritingReviewHandler writingReviewHandler1 = new WritingReviewHandler();
     WritingReviewHandler writingReviewHandler2 = new WritingReviewHandler();
     
     String command;
-
+ 
     do {
       System.out.println("명령> ");
       command = keyboard.nextLine();
 
       switch (command) {
         case "/client/add":
-          ClientHandler.addClient();
+          ClientHandler.addClient(clientHandler);
           break;
 
         case "/client/list":
-          ClientHandler.listClient();
+          ClientHandler.listClient(clientHandler);
           break;
 
         case "/writingReview/add":
