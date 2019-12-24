@@ -16,6 +16,7 @@ public class App {
 
     ClientHandler.keyboard = keyboard;
     WritingReviewHandler.keyboard = keyboard;
+    WritingReviewHandler2.keyboard = keyboard;
 
     String command;
 
@@ -40,6 +41,14 @@ public class App {
           WritingReviewHandler.listWritingReview();
           break;
 
+        case "/writingReview2/add":
+          WritingReviewHandler2.addWritingReview();
+          break;
+
+        case "/writingReview2/list":
+          WritingReviewHandler2.listWritingReview();
+          break;
+          
         default:
           if(!command.equalsIgnoreCase("quit")) {
             System.out.println("실행할 수 없는 명령입니다.");
