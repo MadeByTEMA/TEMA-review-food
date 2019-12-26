@@ -11,7 +11,7 @@ public class App {
 
   static Scanner keyboard = new Scanner(System.in);
 
-  
+
   public static void main(String[] args) {
 
     ClientHandler.keyboard = keyboard;
@@ -20,9 +20,9 @@ public class App {
     ClientHandler clientHandler = new ClientHandler();
     WritingReviewHandler writingReviewHandler1 = new WritingReviewHandler();
     WritingReviewHandler writingReviewHandler2 = new WritingReviewHandler();
-    
+
     String command;
- 
+
     do {
       System.out.println("명령> ");
       command = keyboard.nextLine();
@@ -43,7 +43,7 @@ public class App {
         case "/writingReview/list":
           WritingReviewHandler.listWritingReview(writingReviewHandler1);
           break;
-          
+
         case "/writingReview2/add":
           WritingReviewHandler.addWritingReview(writingReviewHandler2);
           break;
@@ -51,7 +51,7 @@ public class App {
         case "/writingReview2/list":
           WritingReviewHandler.listWritingReview(writingReviewHandler2);
           break;
-          
+
         default:
           if(!command.equalsIgnoreCase("quit")) {
             System.out.println("실행할 수 없는 명령입니다.");
