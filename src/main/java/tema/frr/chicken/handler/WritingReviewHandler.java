@@ -6,13 +6,14 @@ import tema.frr.chicken.domain.*;
 public class WritingReviewHandler {
 
   final int REVIEW_SIZE = 100_000;
-  WritingReview[] reviews = new WritingReview[REVIEW_SIZE];
+  WritingReview[] reviews;
   int reviewCount = 0;
 
   Scanner input;
   
   public WritingReviewHandler(Scanner input) {
     this.input = input;
+    this.reviews = new WritingReview[REVIEW_SIZE];
   }
 
   public void addWritingReview() { 

@@ -7,13 +7,14 @@ import tema.frr.chicken.domain.*;
 public class ClientHandler {
   
   final int CLIENT_SIZE = 100_000;
-  Client[] clients = new Client[CLIENT_SIZE];
+  Client[] clients;
   int clountCount = 0;
   
   Scanner input;
   
   public ClientHandler(Scanner input) {
     this.input = input;
+    this.clients = new Client[CLIENT_SIZE];
   }
 
   public void addClient() {
