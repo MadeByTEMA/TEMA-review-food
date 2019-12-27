@@ -29,27 +29,27 @@ public class App {
 
       switch (command) {
         case "/client/add":
-          ClientHandler.addClient(clientHandler);
+          clientHandler.addClient();
           break;
 
         case "/client/list":
-          ClientHandler.listClient(clientHandler);
+          clientHandler.listClient();
           break;
 
         case "/writingReview/add":
-          WritingReviewHandler.addWritingReview(writingReviewHandler1);
+          writingReviewHandler1.addWritingReview();
           break;
 
         case "/writingReview/list":
-          WritingReviewHandler.listWritingReview(writingReviewHandler1);
+          writingReviewHandler1.listWritingReview();
           break;
 
         case "/writingReview2/add":
-          WritingReviewHandler.addWritingReview(writingReviewHandler2);
+          writingReviewHandler2.addWritingReview();
           break;
 
         case "/writingReview2/list":
-          WritingReviewHandler.listWritingReview(writingReviewHandler2);
+          writingReviewHandler2.listWritingReview();
           break;
 
         default:
