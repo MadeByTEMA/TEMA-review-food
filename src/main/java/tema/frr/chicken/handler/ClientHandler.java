@@ -10,31 +10,35 @@ public class ClientHandler {
   Client[] clients = new Client[CLIENT_SIZE];
   int clountCount = 0;
   
-  public static Scanner keyboard;
+  Scanner input;
+  
+  public ClientHandler(Scanner input) {
+    this.input = input;
+  }
 
   public void addClient() {
     Client c = new Client();
 
     System.out.println("ID를 입력해주세요.");
-    c.id = keyboard.nextLine();
+    c.id = input.nextLine();
 
     System.out.println("PWD를 입력해주세요.");
-    c.pwd = keyboard.nextLine();
+    c.pwd = input.nextLine();
 
     System.out.println("이름을 입력해주세요.");
-    c.name = keyboard.nextLine();
+    c.name = input.nextLine();
 
     System.out.println("생년월일을 입력해주세요.");
-    c.birthday = Date.valueOf(keyboard.nextLine());
+    c.birthday = Date.valueOf(input.nextLine());
 
     System.out.println("성별을 입력해주세요.");
-    c.sex = keyboard.nextLine();
+    c.sex = input.nextLine();
 
     System.out.println("전화번호를 입력해주세요.");
-    c.tel = keyboard.nextLine();
+    c.tel = input.nextLine();
 
     System.out.println("주소를 입력해주세요.");
-    c.address = keyboard.nextLine();
+    c.address = input.nextLine();
 
     c.signUpDate = new Date(System.currentTimeMillis());
 

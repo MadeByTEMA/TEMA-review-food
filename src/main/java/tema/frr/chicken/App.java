@@ -14,12 +14,9 @@ public class App {
 
   public static void main(String[] args) {
 
-    ClientHandler.keyboard = keyboard;
-    WritingReviewHandler.keyboard = keyboard;
-
-    ClientHandler clientHandler = new ClientHandler();
-    WritingReviewHandler writingReviewHandler1 = new WritingReviewHandler();
-    WritingReviewHandler writingReviewHandler2 = new WritingReviewHandler();
+    ClientHandler clientHandler = new ClientHandler(keyboard);
+    WritingReviewHandler writingReviewHandler1 = new WritingReviewHandler(keyboard);
+    WritingReviewHandler writingReviewHandler2 = new WritingReviewHandler(keyboard);
 
     String command;
 
