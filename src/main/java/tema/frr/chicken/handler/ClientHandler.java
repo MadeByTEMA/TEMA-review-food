@@ -6,11 +6,12 @@ import tema.frr.chicken.domain.Client;
 
 public class ClientHandler {
   
-  final int CLIENT_SIZE = 100_000;
   Client[] clients;
   int clountCount = 0;
   
   Scanner input;
+
+  static final int CLIENT_SIZE = 100_000;
   
   public ClientHandler(Scanner input) {
     this.input = input;

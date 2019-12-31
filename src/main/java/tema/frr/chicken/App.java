@@ -11,7 +11,6 @@ public class App {
 
   static Scanner keyboard = new Scanner(System.in);
 
-
   public static void main(String[] args) {
 
     ClientHandler clientHandler = new ClientHandler(keyboard);
@@ -21,7 +20,7 @@ public class App {
     String command;
 
     do {
-      System.out.println("명령> ");
+      System.out.print("명령> ");
       command = keyboard.nextLine();
 
       switch (command) {
@@ -51,6 +50,7 @@ public class App {
 
         default:
           if(!command.equalsIgnoreCase("quit")) {
+            System.out.println(command);
             System.out.println("실행할 수 없는 명령입니다.");
           }
       } 

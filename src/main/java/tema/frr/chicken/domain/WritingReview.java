@@ -12,7 +12,7 @@ public class WritingReview {
   private int starTotalSum;
   private String review;
   
-  public void starTotalSum() {
+  void starTotalSum() {
     this.starTotalSum = this.starQuality + this.starQuantity + this.starPrice;
     return;
   }
@@ -46,21 +46,21 @@ public class WritingReview {
   }
   public void setStarQuality(int starQuality) {
     this.starQuality = starQuality;
-    starTotalSum();
+    this.starTotalSum();
   }
   public int getStarQuantity() {
     return starQuantity;
   }
   public void setStarQuantity(int starQuantity) {
     this.starQuantity = starQuantity;
-    starTotalSum();
+    this.starTotalSum();
   }
   public int getStarPrice() {
     return starPrice;
   }
   public void setStarPrice(int starPrice) {
     this.starPrice = starPrice;
-    starTotalSum();
+    this.starTotalSum();
   }
   public int getStarTotalSum() {
     return starTotalSum;
