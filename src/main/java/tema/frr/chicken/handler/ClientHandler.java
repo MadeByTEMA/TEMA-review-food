@@ -2,7 +2,7 @@ package tema.frr.chicken.handler;
 
 import java.sql.Date;
 import java.util.Scanner;
-import tema.frr.chicken.domain.*;
+import tema.frr.chicken.domain.Client;
 
 public class ClientHandler {
   
@@ -21,27 +21,27 @@ public class ClientHandler {
     Client c = new Client();
 
     System.out.println("ID를 입력해주세요.");
-    c.id = input.nextLine();
+    c.setId(input.nextLine());
 
     System.out.println("PWD를 입력해주세요.");
-    c.pwd = input.nextLine();
+    c.setPwd(input.nextLine());
 
     System.out.println("이름을 입력해주세요.");
-    c.name = input.nextLine();
+    c.setName(input.nextLine());
 
     System.out.println("생년월일을 입력해주세요.");
-    c.birthday = Date.valueOf(input.nextLine());
+    c.setBirthday(Date.valueOf(input.nextLine()));
 
     System.out.println("성별을 입력해주세요.");
-    c.sex = input.nextLine();
+    c.setSex(input.nextLine());
 
     System.out.println("전화번호를 입력해주세요.");
-    c.tel = input.nextLine();
+    c.setTel(input.nextLine());
 
     System.out.println("주소를 입력해주세요.");
-    c.address = input.nextLine();
+    c.setAddress(input.nextLine());
 
-    c.signUpDate = new Date(System.currentTimeMillis());
+    c.setSignUpDate(new Date(System.currentTimeMillis()));
 
     this.clients[this.clountCount++] = c;
 
@@ -51,9 +51,9 @@ public class ClientHandler {
   public  void listClient() {
     for (int i = 0; i < this.clountCount; i++) {
       Client c = this.clients[i];
-      System.out.printf("%s, %s, %s, %s, %s, %s\n", c.id, c.name, c.birthday, c.sex, c.tel, c.signUpDate);
+      System.out.printf("%s, %s, %s, %s, %s, %s\n", c.getId(), c.getName(), 
+          c.getBirthday(), c.getSex(), c.getTel(), c.getSignUpDate());
     }
   }
-
 
 }
