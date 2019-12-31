@@ -1,5 +1,5 @@
 # 16 - UI 코드와 데이터 처리 코드를 분리하기
-
+ 
 1) ClientHandler에서 데이터 처리 코드를 분리하라.
 
 - ClientList.java
