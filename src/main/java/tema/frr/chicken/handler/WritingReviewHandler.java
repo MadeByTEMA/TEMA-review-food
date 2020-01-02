@@ -1,19 +1,16 @@
 package tema.frr.chicken.handler;
 
 import java.util.Scanner;
-import tema.frr.chicken.domain.*;
+import tema.frr.chicken.domain.WritingReview;
 
 public class WritingReviewHandler {
 
-  final int REVIEW_SIZE = 100_000;
-  WritingReview[] reviews;
-  int reviewCount = 0;
-
   Scanner input;
+  WritingReviewList writingReviewList;
   
   public WritingReviewHandler(Scanner input) {
     this.input = input;
-    this.reviews = new WritingReview[REVIEW_SIZE];
+    writingReviewList = new WritingReviewList(); 
   }
 
   public void addWritingReview() { 
@@ -43,18 +40,17 @@ public class WritingReviewHandler {
     System.out.println("후기를 입력해주세요.");
     r.setReview(input.nextLine());
 
-    this.reviews[this.reviewCount++] = r;
+    writingReviewList.add(r);
 
     System.out.println("저장하였습니다.");
   }
 
   public void listWritingReview() {
-    for (int i = 0; i < this.reviewCount; i++) {
-      WritingReview r = this.reviews[i];
+    WritingReview[] reviews = writingReviewList.toArray();
+    for (WritingReview r : reviews) {
       System.out.printf("%s, %s, %s, %s, %s, %s\n", r.getStoreName(), r.getMenu(),
           r.getPrice(), r.getStarQuality(), r.getStarQuantity(), r.getStarTotalSum());
     }
-
   }
 
 }

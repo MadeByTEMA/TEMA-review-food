@@ -6,16 +6,12 @@ import tema.frr.chicken.domain.Client;
 
 public class ClientHandler {
   
-  Client[] clients;
-  int clountCount = 0;
-  
+  ClientList clientList;
   Scanner input;
-
-  static final int CLIENT_SIZE = 100_000;
   
   public ClientHandler(Scanner input) {
     this.input = input;
-    this.clients = new Client[CLIENT_SIZE];
+    clientList = new ClientList();
   }
 
   public void addClient() {
@@ -44,14 +40,14 @@ public class ClientHandler {
 
     c.setSignUpDate(new Date(System.currentTimeMillis()));
 
-    this.clients[this.clountCount++] = c;
+    clientList.add(c);
 
     System.out.println("저장하였습니다.");
   }
 
   public  void listClient() {
-    for (int i = 0; i < this.clountCount; i++) {
-      Client c = this.clients[i];
+    Client[] clients = clientList.toArray();
+    for (Client c : clients) {
       System.out.printf("%s, %s, %s, %s, %s, %s\n", c.getId(), c.getName(), 
           c.getBirthday(), c.getSex(), c.getTel(), c.getSignUpDate());
     }
