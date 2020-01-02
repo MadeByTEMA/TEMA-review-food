@@ -1,5 +1,4 @@
 # 17 - 다형성과 형변환 응용
-
 1) Client를 모두 다룰 수 있는 List 클래스를 만들라.
 
 - ArrayList.java

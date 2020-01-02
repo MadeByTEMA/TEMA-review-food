@@ -6,12 +6,12 @@ import tema.frr.chicken.domain.Client;
 
 public class ClientHandler {
   
-  ClientList clientList;
+  ArrayList clientList;
   Scanner input;
   
   public ClientHandler(Scanner input) {
     this.input = input;
-    clientList = new ClientList();
+    clientList = new ArrayList();
   }
 
   public void addClient() {
@@ -46,8 +46,9 @@ public class ClientHandler {
   }
 
   public  void listClient() {
-    Client[] clients = clientList.toArray();
-    for (Client c : clients) {
+    Object[] clients = clientList.toArray();
+    for (Object obj : clients) {
+      Client c = (Client) obj;
       System.out.printf("%s, %s, %s, %s, %s, %s\n", c.getId(), c.getName(), 
           c.getBirthday(), c.getSex(), c.getTel(), c.getSignUpDate());
     }

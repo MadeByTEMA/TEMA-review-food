@@ -6,11 +6,11 @@ import tema.frr.chicken.domain.WritingReview;
 public class WritingReviewHandler {
 
   Scanner input;
-  WritingReviewList writingReviewList;
+  ArrayList writingReviewList;
   
   public WritingReviewHandler(Scanner input) {
     this.input = input;
-    writingReviewList = new WritingReviewList(); 
+    writingReviewList = new ArrayList(); 
   }
 
   public void addWritingReview() { 
@@ -46,8 +46,9 @@ public class WritingReviewHandler {
   }
 
   public void listWritingReview() {
-    WritingReview[] reviews = writingReviewList.toArray();
-    for (WritingReview r : reviews) {
+    Object[] reviews = writingReviewList.toArray();
+    for (Object obj : reviews) {
+      WritingReview r = (WritingReview)obj;
       System.out.printf("%s, %s, %s, %s, %s, %s\n", r.getStoreName(), r.getMenu(),
           r.getPrice(), r.getStarQuality(), r.getStarQuantity(), r.getStarTotalSum());
     }
