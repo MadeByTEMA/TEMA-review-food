@@ -2,15 +2,16 @@ package tema.frr.chicken.handler;
 
 import java.util.Scanner;
 import tema.frr.chicken.domain.WritingReview;
+import tema.frr.util.ArrayList;
 
 public class WritingReviewHandler {
 
   Scanner input;
-  ArrayList writingReviewList;
+  ArrayList<WritingReview> writingReviewList;
   
   public WritingReviewHandler(Scanner input) {
     this.input = input;
-    writingReviewList = new ArrayList(); 
+    writingReviewList = new ArrayList<>(); 
   }
 
   public void addWritingReview() { 
@@ -46,9 +47,8 @@ public class WritingReviewHandler {
   }
 
   public void listWritingReview() {
-    Object[] reviews = writingReviewList.toArray();
-    for (Object obj : reviews) {
-      WritingReview r = (WritingReview)obj;
+    WritingReview[] reviews = writingReviewList.toArray(new WritingReview[] {});
+    for (WritingReview r : reviews) {
       System.out.printf("%s, %s, %s, %s, %s, %s\n", r.getStoreName(), r.getMenu(),
           r.getPrice(), r.getStarQuality(), r.getStarQuantity(), r.getStarTotalSum());
     }

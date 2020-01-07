@@ -1,9 +1,8 @@
-package tema.frr.chicken.handler;
+package tema.frr.util;
 
 import java.util.Arrays;
-import tema.frr.chicken.domain.Client;
 
-public class ArrayList {
+public class ArrayList<E> {
   
   static final int DEFAULT_CAPACITY = 2;
   Object[] list;
@@ -13,7 +12,7 @@ public class ArrayList {
     this.list = new Object[DEFAULT_CAPACITY];
   }
   
-  public void add(Object obj) {
+  public void add(E obj) {
     if (this.list.length == size) {
       int oldCapacity = this.size;
       int newCapacity = oldCapacity + (oldCapacity >> 1);
@@ -22,7 +21,16 @@ public class ArrayList {
     this.list[this.size++] = obj;
   }
   
-  public Object[] toArray() {
-    return Arrays.copyOf(this.list, this.size);
+  @SuppressWarnings("unchecked")
+  public E[] toArray(E[] arr) {
+    if(arr.length < this.size) {
+    return (E[]) Arrays.copyOf(this.list, this.size, arr.getClass());
+    }
+    System.arraycopy(this.list, 0, arr, 0, this.size);
+    return arr;
+  }
+  
+  public int size() {
+    return this.size;
   }
 }

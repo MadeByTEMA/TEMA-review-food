@@ -3,15 +3,16 @@ package tema.frr.chicken.handler;
 import java.sql.Date;
 import java.util.Scanner;
 import tema.frr.chicken.domain.Client;
+import tema.frr.util.ArrayList;
 
 public class ClientHandler {
   
-  ArrayList clientList;
+  ArrayList<Client> clientList;
   Scanner input;
   
   public ClientHandler(Scanner input) {
     this.input = input;
-    clientList = new ArrayList();
+    clientList = new ArrayList<>();
   }
 
   public void addClient() {
@@ -46,9 +47,8 @@ public class ClientHandler {
   }
 
   public void listClient() {
-    Object[] clients = clientList.toArray();
-    for (Object obj : clients) {
-      Client c = (Client) obj;
+    Client[] clients = this.clientList.toArray(new Client[this.clientList.size()]);
+    for (Client c : clients) {
       System.out.printf("%s, %s, %s, %s, %s, %s\n", c.getId(), c.getName(), 
           c.getBirthday(), c.getSex(), c.getTel(), c.getSignUpDate());
     }
