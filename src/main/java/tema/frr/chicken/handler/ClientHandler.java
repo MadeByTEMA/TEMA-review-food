@@ -45,7 +45,7 @@ public class ClientHandler {
     System.out.println("저장하였습니다.");
   }
 
-  public  void listClient() {
+  public void listClient() {
     Object[] clients = clientList.toArray();
     for (Object obj : clients) {
       Client c = (Client) obj;
@@ -53,5 +53,4 @@ public class ClientHandler {
           c.getBirthday(), c.getSex(), c.getTel(), c.getSignUpDate());
     }
   }
-
 }
