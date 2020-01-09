@@ -14,8 +14,7 @@ public class App {
   public static void main(String[] args) {
 
     ClientHandler clientHandler = new ClientHandler(keyboard);
-    WritingReviewHandler writingReviewHandler1 = new WritingReviewHandler(keyboard);
-    WritingReviewHandler writingReviewHandler2 = new WritingReviewHandler(keyboard);
+    WritingReviewHandler writingReviewHandler = new WritingReviewHandler(keyboard);
 
     String command;
 
@@ -32,22 +31,37 @@ public class App {
           clientHandler.listClient();
           break;
 
+        case "/client/detail":
+          clientHandler.detailClient();
+          break;
+
+        case "/client/update":
+          clientHandler.updateClient();
+          break;
+
+        case "/client/delete":
+          clientHandler.deleteClient();
+          break;
+          
         case "/writingReview/add":
-          writingReviewHandler1.addWritingReview();
+          writingReviewHandler.addWritingReview();
           break;
 
         case "/writingReview/list":
-          writingReviewHandler1.listWritingReview();
+          writingReviewHandler.listWritingReview();
           break;
 
-        case "/writingReview2/add":
-          writingReviewHandler2.addWritingReview();
+        case "/writingReview/detail":
+          writingReviewHandler.detailWritingReview();
           break;
 
-        case "/writingReview2/list":
-          writingReviewHandler2.listWritingReview();
+        case "/writingReview/update":
+          writingReviewHandler.updateWritingReview();
           break;
 
+        case "/writingReview/delete":
+          writingReviewHandler.deleteWritingReview();
+          break;
         default:
           if(!command.equalsIgnoreCase("quit")) {
             System.out.println(command);
