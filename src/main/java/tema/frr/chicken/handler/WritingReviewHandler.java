@@ -1,28 +1,29 @@
 package tema.frr.chicken.handler;
 
-import java.util.Scanner;
 import tema.frr.chicken.domain.WritingReview;
 import tema.frr.util.ArrayList;
+import tema.frr.util.Prompt;
 
 public class WritingReviewHandler {
 
-  Scanner input;
   ArrayList<WritingReview> writingReviewList;
-
-  public WritingReviewHandler(Scanner input) {
-    this.input = input;
+  
+  Prompt prompt;
+  
+  public WritingReviewHandler(Prompt prompt) {
+    this.prompt = prompt;
     writingReviewList = new ArrayList<>(); 
   }
 
   public void addWritingReview() { 
     WritingReview r = new WritingReview();
 
-    r.setStoreName(inputString("가게명을 입력해주세요."));
-    r.setMenu(inputString("메뉴을 입력해주세요."));
-    r.setPrice(inputInt("가격을 입력해주세요."));
-    r.setStarQuality(inputInt("맛 별점을 입력해주세요."));
-    r.setStarQuantity(inputInt("양 별점을 입력해주세요."));
-    r.setReview(inputString("후기를 입력해주세요."));
+    r.setStoreName(prompt.inputString("가게명을 입력해주세요. "));
+    r.setMenu(prompt.inputString("메뉴을 입력해주세요. "));
+    r.setPrice(prompt.inputInt("가격을 입력해주세요. "));
+    r.setStarQuality(prompt.inputInt("맛 별점을 입력해주세요. "));
+    r.setStarQuantity(prompt.inputInt("양 별점을 입력해주세요. "));
+    r.setReview(prompt.inputString("후기를 입력해주세요. "));
 
     writingReviewList.add(r);
 
@@ -39,7 +40,7 @@ public class WritingReviewHandler {
 
   public void detailWritingReview() {
 
-    int index = indexOfWritingReview(inputString("가게명? "));
+    int index = indexOfWritingReview(prompt.inputString("가게명? "));
 
     if (index == -1) {
       System.out.println("해당 고객을 찾을 수 없습니다.");
@@ -59,7 +60,7 @@ public class WritingReviewHandler {
 
   public void updateWritingReview() {
 
-    int index = indexOfWritingReview(inputString("가게명? ")); 
+    int index = indexOfWritingReview(prompt.inputString("가게명? ")); 
 
     if (index == -1) {
       System.out.println("해당 후기를 찾을 수 없습니다.");
@@ -71,37 +72,45 @@ public class WritingReviewHandler {
 
     newWritingReview.setCategory(oldWritingReview.getCategory());
     newWritingReview.setStoreName(oldWritingReview.getStoreName());
-    
-    newWritingReview.setMenu(inputString(
-    String.format("메뉴(%s) \n", oldWritingReview.getMenu())
-    , oldWritingReview.getMenu()));
-   
-    newWritingReview.setPrice(inputInt(
-    String.format("가격(%s) \n", oldWritingReview.getPrice())
-    , oldWritingReview.getPrice()));
-    
-    newWritingReview.setStarQuality(inputInt(
-    String.format("맛 별점(%s) \n", oldWritingReview.getStarQuality())
-    , oldWritingReview.getStarQuality()));
-    
-    newWritingReview.setStarQuantity(inputInt(
-    String.format("양 별점(%s) \n", oldWritingReview.getStarQuantity())
-    , oldWritingReview.getStarQuantity()));
-    
-    newWritingReview.setReview(inputString(
-    String.format("후기(%s) \n", oldWritingReview.getReview())
-    , oldWritingReview.getReview()));
-    
+
+    newWritingReview.setMenu(prompt.inputString(
+        String.format("메뉴(%s) \n", oldWritingReview.getMenu())
+        , oldWritingReview.getMenu()));
+
+    newWritingReview.setPrice(prompt.inputInt(
+        String.format("가격(%s) \n", oldWritingReview.getPrice())
+        , oldWritingReview.getPrice()));
+
+    newWritingReview.setStarQuality(prompt.inputInt(
+        String.format("맛 별점(%s) \n", oldWritingReview.getStarQuality())
+        , oldWritingReview.getStarQuality()));
+
+    newWritingReview.setStarQuantity(prompt.inputInt(
+        String.format("양 별점(%s) \n", oldWritingReview.getStarQuantity())
+        , oldWritingReview.getStarQuantity()));
+
+    newWritingReview.setReview(prompt.inputString(
+        String.format("후기(%s) \n", oldWritingReview.getReview())
+        , oldWritingReview.getReview()));
+
     if (newWritingReview.equals(oldWritingReview)) {
-      System.out.println(" 후기 변경을 취소하였습니다. ");
+      System.out.println(" 후기 변경을 취소하였습니다.");
     } else {
       this.writingReviewList.set(index, newWritingReview);
-      System.out.println( "후기를 변경하였습니다. ");
+      System.out.println("후기를 변경하였습니다.");
     }
   }
 
   public void deleteWritingReview() {
+    int index = indexOfWritingReview(prompt.inputString("가게명? "));
 
+    if (index == -1) {
+      System.out.println("해당 후기를 찾을 수 없습니다.");
+      return;
+    } else {
+      this.writingReviewList.remove(index);
+      System.out.println("후기를 삭제했습니다.");
+    }
   }
 
   private int indexOfWritingReview(String storeName) {
@@ -112,33 +121,5 @@ public class WritingReviewHandler {
       }
     }
     return -1;
-  }
-  
-  public String inputString(String label) {
-    System.out.println(label);
-    return input.nextLine();
-  }
-  
-  public String inputString(String label, String defaultValue) {
-    System.out.println(label);
-    String value = input.nextLine();
-    if (value.length() == 0) {
-      return defaultValue;
-    }
-    return value;
-  }
-  
-  public int inputInt(String label) {
-    System.out.println(label);
-    return Integer.parseInt(input.nextLine());
-  }
-  
-  public int inputInt(String label, int defaultValue) {
-    System.out.println(label);
-    String value = input.nextLine();
-    if (value.length() == 0) {
-      return defaultValue;
-    }
-    return Integer.parseInt(value);
   }
 }

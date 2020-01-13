@@ -39,12 +39,14 @@ public class ArrayList<E> {
     return old;
   }
 
+  @SuppressWarnings("unchecked")
   public E remove(int index) {
     if (index < 0 || index > this.size)
       return null;
-    @SuppressWarnings("unchecked")
+
     E old = (E) this.list[index];
     System.arraycopy(this.list, index + 1, this.list, index, this.size);
+
     this.size--;
     return old;
   }
@@ -64,5 +66,30 @@ public class ArrayList<E> {
     }
     System.arraycopy(this.list, 0, arr, 0, this.size);
     return arr;
+  }
+
+  public void add(int index, E arr) {
+    if (index < 0 || index >= this.size)
+      return;
+
+    if (this.list.length == size) {
+      grow();
+    }
+
+    for (int i = size - 1; i >= index; i--) {
+      this.list[i + 1] = this.list[i];
+    }
+    this.list[index] = arr;
+
+    this.size++;
+  }
+
+  public void grow() {
+    this.list = new Object[newCapacity()];
+  }
+  
+  public int newCapacity() {
+    int oldCapacity = this.size;
+    return oldCapacity + (oldCapacity >> 1);
   }
 }

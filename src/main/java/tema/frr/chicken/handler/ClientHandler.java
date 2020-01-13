@@ -1,44 +1,31 @@
 package tema.frr.chicken.handler;
 
 import java.sql.Date;
-import java.util.Scanner;
 import tema.frr.chicken.domain.Client;
 import tema.frr.util.ArrayList;
+import tema.frr.util.Prompt;
 
 public class ClientHandler {
 
   ArrayList<Client> clientList;
-  Scanner input;
+  
+  Prompt prompt;
 
-  public ClientHandler(Scanner input) {
-    this.input = input;
+  public ClientHandler(Prompt prompt) {
+    this.prompt = prompt;
     clientList = new ArrayList<>();
   }
 
   public void addClient() {
     Client c = new Client();
 
-    System.out.println("ID를 입력해주세요.");
-    c.setId(input.nextLine());
-
-    System.out.println("PWD를 입력해주세요.");
-    c.setPwd(input.nextLine());
-
-    System.out.println("이름을 입력해주세요.");
-    c.setName(input.nextLine());
-
-    System.out.println("생년월일을 입력해주세요.");
-    c.setBirthday(Date.valueOf(input.nextLine()));
-
-    System.out.println("성별을 입력해주세요.");
-    c.setSex(input.nextLine());
-
-    System.out.println("전화번호를 입력해주세요.");
-    c.setTel(input.nextLine());
-
-    System.out.println("주소를 입력해주세요.");
-    c.setAddress(input.nextLine());
-
+    c.setId(prompt.inputString("ID를 입력해주세요. "));
+    c.setPwd(prompt.inputString("Pwd를 입력해주세요. "));
+    c.setName(prompt.inputString("이름을 입력해주세요. "));
+    c.setBirthday(prompt.inputDate("생년월일을 입력해주세요. "));
+    c.setSex(prompt.inputString("성별을 입력해주세요. "));
+    c.setTel(prompt.inputString("전화번호를 입력해주세요. "));
+    c.setAddress(prompt.inputString("주소를 입력해주세요. "));
     c.setSignUpDate(new Date(System.currentTimeMillis()));
 
     clientList.add(c);
@@ -55,10 +42,7 @@ public class ClientHandler {
   }
 
   public void detailClient() {
-    System.out.print("ID? ");
-    String command = input.nextLine();
-
-    int index = indexOfClient(command);
+    int index = indexOfClient(prompt.inputString("ID? "));
 
     Client client = new Client();
     
@@ -69,19 +53,16 @@ public class ClientHandler {
 
     client = this.clientList.get(index);
 
-    System.out.printf("이름 : %s\n", client.getId());
+    System.out.printf("이름 : %s\n", client.getName());
     System.out.printf("생일 : %s\n", client.getBirthday());
     System.out.printf("성별 : %s\n", client.getSex());
-    System.out.printf("전화번호 : %s\\n", client.getTel());
+    System.out.printf("전화번호 : %s\n", client.getTel());
     System.out.printf("주소 : %s\n", client.getAddress());
     System.out.printf("가입일 : %s\n", client.getSignUpDate());
   }
 
   public void updateClient() {
-    System.out.print("ID? ");
-    String command = input.nextLine();
-
-    int index = indexOfClient(command);
+    int index = indexOfClient(prompt.inputString("ID? "));
 
     if (index == -1) {
       System.out.println("해당 고객을 찾을 수 없습니다.");
@@ -89,69 +70,42 @@ public class ClientHandler {
     }
 
     Client oldClient = this.clientList.get(index);
-
     Client newClient = new Client();
-
-    boolean changed = false;
 
     newClient.setId(oldClient.getId());
     
-    System.out.printf("이름(%s): \n", oldClient.getName());
-    newClient.setName(input.nextLine());
-    if(newClient.getName().length() == 0) {
-      newClient.setName(oldClient.getName());
-    } else {
-      changed = true;
-    }
-
-    System.out.printf("생일(%s): \n", oldClient.getBirthday());
-    String birthday = input.nextLine();
-    if(birthday.length() == 0) {
-      newClient.setBirthday(oldClient.getBirthday());
-    } else {
-      newClient.setBirthday(Date.valueOf(birthday));
-      changed = true;
-    }
-
-    System.out.printf("성별(%s): \n", oldClient.getSex());
-    newClient.setSex(input.nextLine());
-    if(newClient.getSex().length() == 0) {
-      newClient.setSex(oldClient.getSex());
-    } else {
-      changed = true;
-    }
-    System
-    .out.printf("전화번호(%s): \n", oldClient.getTel());
-    newClient.setTel(input.nextLine());
-    if(newClient.getTel().length() == 0) {
-      newClient.setTel(oldClient.getTel());
-    } else {
-      changed = true;
-    }
-
-    System.out.printf("주소(%s): \n", oldClient.getAddress());
-    newClient.setAddress(input.nextLine());
-    if(newClient.getAddress().length() == 0) {
-      newClient.setAddress(oldClient.getAddress());
-    } else {
-      changed = true;
-    }
+    newClient.setName(prompt.inputString(
+        String.format("이름(%s): \n", oldClient.getName())
+        , oldClient.getName()));
     
-    newClient.setSignUpDate(oldClient.getSignUpDate());
+    newClient.setBirthday(prompt.inputDate(
+        String.format("생일(%s): \n", oldClient.getBirthday())
+        , oldClient.getBirthday()));
+    
+    newClient.setSex(prompt.inputString(
+        String.format("성별(%s): \n", oldClient.getSex())
+        , oldClient.getSex()));
+    
+    newClient.setTel(prompt.inputString(
+        String.format("전화번호(%s): \n", oldClient.getTel())
+        , oldClient.getTel()));
 
-    if (changed) {
+    newClient.setAddress(prompt.inputString(
+        String.format("주소(%s): \n", oldClient.getAddress())
+        , oldClient.getAddress()));
+    
+    if (newClient.equals(oldClient)) {
+      System.out.println("고객 변경을 취소했습니다.");
+      return;
+    } else {
+      newClient.setSignUpDate(oldClient.getSignUpDate());
       this.clientList.set(index, newClient);
       System.out.println("고객을 변경했습니다.");
-    } else {
-      System.out.println("고객 변경을 취소했습니다.");
     }
   }
 
   public void deleteClient() {
-    System.out.print("ID? ");
-    String command = input.nextLine();
-
-    int index = indexOfClient(command);
+    int index = indexOfClient(prompt.inputString("ID? "));
 
     if (index == -1) {
       System.out.println("해당 고객을 찾을 수 없습니다.");

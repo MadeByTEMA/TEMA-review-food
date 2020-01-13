@@ -5,7 +5,9 @@
 package tema.frr.chicken;
 
 import java.util.Scanner;
-import tema.frr.chicken.handler.*;
+import tema.frr.chicken.handler.ClientHandler;
+import tema.frr.chicken.handler.WritingReviewHandler;
+import tema.frr.util.Prompt;
 
 public class App {
 
@@ -13,8 +15,10 @@ public class App {
 
   public static void main(String[] args) {
 
-    ClientHandler clientHandler = new ClientHandler(keyboard);
-    WritingReviewHandler writingReviewHandler = new WritingReviewHandler(keyboard);
+    Prompt prompt = new Prompt(keyboard);
+    
+    ClientHandler clientHandler = new ClientHandler(prompt);
+    WritingReviewHandler writingReviewHandler = new WritingReviewHandler(prompt);
 
     String command;
 
