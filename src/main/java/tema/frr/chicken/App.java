@@ -8,12 +8,14 @@ import java.util.Scanner;
 import tema.frr.chicken.handler.ClientHandler;
 import tema.frr.chicken.handler.WritingReviewHandler;
 import tema.frr.util.Prompt;
+import tema.frr.util.Queue;
 import tema.frr.util.Stack;
 
 public class App {
 
   static Scanner keyboard = new Scanner(System.in);
   static Stack<String> commandStack = new Stack<>();
+  static Queue<String> commandQueue = new Queue<>();
   
   public static void main(String[] args) {
 
@@ -78,6 +80,10 @@ public class App {
           printCommandHistory();
           break;
           
+        case "history2":
+          printCommandHistory2();
+          break;
+          
         default:
           if(!command.equalsIgnoreCase("quit")) {
             System.out.println(command);
@@ -106,5 +112,22 @@ public class App {
         }
       }
     }
+  }
+  
+  static void printCommandHistory2() {
+    Queue<String> historyQueue = (Queue<String>) commandQueue.clone();
+    int count = 0;
+    
+    while (historyQueue.size() > 0) { 
+      System.out.println(historyQueue.poll());
+      count++;
+      
+      if (count % 5 == 0) {
+        System.out.print(":");
+        if("q".equalsIgnoreCase(keyboard.nextLine()))
+          break;
+      }
+    }
+    
   }
 }
