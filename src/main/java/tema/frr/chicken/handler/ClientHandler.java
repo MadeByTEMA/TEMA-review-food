@@ -44,14 +44,12 @@ public class ClientHandler {
   public void detailClient() {
     int index = indexOfClient(prompt.inputString("ID? "));
 
-    Client client = new Client();
-    
     if (index == -1) {
       System.out.println("해당 고객을 찾을 수 없습니다.");
       return;
     }
 
-    client = this.clientList.get(index);
+    Client client = this.clientList.get(index);
 
     System.out.printf("이름 : %s\n", client.getName());
     System.out.printf("생일 : %s\n", client.getBirthday());

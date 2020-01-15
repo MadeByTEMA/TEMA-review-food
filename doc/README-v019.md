@@ -53,7 +53,7 @@ ID? 20
 명령> /Client/delete
 ID? 2
 고객을 삭제했습니다.
-
+ 
 명령> /Client/delete
 번호? 20
 해당 고객을 찾을 수 없습니다.
