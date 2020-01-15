@@ -1,18 +1,18 @@
 package tema.frr.chicken.handler;
 
+import java.util.LinkedList;
 import tema.frr.chicken.domain.WritingReview;
-import tema.frr.util.ArrayList;
 import tema.frr.util.Prompt;
 
 public class WritingReviewHandler {
 
-  ArrayList<WritingReview> writingReviewList;
+  LinkedList<WritingReview> writingReviewList;
   
   Prompt prompt;
   
   public WritingReviewHandler(Prompt prompt) {
     this.prompt = prompt;
-    writingReviewList = new ArrayList<>(); 
+    writingReviewList = new LinkedList<>(); 
   }
 
   public void addWritingReview() { 

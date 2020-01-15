@@ -8,11 +8,13 @@ import java.util.Scanner;
 import tema.frr.chicken.handler.ClientHandler;
 import tema.frr.chicken.handler.WritingReviewHandler;
 import tema.frr.util.Prompt;
+import tema.frr.util.Stack;
 
 public class App {
 
   static Scanner keyboard = new Scanner(System.in);
-
+  static Stack<String> commandStack = new Stack<>();
+  
   public static void main(String[] args) {
 
     Prompt prompt = new Prompt(keyboard);
@@ -25,7 +27,12 @@ public class App {
     do {
       System.out.print("명령> ");
       command = keyboard.nextLine();
-
+      
+      if (command.length() == 0)
+        continue;
+      
+      commandStack.push(command);
+      
       switch (command) {
         case "/client/add":
           clientHandler.addClient();
@@ -66,6 +73,11 @@ public class App {
         case "/writingReview/delete":
           writingReviewHandler.deleteWritingReview();
           break;
+          
+        case "history":
+          printCommandHistory();
+          break;
+          
         default:
           if(!command.equalsIgnoreCase("quit")) {
             System.out.println(command);
@@ -77,5 +89,22 @@ public class App {
     System.out.println("안녕!");
 
     keyboard.close();
+  }
+  
+  static void printCommandHistory() {
+    Stack<String> historyStack = (Stack<String>) commandStack.clone();
+    int count = 0;
+    
+    while (!historyStack.empty()) {
+      System.out.println(historyStack.pop());
+      count++;
+      
+      if (count % 5 == 0) {
+        System.out.print(":");
+        if(("q").equalsIgnoreCase(keyboard.nextLine())) {
+          break;
+        }
+      }
+    }
   }
 }
