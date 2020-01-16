@@ -1,16 +1,16 @@
 package tema.frr.chicken.handler;
 
 import tema.frr.chicken.domain.WritingReview;
-import tema.frr.util.List;
+import tema.frr.util.AbstractList;
 import tema.frr.util.Prompt;
 
 public class WritingReviewHandler {
 
-  List<WritingReview> writingReviewList;
+  AbstractList<WritingReview> writingReviewList;
   
   Prompt prompt;
   
-  public WritingReviewHandler(Prompt prompt, List<WritingReview> list) {
+  public WritingReviewHandler(Prompt prompt, AbstractList<WritingReview> list) {
     this.prompt = prompt;
     writingReviewList = list; 
   }

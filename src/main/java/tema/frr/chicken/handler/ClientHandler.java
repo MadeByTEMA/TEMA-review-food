@@ -2,16 +2,16 @@ package tema.frr.chicken.handler;
 
 import java.sql.Date;
 import tema.frr.chicken.domain.Client;
-import tema.frr.util.List;
+import tema.frr.util.AbstractList;
 import tema.frr.util.Prompt;
 
 public class ClientHandler {
 
-  List<Client> clientList;
+  AbstractList<Client> clientList;
   
   Prompt prompt;
 
-  public ClientHandler(Prompt prompt, List<Client> list) {
+  public ClientHandler(Prompt prompt, AbstractList<Client> list) {
     this.prompt = prompt;
     clientList = list;
   }
