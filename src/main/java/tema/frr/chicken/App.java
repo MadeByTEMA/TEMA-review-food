@@ -4,23 +4,24 @@
 //
 package tema.frr.chicken;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Scanner;
 import tema.frr.chicken.domain.Client;
 import tema.frr.chicken.domain.WritingReview;
 import tema.frr.chicken.handler.ClientHandler;
 import tema.frr.chicken.handler.WritingReviewHandler;
-import tema.frr.util.ArrayList;
-import tema.frr.util.Iterator;
-import tema.frr.util.LinkedList;
 import tema.frr.util.Prompt;
-import tema.frr.util.Queue;
-import tema.frr.util.Stack;
 
 public class App {
 
   static Scanner keyboard = new Scanner(System.in);
-  static Stack<String> commandStack = new Stack<>();
-  static Queue<String> commandQueue = new Queue<>();
+  static Deque<String> commandStack = new ArrayDeque<>();
+  static Queue<String> commandQueue = new LinkedList<>();
   
   public static void main(String[] args) {
 
@@ -41,6 +42,7 @@ public class App {
         continue;
       
       commandStack.push(command);
+      commandQueue.offer(command);
       
       switch (command) {
         case "/client/add":

@@ -1,8 +1,8 @@
 package tema.frr.chicken.handler;
 
+import java.util.Iterator;
+import java.util.List;
 import tema.frr.chicken.domain.WritingReview;
-import tema.frr.util.List;
-import tema.frr.util.Iterator;
 import tema.frr.util.Prompt;
 
 public class WritingReviewHandler {
