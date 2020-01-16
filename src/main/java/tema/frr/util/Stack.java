@@ -75,28 +75,31 @@ public class Stack<E> implements Cloneable {
   }
   
   public Iterator<E> iterator() {
-    return this.new StackIterator<E>();
+    
+    class StackIterator<E> implements Iterator<E> {
+
+      Stack<E> stack;
+      
+      @SuppressWarnings("unchecked")
+      public StackIterator() {
+        this.stack = (Stack<E>) Stack.this.clone();
+      }
+      
+       @Override
+      public boolean hasNext() {
+        // TODO Auto-generated method stub
+        return !stack.empty();
+      }
+
+      @Override
+      public E next() {
+        // TODO Auto-generated method stub
+        return stack.pop();
+      }
+    }
+    
+    return new StackIterator<E>();
   }
   
-  public class StackIterator<E> implements Iterator<E> {
 
-    Stack<E> stack;
-    
-    @SuppressWarnings("unchecked")
-    public StackIterator() {
-      this.stack = (Stack<E>) Stack.this.clone();
-    }
-    
-     @Override
-    public boolean hasNext() {
-      // TODO Auto-generated method stub
-      return !stack.empty();
-    }
-
-    @Override
-    public E next() {
-      // TODO Auto-generated method stub
-      return stack.pop();
-    }
-  }
 }
