@@ -2,8 +2,6 @@ package tema.frr.util;
 
 public interface List<E> {
 
-  int size();
-
   void add(E e);
 
   void add(int index, E arr);
@@ -17,5 +15,8 @@ public interface List<E> {
   Object[] toArray();
 
   E[] toArray(E[] arr);
+  
+  int size();
 
+  Iterator<E> iterator();
 }

@@ -125,8 +125,4 @@ public class LinkedList<E> extends AbstractList<E> {
     
     return arr;
   }
-  
-  public int size() {
-    return this.size;
-  }
 }

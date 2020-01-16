@@ -2,16 +2,17 @@ package tema.frr.chicken.handler;
 
 import java.sql.Date;
 import tema.frr.chicken.domain.Client;
-import tema.frr.util.AbstractList;
+import tema.frr.util.Iterator;
+import tema.frr.util.List;
 import tema.frr.util.Prompt;
 
 public class ClientHandler {
 
-  AbstractList<Client> clientList;
-  
+  List<Client> clientList;
+
   Prompt prompt;
 
-  public ClientHandler(Prompt prompt, AbstractList<Client> list) {
+  public ClientHandler(Prompt prompt, List<Client> list) {
     this.prompt = prompt;
     clientList = list;
   }
@@ -34,8 +35,9 @@ public class ClientHandler {
   }
 
   public void listClient() {
-    Client[] clients = this.clientList.toArray(new Client[this.clientList.size()]);
-    for (Client c : clients) {
+    Iterator<Client> iterator = clientList.iterator();
+    while (iterator.hasNext()) {
+    Client c = iterator.next();
       System.out.printf("%s, %s, %s, %s, %s, %s\n", c.getId(), c.getName(), 
           c.getBirthday(), c.getSex(), c.getTel(), c.getSignUpDate());
     }
@@ -71,19 +73,19 @@ public class ClientHandler {
     Client newClient = new Client();
 
     newClient.setId(oldClient.getId());
-    
+
     newClient.setName(prompt.inputString(
         String.format("이름(%s): \n", oldClient.getName())
         , oldClient.getName()));
-    
+
     newClient.setBirthday(prompt.inputDate(
         String.format("생일(%s): \n", oldClient.getBirthday())
         , oldClient.getBirthday()));
-    
+
     newClient.setSex(prompt.inputString(
         String.format("성별(%s): \n", oldClient.getSex())
         , oldClient.getSex()));
-    
+
     newClient.setTel(prompt.inputString(
         String.format("전화번호(%s): \n", oldClient.getTel())
         , oldClient.getTel()));
@@ -91,7 +93,7 @@ public class ClientHandler {
     newClient.setAddress(prompt.inputString(
         String.format("주소(%s): \n", oldClient.getAddress())
         , oldClient.getAddress()));
-    
+
     if (newClient.equals(oldClient)) {
       System.out.println("고객 변경을 취소했습니다.");
       return;

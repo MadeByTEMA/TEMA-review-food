@@ -1,16 +1,17 @@
 package tema.frr.chicken.handler;
 
 import tema.frr.chicken.domain.WritingReview;
-import tema.frr.util.AbstractList;
+import tema.frr.util.List;
+import tema.frr.util.Iterator;
 import tema.frr.util.Prompt;
 
 public class WritingReviewHandler {
 
-  AbstractList<WritingReview> writingReviewList;
+  List<WritingReview> writingReviewList;
   
   Prompt prompt;
   
-  public WritingReviewHandler(Prompt prompt, AbstractList<WritingReview> list) {
+  public WritingReviewHandler(Prompt prompt, List<WritingReview> list) {
     this.prompt = prompt;
     writingReviewList = list; 
   }
@@ -31,8 +32,10 @@ public class WritingReviewHandler {
   }
 
   public void listWritingReview() {
-    WritingReview[] reviews = writingReviewList.toArray(new WritingReview[] {});
-    for (WritingReview r : reviews) {
+    Iterator<WritingReview> iterator = writingReviewList.iterator();
+    
+    while (iterator.hasNext()) {
+      WritingReview r = iterator.next();
       System.out.printf("%s, %s, %s, %s, %s, %s\n", r.getStoreName(), r.getMenu(),
           r.getPrice(), r.getStarQuality(), r.getStarQuantity(), r.getStarTotalSum());
     }
