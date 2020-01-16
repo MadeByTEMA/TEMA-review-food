@@ -22,14 +22,9 @@ public class Queue<E> extends LinkedList<E> implements Cloneable{
   
   public Iterator<E> iterator() {
     
-    class QueueIterator<E> implements Iterator<E>{
+    return new Iterator<E>() {
       
-      Queue<E> queue;
-      
-      @SuppressWarnings("unchecked")
-      public QueueIterator() {
-        this.queue = (Queue<E>) Queue.this.clone();
-      }
+      Queue<E> queue = (Queue<E>) Queue.this.clone();
       
       @Override
       public boolean hasNext() {
@@ -42,9 +37,7 @@ public class Queue<E> extends LinkedList<E> implements Cloneable{
         return queue.get(0);
       }
       
-    }
-    
-    return new QueueIterator<E>();
+    };
   }
 
 }
