@@ -1,5 +1,7 @@
 package tema.frr.util;
 
+import tema.frr.chicken.domain.Client;
+
 public class List<E> {
 
   protected int size;
@@ -19,6 +21,10 @@ public class List<E> {
     return null;
   }
 
+  public E set(int index, E e) {
+    return null;
+  }
+  
   public E remove(int index) {
     return null;
   }
@@ -30,4 +36,5 @@ public class List<E> {
   public E[] toArray(E[] arr) {
     return null;
   }
+
 }

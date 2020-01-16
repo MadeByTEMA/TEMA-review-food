@@ -1,19 +1,19 @@
 package tema.frr.chicken.handler;
 
 import java.sql.Date;
-import java.util.LinkedList;
 import tema.frr.chicken.domain.Client;
+import tema.frr.util.List;
 import tema.frr.util.Prompt;
 
 public class ClientHandler {
 
-  LinkedList<Client> clientList;
+  List<Client> clientList;
   
   Prompt prompt;
 
-  public ClientHandler(Prompt prompt) {
+  public ClientHandler(Prompt prompt, List<Client> list) {
     this.prompt = prompt;
-    clientList = new LinkedList<>();
+    clientList = list;
   }
 
   public void addClient() {

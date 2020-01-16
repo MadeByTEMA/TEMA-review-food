@@ -5,8 +5,12 @@
 package tema.frr.chicken;
 
 import java.util.Scanner;
+import tema.frr.chicken.domain.Client;
+import tema.frr.chicken.domain.WritingReview;
 import tema.frr.chicken.handler.ClientHandler;
 import tema.frr.chicken.handler.WritingReviewHandler;
+import tema.frr.util.ArrayList;
+import tema.frr.util.LinkedList;
 import tema.frr.util.Prompt;
 import tema.frr.util.Queue;
 import tema.frr.util.Stack;
@@ -21,8 +25,10 @@ public class App {
 
     Prompt prompt = new Prompt(keyboard);
     
-    ClientHandler clientHandler = new ClientHandler(prompt);
-    WritingReviewHandler writingReviewHandler = new WritingReviewHandler(prompt);
+    LinkedList<Client> clientList = new LinkedList<>();
+    ClientHandler clientHandler = new ClientHandler(prompt, clientList);
+    ArrayList<WritingReview> writingReviewList = new ArrayList<>();
+    WritingReviewHandler writingReviewHandler = new WritingReviewHandler(prompt, writingReviewList);
 
     String command;
 
