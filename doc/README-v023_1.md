@@ -1,4 +1,5 @@
 # 23_1 - 일반화(generalization) 상속 기법을 사용하여 ArrayList와 LinkedList의 공통점 분리하기
+
 1) 데이터 목록을 다루는 ArrayList와 LinkedList의 공통점을 찾아 별도의 클래스로 분리하라.
 
 - List.java
