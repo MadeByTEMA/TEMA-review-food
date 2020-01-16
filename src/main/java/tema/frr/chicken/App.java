@@ -10,6 +10,7 @@ import tema.frr.chicken.domain.WritingReview;
 import tema.frr.chicken.handler.ClientHandler;
 import tema.frr.chicken.handler.WritingReviewHandler;
 import tema.frr.util.ArrayList;
+import tema.frr.util.Iterator;
 import tema.frr.util.LinkedList;
 import tema.frr.util.Prompt;
 import tema.frr.util.Queue;
@@ -83,11 +84,11 @@ public class App {
           break;
           
         case "history":
-          printCommandHistory();
+          printCommandHistory(commandStack.iterator());
           break;
           
         case "history2":
-          printCommandHistory2();
+          printCommandHistory(commandQueue.iterator());
           break;
           
         default:
@@ -103,12 +104,10 @@ public class App {
     keyboard.close();
   }
   
-  static void printCommandHistory() {
-    Stack<String> historyStack = (Stack<String>) commandStack.clone();
+  static void printCommandHistory(Iterator<String> iterator) {
     int count = 0;
-    
-    while (!historyStack.empty()) {
-      System.out.println(historyStack.pop());
+    while (!iterator.hasNext()) {
+      System.out.println(iterator.next());
       count++;
       
       if (count % 5 == 0) {
@@ -118,22 +117,5 @@ public class App {
         }
       }
     }
-  }
-  
-  static void printCommandHistory2() {
-    Queue<String> historyQueue = (Queue<String>) commandQueue.clone();
-    int count = 0;
-    
-    while (historyQueue.size() > 0) { 
-      System.out.println(historyQueue.poll());
-      count++;
-      
-      if (count % 5 == 0) {
-        System.out.print(":");
-        if("q".equalsIgnoreCase(keyboard.nextLine()))
-          break;
-      }
-    }
-    
   }
 }
