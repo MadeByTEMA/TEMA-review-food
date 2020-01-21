@@ -5,18 +5,18 @@ import java.util.List;
 import tema.frr.chicken.domain.WritingReview;
 import tema.frr.util.Prompt;
 
-public class WritingReviewHandler {
+public class WritingReviewDetailCommand implements Command {
 
   List<WritingReview> writingReviewList;
-  
+
   Prompt prompt;
-  
-  public WritingReviewHandler(Prompt prompt, List<WritingReview> list) {
+
+  public WritingReviewDetailCommand(Prompt prompt, List<WritingReview> list) {
     this.prompt = prompt;
-    writingReviewList = list; 
+    writingReviewList = list;
   }
 
-  public void addWritingReview() { 
+  public void addWritingReview() {
     WritingReview r = new WritingReview();
 
     r.setStoreName(prompt.inputString("가게명을 입력해주세요. "));
@@ -33,11 +33,11 @@ public class WritingReviewHandler {
 
   public void listWritingReview() {
     Iterator<WritingReview> iterator = writingReviewList.iterator();
-    
+
     while (iterator.hasNext()) {
       WritingReview r = iterator.next();
-      System.out.printf("%s, %s, %s, %s, %s, %s\n", r.getStoreName(), r.getMenu(),
-          r.getPrice(), r.getStarQuality(), r.getStarQuantity(), r.getStarTotalSum());
+      System.out.printf("%s, %s, %s, %s, %s, %s\n", r.getStoreName(), r.getMenu(), r.getPrice(),
+          r.getStarQuality(), r.getStarQuantity(), r.getStarTotalSum());
     }
   }
 
@@ -63,7 +63,7 @@ public class WritingReviewHandler {
 
   public void updateWritingReview() {
 
-    int index = indexOfWritingReview(prompt.inputString("가게명? ")); 
+    int index = indexOfWritingReview(prompt.inputString("가게명? "));
 
     if (index == -1) {
       System.out.println("해당 후기를 찾을 수 없습니다.");
@@ -77,24 +77,21 @@ public class WritingReviewHandler {
     newWritingReview.setStoreName(oldWritingReview.getStoreName());
 
     newWritingReview.setMenu(prompt.inputString(
-        String.format("메뉴(%s) \n", oldWritingReview.getMenu())
-        , oldWritingReview.getMenu()));
+        String.format("메뉴(%s) \n", oldWritingReview.getMenu()), oldWritingReview.getMenu()));
 
     newWritingReview.setPrice(prompt.inputInt(
-        String.format("가격(%s) \n", oldWritingReview.getPrice())
-        , oldWritingReview.getPrice()));
+        String.format("가격(%s) \n", oldWritingReview.getPrice()), oldWritingReview.getPrice()));
 
-    newWritingReview.setStarQuality(prompt.inputInt(
-        String.format("맛 별점(%s) \n", oldWritingReview.getStarQuality())
-        , oldWritingReview.getStarQuality()));
+    newWritingReview.setStarQuality(
+        prompt.inputInt(String.format("맛 별점(%s) \n", oldWritingReview.getStarQuality()),
+            oldWritingReview.getStarQuality()));
 
-    newWritingReview.setStarQuantity(prompt.inputInt(
-        String.format("양 별점(%s) \n", oldWritingReview.getStarQuantity())
-        , oldWritingReview.getStarQuantity()));
+    newWritingReview.setStarQuantity(
+        prompt.inputInt(String.format("양 별점(%s) \n", oldWritingReview.getStarQuantity()),
+            oldWritingReview.getStarQuantity()));
 
     newWritingReview.setReview(prompt.inputString(
-        String.format("후기(%s) \n", oldWritingReview.getReview())
-        , oldWritingReview.getReview()));
+        String.format("후기(%s) \n", oldWritingReview.getReview()), oldWritingReview.getReview()));
 
     if (newWritingReview.equals(oldWritingReview)) {
       System.out.println(" 후기 변경을 취소하였습니다.");

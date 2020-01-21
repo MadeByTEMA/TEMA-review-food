@@ -6,13 +6,13 @@ import java.util.List;
 import tema.frr.chicken.domain.Client;
 import tema.frr.util.Prompt;
 
-public class ClientHandler {
+public class ClientUpdateCommand implements Command {
 
   List<Client> clientList;
 
   Prompt prompt;
 
-  public ClientHandler(Prompt prompt, List<Client> list) {
+  public ClientUpdateCommand(Prompt prompt, List<Client> list) {
     this.prompt = prompt;
     clientList = list;
   }
@@ -37,9 +37,9 @@ public class ClientHandler {
   public void listClient() {
     Iterator<Client> iterator = clientList.iterator();
     while (iterator.hasNext()) {
-    Client c = iterator.next();
-      System.out.printf("%s, %s, %s, %s, %s, %s\n", c.getId(), c.getName(), 
-          c.getBirthday(), c.getSex(), c.getTel(), c.getSignUpDate());
+      Client c = iterator.next();
+      System.out.printf("%s, %s, %s, %s, %s, %s\n", c.getId(), c.getName(), c.getBirthday(),
+          c.getSex(), c.getTel(), c.getSignUpDate());
     }
   }
 
@@ -74,25 +74,20 @@ public class ClientHandler {
 
     newClient.setId(oldClient.getId());
 
-    newClient.setName(prompt.inputString(
-        String.format("이름(%s): \n", oldClient.getName())
-        , oldClient.getName()));
+    newClient.setName(
+        prompt.inputString(String.format("이름(%s): \n", oldClient.getName()), oldClient.getName()));
 
-    newClient.setBirthday(prompt.inputDate(
-        String.format("생일(%s): \n", oldClient.getBirthday())
-        , oldClient.getBirthday()));
+    newClient.setBirthday(prompt.inputDate(String.format("생일(%s): \n", oldClient.getBirthday()),
+        oldClient.getBirthday()));
 
-    newClient.setSex(prompt.inputString(
-        String.format("성별(%s): \n", oldClient.getSex())
-        , oldClient.getSex()));
+    newClient.setSex(
+        prompt.inputString(String.format("성별(%s): \n", oldClient.getSex()), oldClient.getSex()));
 
-    newClient.setTel(prompt.inputString(
-        String.format("전화번호(%s): \n", oldClient.getTel())
-        , oldClient.getTel()));
+    newClient.setTel(
+        prompt.inputString(String.format("전화번호(%s): \n", oldClient.getTel()), oldClient.getTel()));
 
-    newClient.setAddress(prompt.inputString(
-        String.format("주소(%s): \n", oldClient.getAddress())
-        , oldClient.getAddress()));
+    newClient.setAddress(prompt.inputString(String.format("주소(%s): \n", oldClient.getAddress()),
+        oldClient.getAddress()));
 
     if (newClient.equals(oldClient)) {
       System.out.println("고객 변경을 취소했습니다.");
@@ -117,7 +112,7 @@ public class ClientHandler {
   }
 
   private int indexOfClient(String id) {
-    for(int i = 0; i < clientList.size(); i++) {
+    for (int i = 0; i < clientList.size(); i++) {
       Client temp = this.clientList.get(i);
       if (id.equals(temp.getId())) {
         return i;
