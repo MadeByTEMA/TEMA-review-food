@@ -1,6 +1,5 @@
 package tema.frr.chicken.handler;
 
-import java.util.Iterator;
 import java.util.List;
 import tema.frr.chicken.domain.WritingReview;
 import tema.frr.util.Prompt;
@@ -16,52 +15,8 @@ public class WritingReviewUpdateCommand implements Command {
     writingReviewList = list;
   }
 
-  public void addWritingReview() {
-    WritingReview r = new WritingReview();
-
-    r.setStoreName(prompt.inputString("가게명을 입력해주세요. "));
-    r.setMenu(prompt.inputString("메뉴을 입력해주세요. "));
-    r.setPrice(prompt.inputInt("가격을 입력해주세요. "));
-    r.setStarQuality(prompt.inputInt("맛 별점을 입력해주세요. "));
-    r.setStarQuantity(prompt.inputInt("양 별점을 입력해주세요. "));
-    r.setReview(prompt.inputString("후기를 입력해주세요. "));
-
-    writingReviewList.add(r);
-
-    System.out.println("저장하였습니다.");
-  }
-
-  public void listWritingReview() {
-    Iterator<WritingReview> iterator = writingReviewList.iterator();
-
-    while (iterator.hasNext()) {
-      WritingReview r = iterator.next();
-      System.out.printf("%s, %s, %s, %s, %s, %s\n", r.getStoreName(), r.getMenu(), r.getPrice(),
-          r.getStarQuality(), r.getStarQuantity(), r.getStarTotalSum());
-    }
-  }
-
-  public void detailWritingReview() {
-
-    int index = indexOfWritingReview(prompt.inputString("가게명? "));
-
-    if (index == -1) {
-      System.out.println("해당 고객을 찾을 수 없습니다.");
-      return;
-    }
-
-    WritingReview writingReview = this.writingReviewList.get(index);
-
-    System.out.printf("메뉴 : %s\n", writingReview.getMenu());
-    System.out.printf("가격 : %s\n", writingReview.getPrice());
-    System.out.printf("총 별점 : %s\n", writingReview.getStarTotalSum());
-    System.out.printf("맛 별점:  %s\n", writingReview.getStarQuality());
-    System.out.printf("양 별점 : %s\n", writingReview.getStarQuantity());
-    System.out.printf("후기 : %s\n", writingReview.getReview());
-  }
-
-
-  public void updateWritingReview() {
+  @Override
+  public void execute() {
 
     int index = indexOfWritingReview(prompt.inputString("가게명? "));
 
@@ -98,18 +53,6 @@ public class WritingReviewUpdateCommand implements Command {
     } else {
       this.writingReviewList.set(index, newWritingReview);
       System.out.println("후기를 변경하였습니다.");
-    }
-  }
-
-  public void deleteWritingReview() {
-    int index = indexOfWritingReview(prompt.inputString("가게명? "));
-
-    if (index == -1) {
-      System.out.println("해당 후기를 찾을 수 없습니다.");
-      return;
-    } else {
-      this.writingReviewList.remove(index);
-      System.out.println("후기를 삭제했습니다.");
     }
   }
 

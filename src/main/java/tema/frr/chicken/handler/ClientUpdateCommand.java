@@ -1,7 +1,5 @@
 package tema.frr.chicken.handler;
 
-import java.sql.Date;
-import java.util.Iterator;
 import java.util.List;
 import tema.frr.chicken.domain.Client;
 import tema.frr.util.Prompt;
@@ -17,51 +15,8 @@ public class ClientUpdateCommand implements Command {
     clientList = list;
   }
 
-  public void addClient() {
-    Client c = new Client();
-
-    c.setId(prompt.inputString("ID를 입력해주세요. "));
-    c.setPwd(prompt.inputString("Pwd를 입력해주세요. "));
-    c.setName(prompt.inputString("이름을 입력해주세요. "));
-    c.setBirthday(prompt.inputDate("생년월일을 입력해주세요. "));
-    c.setSex(prompt.inputString("성별을 입력해주세요. "));
-    c.setTel(prompt.inputString("전화번호를 입력해주세요. "));
-    c.setAddress(prompt.inputString("주소를 입력해주세요. "));
-    c.setSignUpDate(new Date(System.currentTimeMillis()));
-
-    clientList.add(c);
-
-    System.out.println("저장하였습니다.");
-  }
-
-  public void listClient() {
-    Iterator<Client> iterator = clientList.iterator();
-    while (iterator.hasNext()) {
-      Client c = iterator.next();
-      System.out.printf("%s, %s, %s, %s, %s, %s\n", c.getId(), c.getName(), c.getBirthday(),
-          c.getSex(), c.getTel(), c.getSignUpDate());
-    }
-  }
-
-  public void detailClient() {
-    int index = indexOfClient(prompt.inputString("ID? "));
-
-    if (index == -1) {
-      System.out.println("해당 고객을 찾을 수 없습니다.");
-      return;
-    }
-
-    Client client = this.clientList.get(index);
-
-    System.out.printf("이름 : %s\n", client.getName());
-    System.out.printf("생일 : %s\n", client.getBirthday());
-    System.out.printf("성별 : %s\n", client.getSex());
-    System.out.printf("전화번호 : %s\n", client.getTel());
-    System.out.printf("주소 : %s\n", client.getAddress());
-    System.out.printf("가입일 : %s\n", client.getSignUpDate());
-  }
-
-  public void updateClient() {
+  @Override
+  public void execute() {
     int index = indexOfClient(prompt.inputString("ID? "));
 
     if (index == -1) {
@@ -96,18 +51,6 @@ public class ClientUpdateCommand implements Command {
       newClient.setSignUpDate(oldClient.getSignUpDate());
       this.clientList.set(index, newClient);
       System.out.println("고객을 변경했습니다.");
-    }
-  }
-
-  public void deleteClient() {
-    int index = indexOfClient(prompt.inputString("ID? "));
-
-    if (index == -1) {
-      System.out.println("해당 고객을 찾을 수 없습니다.");
-      return;
-    } else {
-      this.clientList.remove(index);
-      System.out.println("고객을 삭제했습니다.");
     }
   }
 
