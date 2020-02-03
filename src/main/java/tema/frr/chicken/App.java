@@ -4,6 +4,12 @@
 //
 package tema.frr.chicken;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.sql.Date;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -32,20 +38,23 @@ public class App {
   static Scanner keyboard = new Scanner(System.in);
   static Deque<String> commandStack = new ArrayDeque<>();
   static Queue<String> commandQueue = new LinkedList<>();
+  static LinkedList<Client> clientList = new LinkedList<>();
+  static ArrayList<WritingReview> writingReviewList = new ArrayList<>();
 
   public static void main(String[] args) {
+
+    loadClientData();
+    loadWritingReviewData();
 
     Prompt prompt = new Prompt(keyboard);
     HashMap<String, Command> commandMap = new HashMap<>();
 
-    LinkedList<Client> clientList = new LinkedList<>();
     commandMap.put("/client/add", new ClientAddCommand(prompt, clientList));
     commandMap.put("/client/list", new ClientListCommand(clientList));
     commandMap.put("/client/detail", new ClientDetailCommand(prompt, clientList));
     commandMap.put("/client/delete", new ClientDeleteCommand(prompt, clientList));
     commandMap.put("/client/update", new ClientUpdateCommand(prompt, clientList));
 
-    ArrayList<WritingReview> writingReviewList = new ArrayList<>();
     commandMap.put("/writingReview/add", new WritingReviewAddCommand(prompt, writingReviewList));
     commandMap.put("/writingReview/list", new WritingReviewListCommand(writingReviewList));
     commandMap.put("/writingReview/detail",
@@ -89,8 +98,11 @@ public class App {
       } else {
         System.out.println("실행할 수 없는 명령입니다.");
       }
-      keyboard.close();
     }
+    keyboard.close();
+
+    loadClientData();
+    loadWritingReviewData();
 
   }
 
@@ -107,5 +119,77 @@ public class App {
         }
       }
     }
+  }
+
+  static void loadClientData() {
+    File file = new File("./client.csv");
+
+    FileReader in = null;
+    Scanner dataScan = null;
+
+    try {
+      in = new FileReader(file);
+      dataScan = new Scanner(in);
+      int count = 0;
+
+      while (true) {
+        try {
+          String line = dataScan.nextLine();
+          String[] data = line.split(",");
+
+          Client client = new Client();
+
+          client.setId(data[0]);
+          client.setPwd(data[1]);
+          client.setName(data[2]);
+          client.setBirthday(Date.valueOf(data[3]));
+          client.setSex(data[4]);
+          client.setTel(data[5]);
+          client.setAddress(data[6]);
+          client.setSignUpDate(Date.valueOf(data[7]));
+
+          clientList.add(client);
+          count++;
+
+        } catch (Exception e) {
+          break;
+        }
+      }
+      System.out.printf("총 %d 개의 수업 데이터를 로딩했습니다.\n", count);
+    } catch (FileNotFoundException e) {
+      System.out.println("파일 읽기 중 오류 발생! - " + e.getMessage());
+    } finally {
+
+      try {
+        dataScan.close();
+      } catch (Exception e) {
+      }
+
+      try {
+        in.close();
+      } catch (Exception e) {
+      }
+
+    }
+  }
+
+  static void saveClientData() {
+    File file = new File("client.data");
+
+  }
+
+  static void loadWritingReviewData() {
+    File file = new File("./wrtingreview.csv");
+
+    FileWriter out = null;
+    try {
+      out = new FileWriter(file);
+    } catch (IOException e) {
+      System.out.println("파일 쓰기 중 오류 발생! - " + e.getMessage());
+    }
+  }
+
+  static void saveWritingReviewData() {
+
   }
 }
