@@ -37,12 +37,14 @@ public class App {
 
     Prompt prompt = new Prompt(keyboard);
     HashMap<String, Command> commandMap = new HashMap<>();
+
     LinkedList<Client> clientList = new LinkedList<>();
     commandMap.put("/client/add", new ClientAddCommand(prompt, clientList));
     commandMap.put("/client/list", new ClientListCommand(clientList));
     commandMap.put("/client/detail", new ClientDetailCommand(prompt, clientList));
     commandMap.put("/client/delete", new ClientDeleteCommand(prompt, clientList));
     commandMap.put("/client/update", new ClientUpdateCommand(prompt, clientList));
+
     ArrayList<WritingReview> writingReviewList = new ArrayList<>();
     commandMap.put("/writingReview/add", new WritingReviewAddCommand(prompt, writingReviewList));
     commandMap.put("/writingReview/list", new WritingReviewListCommand(writingReviewList));
@@ -61,8 +63,10 @@ public class App {
 
       if (command.length() == 0)
         continue;
+
       if (command.equalsIgnoreCase("quit")) {
         System.out.println("안녕!");
+        break;
       } else if (command.equalsIgnoreCase("history")) {
         printCommandHistory(commandStack.iterator());
         continue;
@@ -77,7 +81,11 @@ public class App {
       Command commandHandler = commandMap.get(command);
 
       if (commandHandler != null) {
-        commandHandler.execute();
+        try {
+          commandHandler.execute();
+        } catch (Exception e) {
+          System.out.printf("명령어 실행 중 오류 발생: %s\n", e.getMessage());
+        }
       } else {
         System.out.println("실행할 수 없는 명령입니다.");
       }
