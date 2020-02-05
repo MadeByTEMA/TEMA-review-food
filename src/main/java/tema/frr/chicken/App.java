@@ -5,18 +5,19 @@
 package tema.frr.chicken;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
+import com.google.gson.Gson;
 import tema.frr.chicken.domain.Client;
 import tema.frr.chicken.domain.WritingReview;
 import tema.frr.chicken.handler.ClientAddCommand;
@@ -123,133 +124,53 @@ public class App {
   }
 
   static void loadClientData() {
-    File file = new File("./client.csv");
+    File file = new File("./client.json");
 
-    FileReader in = null;
-    Scanner dataScan = null;
+    try (FileReader in = new FileReader(file)) {
 
-    try {
-      in = new FileReader(file);
-      dataScan = new Scanner(in);
-      int count = 0;
+      clientList.addAll(Arrays.asList(new Gson().fromJson(in, Client[].class)));
 
-      while (true) {
-        try {
-          clientList.add(Client.valueOf(dataScan.nextLine()));
-          count++;
-
-        } catch (Exception e) {
-          break;
-        }
-      }
-      System.out.printf("총 %d 개의 회원 데이터를 로딩했습니다.\n", count);
-    } catch (FileNotFoundException e) {
+      System.out.printf("총 %d 개의 회원 데이터를 로딩했습니다.\n", clientList.size());
+    } catch (IOException e) {
       System.out.println("파일 읽기 중 오류 발생! - " + e.getMessage());
-    } finally {
-
-      try {
-        dataScan.close();
-      } catch (Exception e) {
-      }
-
-      try {
-        in.close();
-      } catch (Exception e) {
-      }
-
     }
   }
 
   static void saveClientData() {
-    File file = new File("client.data");
+    File file = new File("client.json");
 
-    FileWriter out = null;
-
-    try {
-      // 파일에 데이터를 저장할 때 사용할 도구를 준비한다.
-      out = new FileWriter(file);
-      int count = 0;
-
-      for (Client client : clientList) {
-        // 수업 목록에서 수업 데이터를 꺼내 CSV 형식의 문자열로 만든다.
-        out.write(client.toCsvString() + "\n");
-        count++;
-      }
-      System.out.printf("총 %d 개의 수업 데이터를 저장했습니다.\n", count);
+    try (FileWriter out = new FileWriter(file)) {
+      out.write(new Gson().toJson(clientList));
+      System.out.printf("총 %d 개의 수업 데이터를 저장했습니다.\n", clientList.size());
 
     } catch (IOException e) {
       System.out.println("파일 쓰기 중 오류 발생! - " + e.getMessage());
-
-    } finally {
-      try {
-        out.close();
-      } catch (IOException e) {
-      }
     }
-
   }
 
   static void loadWritingReviewData() {
-    File file = new File("./writingReview.csv");
+    File file = new File("./writingReview.json");
 
-    FileReader in = null;
-    Scanner dataScan = null;
 
-    try {
-      in = new FileReader(file);
-      dataScan = new Scanner(in);
-      int count = 0;
+    try (FileReader in = new FileReader(file)) {
+      writingReviewList.addAll(Arrays.asList(new Gson().fromJson(in, WritingReview[].class)));
 
-      while (true) {
-        try {
-          writingReviewList.add(WritingReview.valueOf(dataScan.nextLine()));
-          count++;
+      System.out.printf("총 %d 개의 후기 데이터를 로딩했습니다.\n", writingReviewList.size());
 
-        } catch (Exception e) {
-          break;
-        }
-      }
-      System.out.printf("총 %d 개의 후기 데이터를 로딩했습니다.\n", count);
-    } catch (FileNotFoundException e) {
+    } catch (IOException e) {
       System.out.println("파일 읽기 중 오류 발생! - " + e.getMessage());
-    } finally {
-
-      try {
-        dataScan.close();
-      } catch (Exception e) {
-      }
-
-      try {
-        in.close();
-      } catch (Exception e) {
-      }
-
     }
   }
 
   static void saveWritingReviewData() {
-    File file = new File("./writingReview.csv");
-    FileWriter out = null;
+    File file = new File("./writingReview.json");
 
-    try {
-      out = new FileWriter(file);
-      int count = 0;
-
-      for (WritingReview writingReview : writingReviewList) {
-        out.write(writingReview.toCsvString() + "\n");
-        count++;
-      }
-      System.out.printf("총 %d 개의 후기 데이터를 저장했습니다.\n", count);
+    try (FileWriter out = new FileWriter(file)) {
+      out.write(new Gson().toJson(writingReviewList));
+      System.out.printf("총 %d 개의 후기 데이터를 저장했습니다.\n", writingReviewList.size());
 
     } catch (IOException e) {
       System.out.println("파일 쓰기 중 오류 발생! - " + e.getMessage());
-
-    } finally {
-      try {
-        out.close();
-      } catch (IOException e) {
-      }
-
     }
   }
 }
