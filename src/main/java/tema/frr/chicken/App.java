@@ -9,7 +9,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.Date;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -36,8 +35,10 @@ import tema.frr.util.Prompt;
 public class App {
 
   static Scanner keyboard = new Scanner(System.in);
+
   static Deque<String> commandStack = new ArrayDeque<>();
   static Queue<String> commandQueue = new LinkedList<>();
+
   static LinkedList<Client> clientList = new LinkedList<>();
   static ArrayList<WritingReview> writingReviewList = new ArrayList<>();
 
@@ -134,21 +135,7 @@ public class App {
 
       while (true) {
         try {
-          String line = dataScan.nextLine();
-          String[] data = line.split(",");
-
-          Client client = new Client();
-
-          client.setId(data[0]);
-          client.setPwd(data[1]);
-          client.setName(data[2]);
-          client.setBirthday(Date.valueOf(data[3]));
-          client.setSex(data[4]);
-          client.setTel(data[5]);
-          client.setAddress(data[6]);
-          client.setSignUpDate(Date.valueOf(data[7]));
-
-          clientList.add(client);
+          clientList.add(Client.valueOf(dataScan.nextLine()));
           count++;
 
         } catch (Exception e) {
@@ -185,11 +172,7 @@ public class App {
 
       for (Client client : clientList) {
         // 수업 목록에서 수업 데이터를 꺼내 CSV 형식의 문자열로 만든다.
-        String line = String.format("%s,%s,%s,%s,%s,%s,%s,%s\n", client.getId(), client.getPwd(),
-            client.getName(), client.getBirthday(), client.getSex(), client.getTel(),
-            client.getAddress(), client.getSignUpDate());
-
-        out.write(line);
+        out.write(client.toCsvString() + "\n");
         count++;
       }
       System.out.printf("총 %d 개의 수업 데이터를 저장했습니다.\n", count);
@@ -219,21 +202,7 @@ public class App {
 
       while (true) {
         try {
-          String line = dataScan.nextLine();
-          String[] data = line.split(",");
-
-          WritingReview writingReview = new WritingReview();
-
-          writingReview.setCategory(data[0]);
-          writingReview.setStoreName(data[1]);
-          writingReview.setMenu(data[2]);
-          writingReview.setPrice(Integer.parseInt(data[3]));
-          writingReview.setStarQuality(Integer.parseInt(data[4]));
-          writingReview.setStarQuantity(Integer.parseInt(data[5]));
-          writingReview.setStarPrice(Integer.parseInt(data[6]));
-          writingReview.setReview(data[7]);
-
-          writingReviewList.add(writingReview);
+          writingReviewList.add(WritingReview.valueOf(dataScan.nextLine()));
           count++;
 
         } catch (Exception e) {
@@ -267,13 +236,7 @@ public class App {
       int count = 0;
 
       for (WritingReview writingReview : writingReviewList) {
-        String line = String.format("%s,%s,%s,%s,%d,%d,%d,%s\n", writingReview.getCategory(),
-            writingReview.getStoreName(), writingReview.getMenu(), writingReview.getPrice(),
-            writingReview.getStarQuality(), writingReview.getStarQuantity(),
-            writingReview.getStarPrice(), writingReview.getStarTotalSum(),
-            writingReview.getReview());
-
-        out.write(line);
+        out.write(writingReview.toCsvString() + "\n");
         count++;
       }
       System.out.printf("총 %d 개의 후기 데이터를 저장했습니다.\n", count);
