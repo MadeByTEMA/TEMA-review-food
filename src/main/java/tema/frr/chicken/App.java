@@ -4,22 +4,21 @@
 //
 package tema.frr.chicken;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.Date;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
-import com.google.gson.Gson;
 import tema.frr.chicken.domain.Client;
 import tema.frr.chicken.domain.WritingReview;
 import tema.frr.chicken.handler.ClientAddCommand;
@@ -126,10 +125,24 @@ public class App {
   }
 
   static void loadClientData() {
-    File file = new File("./client.json");
+    File file = new File("./client.data");
 
-    try (BufferedReader in = new BufferedReader(new FileReader(file))) {
-      clientList.addAll(Arrays.asList(new Gson().fromJson(in, Client[].class)));
+    try (DataInputStream in = new DataInputStream(new FileInputStream(file))) {
+
+      int size = in.readInt();
+      for (int i = 0; i < size; i++) {
+        Client client = new Client();
+        client.setId(in.readUTF());
+        client.setPwd(in.readUTF());
+        client.setName(in.readUTF());
+        client.setBirthday(Date.valueOf(in.readUTF()));
+        client.setSex(in.readUTF());
+        client.setTel(in.readUTF());
+        client.setAddress(in.readUTF());
+        client.setSignUpDate(Date.valueOf(in.readUTF()));
+
+        clientList.add(client);
+      }
 
       System.out.printf("총 %d 개의 회원 데이터를 로딩했습니다.\n", clientList.size());
     } catch (IOException e) {
@@ -138,10 +151,22 @@ public class App {
   }
 
   static void saveClientData() {
-    File file = new File("client.json");
+    File file = new File("client.data");
 
-    try (BufferedWriter out = new BufferedWriter(new FileWriter(file))) {
-      out.write(new Gson().toJson(clientList));
+    try (DataOutputStream out = new DataOutputStream(new FileOutputStream(file))) {
+      out.writeInt(clientList.size());
+
+      for (Client client : clientList) {
+        out.writeUTF(client.getId());
+        out.writeUTF(client.getPwd());
+        out.writeUTF(client.getName());
+        out.writeUTF(client.getBirthday().toString());
+        out.writeUTF(client.getSex());
+        out.writeUTF(client.getTel());
+        out.writeUTF(client.getAddress());
+        out.writeUTF(client.getSignUpDate().toString());
+      }
+
       System.out.printf("총 %d 개의 수업 데이터를 저장했습니다.\n", clientList.size());
 
     } catch (IOException e) {
@@ -153,8 +178,22 @@ public class App {
     File file = new File("./writingReview.json");
 
 
-    try (BufferedReader in = new BufferedReader(new FileReader(file))) {
-      writingReviewList.addAll(Arrays.asList(new Gson().fromJson(in, WritingReview[].class)));
+    try (DataInputStream in = new DataInputStream(new FileInputStream(file))) {
+
+      int size = in.readInt();
+      for (int i = 0; i < size; i++) {
+        WritingReview writingReview = new WritingReview();
+
+        writingReview.setCategory(in.readUTF());
+        writingReview.setStoreName(in.readUTF());
+        writingReview.setMenu(in.readUTF());
+        writingReview.setPrice(in.readInt());
+        writingReview.setStarQuality(in.readInt());
+        writingReview.setStarQuantity(in.readInt());
+        writingReview.setStarPrice(in.readInt());
+        writingReview.setReview(in.readUTF());
+        writingReviewList.add(writingReview);
+      }
 
       System.out.printf("총 %d 개의 후기 데이터를 로딩했습니다.\n", writingReviewList.size());
 
@@ -166,8 +205,21 @@ public class App {
   static void saveWritingReviewData() {
     File file = new File("./writingReview.json");
 
-    try (FileWriter out = new FileWriter(file)) {
-      out.write(new Gson().toJson(writingReviewList));
+    try (DataOutputStream out = new DataOutputStream(new FileOutputStream(file))) {
+      out.writeInt(writingReviewList.size());
+
+      for (WritingReview writingReview : writingReviewList) {
+        out.writeUTF(writingReview.getCategory());
+        out.writeUTF(writingReview.getStoreName());
+        out.writeUTF(writingReview.getMenu());
+        out.writeInt(writingReview.getPrice());
+        out.writeInt(writingReview.getStarQuality());
+        out.writeInt(writingReview.getStarQuantity());
+        out.writeInt(writingReview.getStarPrice());
+        out.writeInt(writingReview.getStarTotalSum());
+        out.writeUTF(writingReview.getReview());
+      }
+
       System.out.printf("총 %d 개의 후기 데이터를 저장했습니다.\n", writingReviewList.size());
 
     } catch (IOException e) {
