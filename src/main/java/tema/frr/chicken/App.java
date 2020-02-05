@@ -155,7 +155,7 @@ public class App {
           break;
         }
       }
-      System.out.printf("총 %d 개의 수업 데이터를 로딩했습니다.\n", count);
+      System.out.printf("총 %d 개의 회원 데이터를 로딩했습니다.\n", count);
     } catch (FileNotFoundException e) {
       System.out.println("파일 읽기 중 오류 발생! - " + e.getMessage());
     } finally {
@@ -176,20 +176,117 @@ public class App {
   static void saveClientData() {
     File file = new File("client.data");
 
+    FileWriter out = null;
+
+    try {
+      // 파일에 데이터를 저장할 때 사용할 도구를 준비한다.
+      out = new FileWriter(file);
+      int count = 0;
+
+      for (Client client : clientList) {
+        // 수업 목록에서 수업 데이터를 꺼내 CSV 형식의 문자열로 만든다.
+        String line = String.format("%s,%s,%s,%s,%s,%s,%s,%s\n", client.getId(), client.getPwd(),
+            client.getName(), client.getBirthday(), client.getSex(), client.getTel(),
+            client.getAddress(), client.getSignUpDate());
+
+        out.write(line);
+        count++;
+      }
+      System.out.printf("총 %d 개의 수업 데이터를 저장했습니다.\n", count);
+
+    } catch (IOException e) {
+      System.out.println("파일 쓰기 중 오류 발생! - " + e.getMessage());
+
+    } finally {
+      try {
+        out.close();
+      } catch (IOException e) {
+      }
+    }
+
   }
 
   static void loadWritingReviewData() {
-    File file = new File("./wrtingreview.csv");
+    File file = new File("./writingReview.csv");
 
-    FileWriter out = null;
+    FileReader in = null;
+    Scanner dataScan = null;
+
     try {
-      out = new FileWriter(file);
-    } catch (IOException e) {
-      System.out.println("파일 쓰기 중 오류 발생! - " + e.getMessage());
+      in = new FileReader(file);
+      dataScan = new Scanner(in);
+      int count = 0;
+
+      while (true) {
+        try {
+          String line = dataScan.nextLine();
+          String[] data = line.split(",");
+
+          WritingReview writingReview = new WritingReview();
+
+          writingReview.setCategory(data[0]);
+          writingReview.setStoreName(data[1]);
+          writingReview.setMenu(data[2]);
+          writingReview.setPrice(Integer.parseInt(data[3]));
+          writingReview.setStarQuality(Integer.parseInt(data[4]));
+          writingReview.setStarQuantity(Integer.parseInt(data[5]));
+          writingReview.setStarPrice(Integer.parseInt(data[6]));
+          writingReview.setReview(data[7]);
+
+          writingReviewList.add(writingReview);
+          count++;
+
+        } catch (Exception e) {
+          break;
+        }
+      }
+      System.out.printf("총 %d 개의 후기 데이터를 로딩했습니다.\n", count);
+    } catch (FileNotFoundException e) {
+      System.out.println("파일 읽기 중 오류 발생! - " + e.getMessage());
+    } finally {
+
+      try {
+        dataScan.close();
+      } catch (Exception e) {
+      }
+
+      try {
+        in.close();
+      } catch (Exception e) {
+      }
+
     }
   }
 
   static void saveWritingReviewData() {
+    File file = new File("./writingReview.csv");
+    FileWriter out = null;
 
+    try {
+      out = new FileWriter(file);
+      int count = 0;
+
+      for (WritingReview writingReview : writingReviewList) {
+        String line = String.format("%s,%s,%s,%s,%d,%d,%d,%s\n", writingReview.getCategory(),
+            writingReview.getStoreName(), writingReview.getMenu(), writingReview.getPrice(),
+            writingReview.getStarQuality(), writingReview.getStarQuantity(),
+            writingReview.getStarPrice(), writingReview.getStarTotalSum(),
+            writingReview.getReview());
+
+        out.write(line);
+        count++;
+      }
+      System.out.printf("총 %d 개의 후기 데이터를 저장했습니다.\n", count);
+
+    } catch (IOException e) {
+      System.out.println("파일 쓰기 중 오류 발생! - " + e.getMessage());
+
+    } finally {
+      try {
+        out.close();
+      } catch (IOException e) {
+      }
+
+    }
   }
 }
