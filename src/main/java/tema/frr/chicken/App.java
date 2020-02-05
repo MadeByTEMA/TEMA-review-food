@@ -4,6 +4,8 @@
 //
 package tema.frr.chicken;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -126,8 +128,7 @@ public class App {
   static void loadClientData() {
     File file = new File("./client.json");
 
-    try (FileReader in = new FileReader(file)) {
-
+    try (BufferedReader in = new BufferedReader(new FileReader(file))) {
       clientList.addAll(Arrays.asList(new Gson().fromJson(in, Client[].class)));
 
       System.out.printf("총 %d 개의 회원 데이터를 로딩했습니다.\n", clientList.size());
@@ -139,7 +140,7 @@ public class App {
   static void saveClientData() {
     File file = new File("client.json");
 
-    try (FileWriter out = new FileWriter(file)) {
+    try (BufferedWriter out = new BufferedWriter(new FileWriter(file))) {
       out.write(new Gson().toJson(clientList));
       System.out.printf("총 %d 개의 수업 데이터를 저장했습니다.\n", clientList.size());
 
@@ -152,7 +153,7 @@ public class App {
     File file = new File("./writingReview.json");
 
 
-    try (FileReader in = new FileReader(file)) {
+    try (BufferedReader in = new BufferedReader(new FileReader(file))) {
       writingReviewList.addAll(Arrays.asList(new Gson().fromJson(in, WritingReview[].class)));
 
       System.out.printf("총 %d 개의 후기 데이터를 로딩했습니다.\n", writingReviewList.size());
