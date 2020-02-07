@@ -1,6 +1,10 @@
 package tema.frr.chicken.domain;
 
-public class WritingReview {
+import java.io.Serializable;
+
+public class WritingReview implements Serializable {
+
+  private static final long serialVersionUID = 202002007L;
 
   @Override
   public int hashCode() {

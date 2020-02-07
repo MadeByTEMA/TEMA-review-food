@@ -1,8 +1,11 @@
 package tema.frr.chicken.domain;
 
+import java.io.Serializable;
 import java.sql.Date;
 
-public class Client {
+public class Client implements Serializable {
+
+  private static final long serialVersionUID = 20200207L;
 
   @Override
   public int hashCode() {

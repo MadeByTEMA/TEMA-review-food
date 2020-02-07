@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.sql.Date;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -127,7 +129,8 @@ public class App {
   static void loadClientData() {
     File file = new File("./client.data");
 
-    try (DataInputStream in = new DataInputStream(new FileInputStream(file))) {
+    try (ObjectInputStream in =
+        new ObjectInputStream(new DataInputStream(new FileInputStream(file)))) {
 
       int size = in.readInt();
       for (int i = 0; i < size; i++) {
@@ -153,7 +156,8 @@ public class App {
   static void saveClientData() {
     File file = new File("client.data");
 
-    try (DataOutputStream out = new DataOutputStream(new FileOutputStream(file))) {
+    try (ObjectOutputStream out =
+        new ObjectOutputStream(new DataOutputStream(new FileOutputStream(file)))) {
       out.writeInt(clientList.size());
 
       for (Client client : clientList) {
@@ -178,7 +182,8 @@ public class App {
     File file = new File("./writingReview.json");
 
 
-    try (DataInputStream in = new DataInputStream(new FileInputStream(file))) {
+    try (ObjectInputStream in =
+        new ObjectInputStream(new DataInputStream(new FileInputStream(file)))) {
 
       int size = in.readInt();
       for (int i = 0; i < size; i++) {
@@ -205,7 +210,8 @@ public class App {
   static void saveWritingReviewData() {
     File file = new File("./writingReview.json");
 
-    try (DataOutputStream out = new DataOutputStream(new FileOutputStream(file))) {
+    try (ObjectOutputStream out =
+        new ObjectOutputStream(new DataOutputStream(new FileOutputStream(file)))) {
       out.writeInt(writingReviewList.size());
 
       for (WritingReview writingReview : writingReviewList) {
