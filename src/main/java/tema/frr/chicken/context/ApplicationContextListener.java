@@ -1,9 +1,11 @@
-package tema.frr.chicken;
+package tema.frr.chicken.context;
+
+import java.util.Map;
 
 public interface ApplicationContextListener {
 
-  void contextInitialized();
+  public void contextInitialized(Map<String, Object> context);
 
-  void contextDestroyed();
+  public void contextDestroyed(Map<String, Object> context);
 
 }
