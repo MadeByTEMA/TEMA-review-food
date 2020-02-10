@@ -17,10 +17,13 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
+import java.util.Set;
+import tema.frr.chicken.context.ApplicationContextListener;
 import tema.frr.chicken.domain.Client;
 import tema.frr.chicken.domain.WritingReview;
 import tema.frr.chicken.handler.ClientAddCommand;
@@ -38,15 +41,17 @@ import tema.frr.util.Prompt;
 
 public class App {
 
-  static Scanner keyboard = new Scanner(System.in);
+  Scanner keyboard = new Scanner(System.in);
 
-  static Deque<String> commandStack = new ArrayDeque<>();
-  static Queue<String> commandQueue = new LinkedList<>();
+  Deque<String> commandStack = new ArrayDeque<>();
+  Queue<String> commandQueue = new LinkedList<>();
 
-  static LinkedList<Client> clientList = new LinkedList<>();
-  static ArrayList<WritingReview> writingReviewList = new ArrayList<>();
+  Set<ApplicationContextListener> listeners = new HashSet<>();
 
-  public static void main(String[] args) {
+  LinkedList<Client> clientList = new LinkedList<>();
+  ArrayList<WritingReview> writingReviewList = new ArrayList<>();
+
+  public void service() {
 
     loadClientData();
     loadWritingReviewData();
@@ -111,7 +116,7 @@ public class App {
 
   }
 
-  static void printCommandHistory(Iterator<String> iterator) {
+  void printCommandHistory(Iterator<String> iterator) {
     int count = 0;
     while (!iterator.hasNext()) {
       System.out.println(iterator.next());
@@ -126,7 +131,7 @@ public class App {
     }
   }
 
-  static void loadClientData() {
+  void loadClientData() {
     File file = new File("./client.data");
 
     try (ObjectInputStream in =
@@ -153,7 +158,7 @@ public class App {
     }
   }
 
-  static void saveClientData() {
+  void saveClientData() {
     File file = new File("client.data");
 
     try (ObjectOutputStream out =
@@ -178,7 +183,7 @@ public class App {
     }
   }
 
-  static void loadWritingReviewData() {
+  void loadWritingReviewData() {
     File file = new File("./writingReview.json");
 
 
@@ -207,7 +212,7 @@ public class App {
     }
   }
 
-  static void saveWritingReviewData() {
+  void saveWritingReviewData() {
     File file = new File("./writingReview.json");
 
     try (ObjectOutputStream out =
@@ -230,6 +235,33 @@ public class App {
 
     } catch (IOException e) {
       System.out.println("파일 쓰기 중 오류 발생! - " + e.getMessage());
+    }
+  }
+
+  public static void main(String[] args) {
+
+    App app = new App();
+    app.service();
+
+  }
+
+  public void addApplicationContextListener(ApplicationContextListener listener) {
+    listeners.add(listener);
+  }
+
+  public void removeApplicationContextListener(ApplicationContextListener listener) {
+    listeners.remove(listener);
+  }
+
+  private void notifyApplicationInitialized() {
+    for (ApplicationContextListener listener : listeners) {
+      listener.contextInitialized();
+    }
+  }
+
+  private void notifyApplicationDestroyed() {
+    for (ApplicationContextListener listener : listeners) {
+      listener.contextDestroyed();
     }
   }
 }
