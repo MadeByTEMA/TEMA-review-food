@@ -10,5 +10,8 @@ public class ClientApp {
 
   public static void main(String[] args) {
 
+    ClientApp app = new ClientApp();
+    app.service();
+
   }
 }
