@@ -12,7 +12,7 @@
 - App.java 변경 (App.java.01)
   - DataLoaderListener 객체를 생성한 후 App 객체에 등록한다.
   - 실행하여 옵저버가 동작하는 지를 확인한다.
-    
+     
 
 3) DataLoaderListener 옵저버에서 데이터를 로딩하고 저장하게 하라.
 
