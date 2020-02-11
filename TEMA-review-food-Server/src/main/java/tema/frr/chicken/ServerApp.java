@@ -4,6 +4,9 @@
 //
 package tema.frr.chicken;
 
+import java.io.PrintStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
@@ -123,11 +126,45 @@ public class ServerApp {
   }
 
   public static void main(String[] args) {
+    System.out.println("먹어봐따 ( Try it ) Server 시스템입니다.");
 
-    ServerApp app = new ServerApp();
-    app.addApplicationContextListener(new DataLoaderListener());
-    app.service();
+    try (ServerSocket serverSocket = new ServerSocket(8888)) {
 
+      System.out.println("Client 연결 대기중");
+
+      while (true) {
+        Socket socket = serverSocket.accept();
+        System.out.println("Client 연결 되었음!");
+
+        processRequest(socket);
+
+      }
+
+    } catch (Exception e) {
+      System.out.println("서버 준비 중 오류 발생!");
+      return;
+    }
+    // ServerApp app = new ServerApp();
+    // app.addApplicationContextListener(new DataLoaderListener());
+    // app.service();
+  }
+
+
+
+  static void processRequest(Socket clientSocket) {
+    try (Socket socket = clientSocket;
+        Scanner in = new Scanner(socket.getInputStream());
+        PrintStream out = new PrintStream(socket.getOutputStream())) {
+
+      String clientId = in.nextLine();
+      String clientPwd = in.nextLine();
+      out.print("먹어봐따 ( Try it )에 오신걸 환영합니다.");
+
+
+    } catch (Exception e) {
+      System.out.println("예외 발생:");
+      e.printStackTrace();
+    }
   }
 
   public void addApplicationContextListener(ApplicationContextListener listener) {
