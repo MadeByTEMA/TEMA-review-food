@@ -4,14 +4,14 @@
 //
 package tema.frr.chicken;
 
-import java.io.PrintStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.Set;
 import tema.frr.chicken.context.ApplicationContextListener;
 import tema.frr.chicken.domain.Client;
@@ -43,13 +43,28 @@ public class ServerApp {
     }
   }
 
-  @SuppressWarnings("unchecked")
   public void service() {
 
     notifyApplicationInitialized();
 
-    List<Client> clientList = (List<Client>) context.get("clientList");
-    List<WritingReview> writingReviewList = (List<WritingReview>) context.get("writingReviewList");
+    try (ServerSocket serverSocket = new ServerSocket(8888)) {
+
+      System.out.println("Client 연결 대기중");
+
+      while (true) {
+        Socket socket = serverSocket.accept();
+        System.out.println("Client 연결 되었음!");
+
+        if (processRequest(socket) == 9) {
+          break;
+        }
+
+      }
+
+    } catch (Exception e) {
+      System.out.println("서버 준비 중 오류 발생!");
+      return;
+    }
 
     notifyApplicationDestroyed();
 
@@ -62,41 +77,50 @@ public class ServerApp {
     // ServerApp app = new ServerApp();
     // app.addApplicationContextListener(new DataLoaderListener());
     // app.service();
-
-    try (ServerSocket serverSocket = new ServerSocket(8888)) {
-
-      System.out.println("Client 연결 대기중");
-
-      while (true) {
-        Socket socket = serverSocket.accept();
-        System.out.println("Client 연결 되었음!");
-
-        processRequest(socket);
-
-      }
-
-    } catch (Exception e) {
-      System.out.println("서버 준비 중 오류 발생!");
-      return;
-    }
-
   }
 
 
 
-  static void processRequest(Socket clientSocket) {
+  int processRequest(Socket clientSocket) {
     try (Socket socket = clientSocket;
-        Scanner in = new Scanner(socket.getInputStream());
-        PrintStream out = new PrintStream(socket.getOutputStream())) {
+        ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
 
-      String clientId = in.nextLine();
-      String clientPwd = in.nextLine();
-      out.print("먹어봐따 ( Try it )에 오신걸 환영합니다.");
+      System.out.println("통신을 위한 입출력 스트림을 준비하였음!");
 
+      while (true) {
+        String clientId = in.readUTF();
+        String clientPwd = in.readUTF();
+        out.writeUTF("먹어봐따 ( Try it )에 오신걸 환영합니다.");
+
+        String request = in.readUTF();
+        System.out.println("클라이언트가 보낸 메시지를 수신하였음!");
+
+        if (request.equals("quit")) {
+          out.writeUTF("OK");
+          out.flush();
+          break;
+        }
+
+        if (request.equals("/server/stop")) {
+          out.writeUTF("OK");
+          out.flush();
+          return 9;
+        }
+
+        List<Client> clientList = (List<Client>) context.get("clientList");
+        List<WritingReview> writingReviewList =
+            (List<WritingReview>) context.get("writingReviewList");
+
+
+      }
+      System.out.println();
+      return 0;
 
     } catch (Exception e) {
       System.out.println("예외 발생:");
       e.printStackTrace();
+      return -1;
     }
   }
 

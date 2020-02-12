@@ -1,18 +1,20 @@
 package tema.frr.chicken.handler;
 
-import java.util.List;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import tema.frr.chicken.domain.WritingReview;
-import tema.frr.util.Prompt;
+import tema.frr.chicken.util.Prompt;
 
 public class WritingReviewAddCommand implements Command {
 
-  List<WritingReview> writingReviewList;
-
+  ObjectOutputStream out;
+  ObjectInputStream in;
   Prompt prompt;
 
-  public WritingReviewAddCommand(Prompt prompt, List<WritingReview> list) {
+  public WritingReviewAddCommand(ObjectOutputStream out, ObjectInputStream in, Prompt prompt) {
+    this.out = out;
+    this.in = in;
     this.prompt = prompt;
-    writingReviewList = list;
   }
 
   @Override
@@ -26,7 +28,22 @@ public class WritingReviewAddCommand implements Command {
     r.setStarQuantity(prompt.inputInt("양 별점을 입력해주세요. "));
     r.setReview(prompt.inputString("후기를 입력해주세요. "));
 
-    writingReviewList.add(r);
+    try {
+      out.writeUTF("/writingReview/add");
+      out.writeObject(r);
+      out.flush();
+
+      if (in.readUTF().toString().equals("FAIL")) {
+        System.out.println(in.readUTF());
+        return;
+      } else {
+        System.out.println("저장하였습니다.");
+      }
+
+    } catch (Exception e) {
+      System.out.println("통신 오류 발생!");
+    }
+
 
     System.out.println("저장하였습니다.");
   }

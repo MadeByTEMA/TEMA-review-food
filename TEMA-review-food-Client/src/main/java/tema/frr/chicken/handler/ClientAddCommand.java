@@ -1,19 +1,21 @@
 package tema.frr.chicken.handler;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.sql.Date;
-import java.util.List;
 import tema.frr.chicken.domain.Client;
-import tema.frr.util.Prompt;
+import tema.frr.chicken.util.Prompt;
 
 public class ClientAddCommand implements Command {
 
-  List<Client> clientList;
-
+  ObjectOutputStream out;
+  ObjectInputStream in;
   Prompt prompt;
 
-  public ClientAddCommand(Prompt prompt, List<Client> list) {
+  public ClientAddCommand(ObjectOutputStream out, ObjectInputStream in, Prompt prompt) {
+    this.out = out;
+    this.in = in;
     this.prompt = prompt;
-    clientList = list;
   }
 
   @Override
@@ -29,7 +31,22 @@ public class ClientAddCommand implements Command {
     c.setAddress(prompt.inputString("주소를 입력해주세요. "));
     c.setSignUpDate(new Date(System.currentTimeMillis()));
 
-    clientList.add(c);
+    try {
+      out.writeUTF("/client/add");
+      out.writeObject(c);
+      out.flush();
+
+      if (in.readUTF().toString().equals("FAIL")) {
+        System.out.println(in.readUTF());
+        return;
+      } else {
+        System.out.println("저장하였습니다.");
+      }
+
+    } catch (Exception e) {
+      System.out.println("통신 오류 발생!");
+    }
+
 
     System.out.println("저장하였습니다.");
   }

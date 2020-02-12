@@ -1,6 +1,7 @@
 package tema.frr.chicken;
 
-import java.io.PrintStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -28,29 +29,50 @@ public class ClientApp {
   Prompt prompt = new Prompt(keyboard);
 
   public void service() {
+    try (Scanner keyScan = new Scanner(System.in);
+        Socket socket = new Socket("localhost", 8888);
+        ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+
+      System.out.println("서버와 연결을 되었음!");
+
+      out.writeUTF(prompt.inputString("ID : "));
+      out.writeUTF(prompt.inputString("PWD : "));
+      System.out.println(in.readUTF());
+
+      processCommand(out, in);
+
+      System.out.println("서버와 연결을 끊었음!");
+
+    } catch (Exception e) {
+      System.out.println("서버 연결 중 오류 발생!");
+      e.printStackTrace();
+    }
+
+    keyboard.close();
+  }
+
+  public void processCommand(ObjectOutputStream out, ObjectInputStream in) {
 
     Deque<String> commandStack = new ArrayDeque<>();
     Queue<String> commandQueue = new LinkedList<>();
 
     HashMap<String, Command> commandMap = new HashMap<>();
-    String command;
 
-    commandMap.put("/client/add", new ClientAddCommand(prompt, clientList));
-    commandMap.put("/client/list", new ClientListCommand(clientList));
-    commandMap.put("/client/detail", new ClientDetailCommand(prompt, clientList));
-    commandMap.put("/client/delete", new ClientDeleteCommand(prompt, clientList));
-    commandMap.put("/client/update", new ClientUpdateCommand(prompt, clientList));
+    commandMap.put("/client/add", new ClientAddCommand(out, in, prompt));
+    commandMap.put("/client/list", new ClientListCommand(out, in));
+    commandMap.put("/client/detail", new ClientDetailCommand(out, in, prompt));
+    commandMap.put("/client/delete", new ClientDeleteCommand(out, in, prompt));
+    commandMap.put("/client/update", new ClientUpdateCommand(out, in, prompt));
 
-    commandMap.put("/writingReview/add", new WritingReviewAddCommand(prompt, writingReviewList));
-    commandMap.put("/writingReview/list", new WritingReviewListCommand(writingReviewList));
-    commandMap.put("/writingReview/detail",
-        new WritingReviewDetailCommand(prompt, writingReviewList));
-    commandMap.put("/writingReview/delete",
-        new WritingReviewDeleteCommand(prompt, writingReviewList));
-    commandMap.put("/writingReview/update",
-        new WritingReviewUpdateCommand(prompt, writingReviewList));
+    commandMap.put("/writingReview/add", new WritingReviewAddCommand(out, in, prompt));
+    commandMap.put("/writingReview/list", new WritingReviewListCommand(out, in));
+    commandMap.put("/writingReview/detail", new WritingReviewDetailCommand(out, in, prompt));
+    commandMap.put("/writingReview/delete", new WritingReviewDeleteCommand(out, in, prompt));
+    commandMap.put("/writingReview/update", new WritingReviewUpdateCommand(out, in, prompt));
 
     while (true) {
+      String command;
       command = prompt.inputString("명령> ");
 
       if (command.length() == 0)
@@ -84,7 +106,6 @@ public class ClientApp {
     }
     keyboard.close();
 
-
   }
 
   void printCommandHistory(Iterator<String> iterator) {
@@ -105,25 +126,10 @@ public class ClientApp {
   public static void main(String[] args) {
     System.out.println("먹어봐따 ( Try it ) Client 시스템입니다.");
 
-    try (Scanner keyScan = new Scanner(System.in);
-        Socket socket = new Socket("localhost", 8888);
-        Scanner in = new Scanner(socket.getInputStream());
-        PrintStream out = new PrintStream(socket.getOutputStream())) {
-      System.out.println("서버 연결 대기중!");
-
-      System.out.print("ID : ");
-      out.println(keyScan.nextLine());
-      System.out.print("PWD : ");
-      out.println(keyScan.nextLine());
-      System.out.println(in.nextLine());
-
-    } catch (Exception e) {
-      System.out.println("서버 연결 중 오류 발생!");
-      return;
-    }
-
-    // ClientApp app = new ClientApp();
-    // app.service();
+    ClientApp app = new ClientApp();
+    app.service();
 
   }
+
+
 }
