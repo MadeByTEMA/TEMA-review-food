@@ -174,4 +174,5 @@ public class WritingReview implements Serializable {
         this.getMenu(), this.getPrice(), this.getStarQuality(), this.getStarQuantity(),
         this.getStarPrice(), this.getStarTotalSum(), this.getReview());
   }
+
 }

@@ -1,46 +1,45 @@
 package tema.frr.chicken.handler;
 
-import java.util.List;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import tema.frr.chicken.domain.Client;
-import tema.frr.util.Prompt;
+import tema.frr.chicken.util.Prompt;
 
 public class ClientDetailCommand implements Command {
 
-  List<Client> clientList;
-
+  ObjectOutputStream out;
+  ObjectInputStream in;
   Prompt prompt;
 
-  public ClientDetailCommand(Prompt prompt, List<Client> list) {
+  public ClientDetailCommand(ObjectOutputStream out, ObjectInputStream in, Prompt prompt) {
+    this.out = out;
+    this.in = in;
     this.prompt = prompt;
-    clientList = list;
   }
 
   @Override
   public void execute() {
-    int index = indexOfClient(prompt.inputString("ID? "));
+    try {
+      out.writeUTF("/client/detail");
+      out.writeUTF((prompt.inputString("ID? ")));
+      out.flush();
 
-    if (index == -1) {
-      System.out.println("해당 고객을 찾을 수 없습니다.");
-      return;
-    }
 
-    Client client = this.clientList.get(index);
-
-    System.out.printf("이름 : %s\n", client.getName());
-    System.out.printf("생일 : %s\n", client.getBirthday());
-    System.out.printf("성별 : %s\n", client.getSex());
-    System.out.printf("전화번호 : %s\n", client.getTel());
-    System.out.printf("주소 : %s\n", client.getAddress());
-    System.out.printf("가입일 : %s\n", client.getSignUpDate());
-  }
-
-  private int indexOfClient(String id) {
-    for (int i = 0; i < clientList.size(); i++) {
-      Client temp = this.clientList.get(i);
-      if (id.equals(temp.getId())) {
-        return i;
+      if (in.readUTF().toString().equals("FAIL")) {
+        System.out.println(in.readUTF());
+        return;
       }
+
+      Client client = (Client) in.readObject();
+
+      System.out.printf("이름 : %s\n", client.getName());
+      System.out.printf("생일 : %s\n", client.getBirthday());
+      System.out.printf("성별 : %s\n", client.getSex());
+      System.out.printf("전화번호 : %s\n", client.getTel());
+      System.out.printf("주소 : %s\n", client.getAddress());
+      System.out.printf("가입일 : %s\n", client.getSignUpDate());
+    } catch (Exception e) {
+      System.out.println("명령 실행 중 오류 발생!");
     }
-    return -1;
   }
 }

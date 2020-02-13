@@ -15,11 +15,12 @@ public class WritingReviewListCommand implements Command {
     this.in = in;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void execute() {
 
     try {
-      out.writeUTF("/client/list");
+      out.writeUTF("/writingReview/list");
       out.flush();
 
       if (in.readUTF().toString().equals("FAIL")) {

@@ -18,14 +18,18 @@ public class ClientDeleteCommand implements Command {
 
   @Override
   public void execute() {
-    out.writeInt(prompt.inputInt("ID? "));
+    try {
+      out.writeUTF("/client/delete");
+      out.writeUTF(prompt.inputString("ID? "));
+      out.flush();
 
-    if (index == -1) {
-      System.out.println("해당 고객을 찾을 수 없습니다.");
-      return;
-    } else {
-      this.clientList.remove(index);
+      if (in.readUTF().toString().equals("FAIL")) {
+        System.out.println(in.readUTF());
+        return;
+      }
       System.out.println("고객을 삭제했습니다.");
+    } catch (Exception e) {
+      System.out.println("명령 실행 중 오류 발생!");
     }
   }
 }
