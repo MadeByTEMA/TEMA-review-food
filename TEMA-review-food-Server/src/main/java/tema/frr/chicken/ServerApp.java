@@ -4,6 +4,7 @@
 //
 package tema.frr.chicken;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
@@ -22,6 +23,8 @@ public class ServerApp {
   Set<ApplicationContextListener> listeners = new HashSet<>();
   Map<String, Object> context = new HashMap<>();
 
+  List<Client> clients;
+  List<WritingReview> writingReviews;
 
   public void addApplicationContextListener(ApplicationContextListener listener) {
     listeners.add(listener);
@@ -43,9 +46,13 @@ public class ServerApp {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public void service() {
 
     notifyApplicationInitialized();
+
+    clients = (List<Client>) context.get("clientList");
+    writingReviews = (List<WritingReview>) context.get("writingReviewList");
 
     try (ServerSocket serverSocket = new ServerSocket(8888)) {
 
@@ -87,223 +94,36 @@ public class ServerApp {
         System.out.println("클라이언트가 보낸 메시지를 수신하였음!");
 
         if (request.equals("quit")) {
-          out.writeUTF("OK");
-          out.flush();
+          quit(out);
           break;
         }
 
         if (request.equals("/server/stop")) {
-          out.writeUTF("OK");
-          out.flush();
+          quit(out);
           return 9;
         }
 
-        List<Client> clients = (List<Client>) context.get("clientList");
-        List<WritingReview> writingReviews = (List<WritingReview>) context.get("writingReviewList");
 
         if (request.equals("/client/list")) {
-          out.writeUTF("OK");
-          out.reset();
-          out.writeObject(clients);
+          listClient(out);
         } else if (request.equals("/client/add")) {
-          try {
-            Client client = (Client) in.readObject();
-
-            int i = 0;
-            for (; i < clients.size(); i++) {
-              if (clients.get(i).getId() == client.getId()) {
-                break;
-              }
-            }
-
-            if (i == clients.size()) { // 같은 번호의 게시물이 없다면,
-              clients.add(client); // 새 게시물을 등록한다.
-              out.writeUTF("OK");
-
-            } else {
-              out.writeUTF("FAIL");
-              out.writeUTF("같은 ID의 고객이 있습니다.");
-            }
-
-          } catch (Exception e) {
-            out.writeUTF("FAIL");
-            out.writeUTF(e.getMessage());
-          }
+          addClient(in, out);
         } else if (request.equals("/client/detail")) {
-          try {
-            String id = in.readUTF();
-
-            Client client = null;
-            for (Client b : clients) {
-              if (b.getId() == id) {
-                client = b;
-                break;
-              }
-            }
-
-            if (client != null) {
-              out.writeUTF("OK");
-              out.writeObject(client);
-
-            } else {
-              out.writeUTF("FAIL");
-              out.writeUTF("해당 ID의 고객이 없습니다.");
-            }
-
-          } catch (Exception e) {
-            out.writeUTF("FAIL");
-            out.writeUTF(e.getMessage());
-          }
+          detailClient(in, out);
         } else if (request.equals("/client/update")) {
-          try {
-            Client client = (Client) in.readObject();
-
-            int index = -1;
-            for (int i = 0; i < clients.size(); i++) {
-              if (clients.get(i).getId() == client.getId()) {
-                index = i;
-                break;
-              }
-            }
-
-            if (index != -1) {
-              clients.set(index, client);
-              out.writeUTF("OK");
-            } else {
-              out.writeUTF("FAIL");
-              out.writeUTF("해당 ID의 고객이 없습니다.");
-            }
-
-          } catch (Exception e) {
-            out.writeUTF("FAIL");
-            out.writeUTF(e.getMessage());
-          }
+          updateClient(in, out);
         } else if (request.equals("/client/delete")) {
-          try {
-            String id = in.readUTF();
-
-            int index = -1;
-            for (int i = 0; i < clients.size(); i++) {
-              if (clients.get(i).getId() == id) {
-                index = i;
-                break;
-              }
-            }
-
-            if (index != -1) { // 삭제하려는 번호의 게시물을 찾았다면
-              clients.remove(index);
-              out.writeUTF("OK");
-
-            } else {
-              out.writeUTF("FAIL");
-              out.writeUTF("해당 ID의 고객이 없습니다.");
-            }
-          } catch (Exception e) {
-            out.writeUTF("FAIL");
-            out.writeUTF(e.getMessage());
-          }
+          deleteClient(in, out);
         } else if (request.equals("/writingReview/list")) {
-          out.writeUTF("OK");
-          out.reset();
-          out.writeObject(writingReviews);
+          listWritingReview(out);
         } else if (request.equals("/writingReview/add")) {
-          try {
-            WritingReview writingReview = (WritingReview) in.readObject();
-
-            int i = 0;
-            for (; i < writingReviews.size(); i++) {
-              if (writingReviews.get(i).getStoreName() == writingReview.getStoreName()) {
-                break;
-              }
-            }
-
-            if (i == writingReviews.size()) { // 같은 번호의 게시물이 없다면,
-              writingReviews.add(writingReview); // 새 게시물을 등록한다.
-              out.writeUTF("OK");
-
-            } else {
-              out.writeUTF("FAIL");
-              out.writeUTF("같은 게시물이 있습니다.");
-            }
-
-          } catch (Exception e) {
-            out.writeUTF("FAIL");
-            out.writeUTF(e.getMessage());
-          }
+          addWritingReview(in, out);
         } else if (request.equals("/writingReview/detail")) {
-          try {
-            String storeName = in.readUTF();
-
-            WritingReview writingReview = null;
-            for (WritingReview b : writingReviews) {
-              if (b.getStoreName() == storeName) {
-                writingReview = b;
-                break;
-              }
-            }
-
-            if (writingReview != null) {
-              out.writeUTF("OK");
-              out.writeObject(writingReview);
-
-            } else {
-              out.writeUTF("FAIL");
-              out.writeUTF("해당 후기가 없습니다.");
-            }
-
-          } catch (Exception e) {
-            out.writeUTF("FAIL");
-            out.writeUTF(e.getMessage());
-          }
+          detailWritingReview(in, out);
         } else if (request.equals("/writingReview/update")) {
-          try {
-            WritingReview writingReview = (WritingReview) in.readObject();
-
-            int index = -1;
-            for (int i = 0; i < writingReviews.size(); i++) {
-              if (writingReviews.get(i).getStoreName() == writingReview.getStoreName()) {
-                index = i;
-                break;
-              }
-            }
-
-            if (index != -1) {
-              writingReviews.set(index, writingReview);
-              out.writeUTF("OK");
-            } else {
-              out.writeUTF("FAIL");
-              out.writeUTF("해당 후기가 없습니다.");
-            }
-
-          } catch (Exception e) {
-            out.writeUTF("FAIL");
-            out.writeUTF(e.getMessage());
-          }
+          updateWritingReview(in, out);
         } else if (request.equals("/writingReview/delete")) {
-          try {
-            String storeName = in.readUTF();
-
-            int index = -1;
-            for (int i = 0; i < writingReviews.size(); i++) {
-              if (writingReviews.get(i).getStoreName() == storeName) {
-                index = i;
-                break;
-              }
-            }
-
-            if (index != -1) { // 삭제하려는 번호의 게시물을 찾았다면
-              writingReviews.remove(index);
-              out.writeUTF("OK");
-
-            } else {
-              out.writeUTF("FAIL");
-              out.writeUTF("해당 후기가 없습니다.");
-            }
-          } catch (Exception e) {
-            out.writeUTF("FAIL");
-            out.writeUTF(e.getMessage());
-          }
-
+          deleteWritingReview(in, out);
         } else {
           out.writeUTF("FAIL");
           out.writeUTF("요청한 명령을 처리할 수 없습니다.");
@@ -320,6 +140,236 @@ public class ServerApp {
       e.printStackTrace();
       return -1;
     }
+  }
+
+  private void quit(ObjectOutputStream out) throws IOException {
+    out.writeUTF("OK");
+    out.flush();
+  }
+
+  private void deleteWritingReview(ObjectInputStream in, ObjectOutputStream out)
+      throws IOException {
+    try {
+      String storeName = in.readUTF();
+
+      int index = -1;
+      for (int i = 0; i < writingReviews.size(); i++) {
+        if (writingReviews.get(i).getStoreName() == storeName) {
+          index = i;
+          break;
+        }
+      }
+
+      if (index != -1) { // 삭제하려는 번호의 게시물을 찾았다면
+        writingReviews.remove(index);
+        out.writeUTF("OK");
+
+      } else {
+        out.writeUTF("FAIL");
+        out.writeUTF("해당 후기가 없습니다.");
+      }
+    } catch (Exception e) {
+      out.writeUTF("FAIL");
+      out.writeUTF(e.getMessage());
+    }
+  }
+
+  private void updateWritingReview(ObjectInputStream in, ObjectOutputStream out)
+      throws IOException {
+    try {
+      WritingReview writingReview = (WritingReview) in.readObject();
+
+      int index = -1;
+      for (int i = 0; i < writingReviews.size(); i++) {
+        if (writingReviews.get(i).getStoreName() == writingReview.getStoreName()) {
+          index = i;
+          break;
+        }
+      }
+
+      if (index != -1) {
+        writingReviews.set(index, writingReview);
+        out.writeUTF("OK");
+      } else {
+        out.writeUTF("FAIL");
+        out.writeUTF("해당 후기가 없습니다.");
+      }
+
+    } catch (Exception e) {
+      out.writeUTF("FAIL");
+      out.writeUTF(e.getMessage());
+    }
+  }
+
+  private void detailWritingReview(ObjectInputStream in, ObjectOutputStream out)
+      throws IOException {
+    try {
+      String storeName = in.readUTF();
+
+      WritingReview writingReview = null;
+      for (WritingReview b : writingReviews) {
+        if (b.getStoreName() == storeName) {
+          writingReview = b;
+          break;
+        }
+      }
+
+      if (writingReview != null) {
+        out.writeUTF("OK");
+        out.writeObject(writingReview);
+
+      } else {
+        out.writeUTF("FAIL");
+        out.writeUTF("해당 후기가 없습니다.");
+      }
+
+    } catch (Exception e) {
+      out.writeUTF("FAIL");
+      out.writeUTF(e.getMessage());
+    }
+  }
+
+  private void addWritingReview(ObjectInputStream in, ObjectOutputStream out) throws IOException {
+    try {
+      WritingReview writingReview = (WritingReview) in.readObject();
+
+      int i = 0;
+      for (; i < writingReviews.size(); i++) {
+        if (writingReviews.get(i).getStoreName() == writingReview.getStoreName()) {
+          break;
+        }
+      }
+
+      if (i == writingReviews.size()) { // 같은 번호의 게시물이 없다면,
+        writingReviews.add(writingReview); // 새 게시물을 등록한다.
+        out.writeUTF("OK");
+
+      } else {
+        out.writeUTF("FAIL");
+        out.writeUTF("같은 게시물이 있습니다.");
+      }
+
+    } catch (Exception e) {
+      out.writeUTF("FAIL");
+      out.writeUTF(e.getMessage());
+    }
+  }
+
+  private void listWritingReview(ObjectOutputStream out) throws IOException {
+    out.writeUTF("OK");
+    out.reset();
+    out.writeObject(writingReviews);
+  }
+
+  private void deleteClient(ObjectInputStream in, ObjectOutputStream out) throws IOException {
+    try {
+      String id = in.readUTF();
+
+      int index = -1;
+      for (int i = 0; i < clients.size(); i++) {
+        if (clients.get(i).getId() == id) {
+          index = i;
+          break;
+        }
+      }
+
+      if (index != -1) { // 삭제하려는 번호의 게시물을 찾았다면
+        clients.remove(index);
+        out.writeUTF("OK");
+
+      } else {
+        out.writeUTF("FAIL");
+        out.writeUTF("해당 ID의 고객이 없습니다.");
+      }
+    } catch (Exception e) {
+      out.writeUTF("FAIL");
+      out.writeUTF(e.getMessage());
+    }
+  }
+
+  private void updateClient(ObjectInputStream in, ObjectOutputStream out) throws IOException {
+    try {
+      Client client = (Client) in.readObject();
+
+      int index = -1;
+      for (int i = 0; i < clients.size(); i++) {
+        if (clients.get(i).getId() == client.getId()) {
+          index = i;
+          break;
+        }
+      }
+
+      if (index != -1) {
+        clients.set(index, client);
+        out.writeUTF("OK");
+      } else {
+        out.writeUTF("FAIL");
+        out.writeUTF("해당 ID의 고객이 없습니다.");
+      }
+
+    } catch (Exception e) {
+      out.writeUTF("FAIL");
+      out.writeUTF(e.getMessage());
+    }
+  }
+
+  private void detailClient(ObjectInputStream in, ObjectOutputStream out) throws IOException {
+    try {
+      String id = in.readUTF();
+
+      Client client = null;
+      for (Client b : clients) {
+        if (b.getId() == id) {
+          client = b;
+          break;
+        }
+      }
+
+      if (client != null) {
+        out.writeUTF("OK");
+        out.writeObject(client);
+
+      } else {
+        out.writeUTF("FAIL");
+        out.writeUTF("해당 ID의 고객이 없습니다.");
+      }
+
+    } catch (Exception e) {
+      out.writeUTF("FAIL");
+      out.writeUTF(e.getMessage());
+    }
+  }
+
+  private void addClient(ObjectInputStream in, ObjectOutputStream out) throws IOException {
+    try {
+      Client client = (Client) in.readObject();
+
+      int i = 0;
+      for (; i < clients.size(); i++) {
+        if (clients.get(i).getId() == client.getId()) {
+          break;
+        }
+      }
+
+      if (i == clients.size()) { // 같은 번호의 게시물이 없다면,
+        clients.add(client); // 새 게시물을 등록한다.
+        out.writeUTF("OK");
+
+      } else {
+        out.writeUTF("FAIL");
+        out.writeUTF("같은 ID의 고객이 있습니다.");
+      }
+
+    } catch (Exception e) {
+      out.writeUTF("FAIL");
+      out.writeUTF(e.getMessage());
+    }
+  }
+
+  private void listClient(ObjectOutputStream out) throws IOException {
+    out.writeUTF("OK");
+    out.reset();
+    out.writeObject(clients);
   }
 
   public static void main(String[] args) {
