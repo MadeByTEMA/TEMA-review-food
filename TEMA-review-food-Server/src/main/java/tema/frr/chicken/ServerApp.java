@@ -23,6 +23,11 @@ import tema.frr.chicken.servlet.ClientDetailServlet;
 import tema.frr.chicken.servlet.ClientListServlet;
 import tema.frr.chicken.servlet.ClientUpdateServlet;
 import tema.frr.chicken.servlet.Servlet;
+import tema.frr.chicken.servlet.WritingReviewAddServlet;
+import tema.frr.chicken.servlet.WritingReviewDeleteServlet;
+import tema.frr.chicken.servlet.WritingReviewDetailServlet;
+import tema.frr.chicken.servlet.WritingReviewListServlet;
+import tema.frr.chicken.servlet.WritingReviewUpdateServlet;
 
 public class ServerApp {
 
@@ -66,7 +71,11 @@ public class ServerApp {
     servletMap.put("/client/detail", new ClientDetailServlet(clients));
     servletMap.put("/client/update", new ClientUpdateServlet(clients));
     servletMap.put("/client/delete", new ClientDeleteServlet(clients));
-
+    servletMap.put("/writingReview/list", new WritingReviewListServlet(writingReviews));
+    servletMap.put("/writingReview/add", new WritingReviewAddServlet(writingReviews));
+    servletMap.put("/writingReview/detail", new WritingReviewDetailServlet(writingReviews));
+    servletMap.put("/writingReview/update", new WritingReviewUpdateServlet(writingReviews));
+    servletMap.put("/writingReview/delete", new WritingReviewDeleteServlet(writingReviews));
 
     try (ServerSocket serverSocket = new ServerSocket(8888)) {
 
@@ -153,120 +162,6 @@ public class ServerApp {
   private void quit(ObjectOutputStream out) throws IOException {
     out.writeUTF("OK");
     out.flush();
-  }
-
-  private void deleteWritingReview(ObjectInputStream in, ObjectOutputStream out)
-      throws IOException {
-    try {
-      String storeName = in.readUTF();
-
-      int index = -1;
-      for (int i = 0; i < writingReviews.size(); i++) {
-        if (writingReviews.get(i).getStoreName() == storeName) {
-          index = i;
-          break;
-        }
-      }
-
-      if (index != -1) { // 삭제하려는 번호의 게시물을 찾았다면
-        writingReviews.remove(index);
-        out.writeUTF("OK");
-
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 후기가 없습니다.");
-      }
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void updateWritingReview(ObjectInputStream in, ObjectOutputStream out)
-      throws IOException {
-    try {
-      WritingReview writingReview = (WritingReview) in.readObject();
-
-      int index = -1;
-      for (int i = 0; i < writingReviews.size(); i++) {
-        if (writingReviews.get(i).getStoreName() == writingReview.getStoreName()) {
-          index = i;
-          break;
-        }
-      }
-
-      if (index != -1) {
-        writingReviews.set(index, writingReview);
-        out.writeUTF("OK");
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 후기가 없습니다.");
-      }
-
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void detailWritingReview(ObjectInputStream in, ObjectOutputStream out)
-      throws IOException {
-    try {
-      String storeName = in.readUTF();
-
-      WritingReview writingReview = null;
-      for (WritingReview b : writingReviews) {
-        if (b.getStoreName() == storeName) {
-          writingReview = b;
-          break;
-        }
-      }
-
-      if (writingReview != null) {
-        out.writeUTF("OK");
-        out.writeObject(writingReview);
-
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 후기가 없습니다.");
-      }
-
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void addWritingReview(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      WritingReview writingReview = (WritingReview) in.readObject();
-
-      int i = 0;
-      for (; i < writingReviews.size(); i++) {
-        if (writingReviews.get(i).getStoreName() == writingReview.getStoreName()) {
-          break;
-        }
-      }
-
-      if (i == writingReviews.size()) { // 같은 번호의 게시물이 없다면,
-        writingReviews.add(writingReview); // 새 게시물을 등록한다.
-        out.writeUTF("OK");
-
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("같은 게시물이 있습니다.");
-      }
-
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void listWritingReview(ObjectOutputStream out) throws IOException {
-    out.writeUTF("OK");
-    out.reset();
-    out.writeObject(writingReviews);
   }
 
   public static void main(String[] args) {
