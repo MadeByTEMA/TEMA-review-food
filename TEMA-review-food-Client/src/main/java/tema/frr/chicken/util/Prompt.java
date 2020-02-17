@@ -1,4 +1,4 @@
-package tema.frr.util;
+package tema.frr.chicken.util;
 
 import java.sql.Date;
 import java.util.Scanner;
@@ -39,7 +39,7 @@ public class Prompt {
     }
     return Integer.parseInt(value);
   }
-  
+
   public Date inputDate(String label) {
     System.out.print(label);
     return Date.valueOf(input.nextLine());
