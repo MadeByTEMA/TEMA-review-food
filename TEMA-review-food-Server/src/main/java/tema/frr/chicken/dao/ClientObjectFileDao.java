@@ -1,58 +1,12 @@
 package tema.frr.chicken.dao;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 import tema.frr.chicken.domain.Client;
 
-public class ClientObjectFileDao {
-
-  String filename;
-  List<Client> list;
-
+public class ClientObjectFileDao extends AbstractObjectFileDao<Client> {
 
   public ClientObjectFileDao(String filename) {
-    this.filename = filename;
-    list = new ArrayList<>();
-    loadData();
-  }
-
-  @SuppressWarnings("unchecked")
-  void loadData() {
-    File file = new File(filename);
-
-    try (ObjectInputStream in =
-        new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
-
-      list = (List<Client>) in.readObject();
-
-      System.out.printf("총 %d 개의 고객 데이터를 로딩했습니다.\n", list.size());
-
-    } catch (Exception e) {
-      System.out.println("파일 읽기 중 오류 발생! - " + e.getMessage());
-    }
-  }
-
-  void saveData() {
-    File file = new File(filename);
-
-    try (ObjectOutputStream out =
-        new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
-      out.reset();
-      out.writeObject(list);
-
-      System.out.printf("총 %d 개의 수업 데이터를 저장했습니다.\n", list.size());
-
-    } catch (IOException e) {
-      System.out.println("파일 쓰기 중 오류 발생! - " + e.getMessage());
-    }
+    super(filename);
   }
 
   public int insert(Client client) throws Exception {
@@ -101,9 +55,10 @@ public class ClientObjectFileDao {
     return 1;
   }
 
-  private int indexOf(String id) {
+  @Override
+  protected <K> int indexOf(K key) {
     for (int i = 0; i < list.size(); i++) {
-      if (list.get(i).getId() == id) {
+      if (list.get(i).getId() == (String) key) {
         return i;
       }
     }
