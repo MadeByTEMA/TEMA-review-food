@@ -11,12 +11,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import tema.frr.chicken.context.ApplicationContextListener;
-import tema.frr.chicken.domain.Client;
-import tema.frr.chicken.domain.WritingReview;
+import tema.frr.chicken.dao.json.ClientJsonFileDao;
+import tema.frr.chicken.dao.json.WritingReviewJsonFileDao;
 import tema.frr.chicken.servlet.ClientAddServlet;
 import tema.frr.chicken.servlet.ClientDeleteServlet;
 import tema.frr.chicken.servlet.ClientDetailServlet;
@@ -34,9 +33,6 @@ public class ServerApp {
   Set<ApplicationContextListener> listeners = new HashSet<>();
   Map<String, Object> context = new HashMap<>();
   Map<String, Servlet> servletMap = new HashMap<>();
-
-  List<Client> clients;
-  List<WritingReview> writingReviews;
 
   public void addApplicationContextListener(ApplicationContextListener listener) {
     listeners.add(listener);
@@ -63,21 +59,25 @@ public class ServerApp {
 
     notifyApplicationInitialized();
 
-    clients = (List<Client>) context.get("clientList");
-    writingReviews = (List<WritingReview>) context.get("writingReviewList");
+    ClientJsonFileDao clientDao = (ClientJsonFileDao) context.get("clientDao");
+    WritingReviewJsonFileDao writingReviewJsonFileDao =
+        (WritingReviewJsonFileDao) context.get("writingReviewDao");
 
-    servletMap.put("/client/list", new ClientListServlet(clients));
-    servletMap.put("/client/add", new ClientAddServlet(clients));
-    servletMap.put("/client/detail", new ClientDetailServlet(clients));
-    servletMap.put("/client/update", new ClientUpdateServlet(clients));
-    servletMap.put("/client/delete", new ClientDeleteServlet(clients));
-    servletMap.put("/writingReview/list", new WritingReviewListServlet(writingReviews));
-    servletMap.put("/writingReview/add", new WritingReviewAddServlet(writingReviews));
-    servletMap.put("/writingReview/detail", new WritingReviewDetailServlet(writingReviews));
-    servletMap.put("/writingReview/update", new WritingReviewUpdateServlet(writingReviews));
-    servletMap.put("/writingReview/delete", new WritingReviewDeleteServlet(writingReviews));
+    servletMap.put("/client/list", new ClientListServlet(clientDao));
+    servletMap.put("/client/add", new ClientAddServlet(clientDao));
+    servletMap.put("/client/detail", new ClientDetailServlet(clientDao));
+    servletMap.put("/client/update", new ClientUpdateServlet(clientDao));
+    servletMap.put("/client/delete", new ClientDeleteServlet(clientDao));
+    servletMap.put("/writingReview/list", new WritingReviewListServlet(writingReviewJsonFileDao));
+    servletMap.put("/writingReview/add", new WritingReviewAddServlet(writingReviewJsonFileDao));
+    servletMap.put("/writingReview/detail",
+        new WritingReviewDetailServlet(writingReviewJsonFileDao));
+    servletMap.put("/writingReview/update",
+        new WritingReviewUpdateServlet(writingReviewJsonFileDao));
+    servletMap.put("/writingReview/delete",
+        new WritingReviewDeleteServlet(writingReviewJsonFileDao));
 
-    try (ServerSocket serverSocket = new ServerSocket(8888)) {
+    try (ServerSocket serverSocket = new ServerSocket(9999)) {
 
       System.out.println("Client 연결 대기중");
 
@@ -125,7 +125,6 @@ public class ServerApp {
             return 9;
         }
 
-        // 클라이언트의 요청을 처리할 객체를 찾는다.
         Servlet servlet = servletMap.get(request);
 
         if (servlet != null) {

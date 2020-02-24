@@ -2,21 +2,20 @@ package tema.frr.chicken.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
-import tema.frr.chicken.domain.Client;
+import tema.frr.chicken.dao.json.ClientJsonFileDao;
 
 public class ClientListServlet implements Servlet {
 
-  List<Client> clients;
+  ClientJsonFileDao clientDao;
 
-  public ClientListServlet(List<Client> clients) {
-    this.clients = clients;
+  public ClientListServlet(ClientJsonFileDao clientDao) {
+    this.clientDao = clientDao;
   }
 
   @Override
   public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
     out.writeUTF("OK");
     out.reset();
-    out.writeObject(clients);
+    out.writeObject(clientDao.findAll());
   }
 }

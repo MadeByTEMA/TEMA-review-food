@@ -2,41 +2,26 @@ package tema.frr.chicken.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
-import tema.frr.chicken.domain.Client;
+import tema.frr.chicken.dao.json.ClientJsonFileDao;
 
 public class ClientDeleteServlet implements Servlet {
 
-  List<Client> clients;
+  ClientJsonFileDao clientDao;
 
-  public ClientDeleteServlet(List<Client> clients) {
-    this.clients = clients;
+  public ClientDeleteServlet(ClientJsonFileDao clientDao) {
+    this.clientDao = clientDao;
   }
 
   @Override
   public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
-    try {
-      String id = in.readUTF();
+    String id = in.readUTF();
 
-      int index = -1;
-      for (int i = 0; i < clients.size(); i++) {
-        if (clients.get(i).getId() == id) {
-          index = i;
-          break;
-        }
-      }
+    if (clientDao.delete(id) > 0) {
+      out.writeUTF("OK");
 
-      if (index != -1) { // 삭제하려는 번호의 게시물을 찾았다면
-        clients.remove(index);
-        out.writeUTF("OK");
-
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 ID의 고객이 없습니다.");
-      }
-    } catch (Exception e) {
+    } else {
       out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
+      out.writeUTF("해당 ID의 고객이 없습니다.");
     }
   }
 }

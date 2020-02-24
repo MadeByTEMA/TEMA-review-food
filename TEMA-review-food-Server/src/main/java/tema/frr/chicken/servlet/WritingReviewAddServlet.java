@@ -2,41 +2,27 @@ package tema.frr.chicken.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
+import tema.frr.chicken.dao.json.WritingReviewJsonFileDao;
 import tema.frr.chicken.domain.WritingReview;
 
 public class WritingReviewAddServlet implements Servlet {
 
-  List<WritingReview> writingReviews;
+  WritingReviewJsonFileDao writingReviewJsonFileDao;
 
-  public WritingReviewAddServlet(List<WritingReview> writingReviews) {
-    this.writingReviews = writingReviews;
+  public WritingReviewAddServlet(WritingReviewJsonFileDao writingReviewJsonFileDao) {
+    this.writingReviewJsonFileDao = writingReviewJsonFileDao;
   }
 
   @Override
   public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
-    try {
-      WritingReview writingReview = (WritingReview) in.readObject();
+    WritingReview writingReview = (WritingReview) in.readObject();
 
-      int i = 0;
-      for (; i < writingReviews.size(); i++) {
-        if (writingReviews.get(i).getStoreName() == writingReview.getStoreName()) {
-          break;
-        }
-      }
+    if (writingReviewJsonFileDao.insert(writingReview) > 0) {
+      out.writeUTF("OK");
 
-      if (i == writingReviews.size()) { // 같은 번호의 게시물이 없다면,
-        writingReviews.add(writingReview); // 새 게시물을 등록한다.
-        out.writeUTF("OK");
-
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("같은 ID의 고객이 있습니다.");
-      }
-
-    } catch (Exception e) {
+    } else {
       out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
+      out.writeUTF("같은 ID의 고객이 있습니다.");
     }
   }
 }

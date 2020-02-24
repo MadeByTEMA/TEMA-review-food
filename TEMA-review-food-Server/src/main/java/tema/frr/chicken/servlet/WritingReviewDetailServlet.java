@@ -2,42 +2,31 @@ package tema.frr.chicken.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
+import tema.frr.chicken.dao.json.WritingReviewJsonFileDao;
 import tema.frr.chicken.domain.WritingReview;
 
 public class WritingReviewDetailServlet implements Servlet {
 
-  List<WritingReview> writingReviews;
+  WritingReviewJsonFileDao writingReviewJsonFileDao;
 
-  public WritingReviewDetailServlet(List<WritingReview> writingReviews) {
-    this.writingReviews = writingReviews;
+  public WritingReviewDetailServlet(WritingReviewJsonFileDao writingReviewJsonFileDao) {
+    this.writingReviewJsonFileDao = writingReviewJsonFileDao;
   }
 
   @Override
   public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
-    try {
-      String storeName = in.readUTF();
+    String storeName = in.readUTF();
 
-      WritingReview writingReview = null;
-      for (WritingReview b : writingReviews) {
-        if (b.getStoreName() == storeName) {
-          writingReview = b;
-          break;
-        }
-      }
+    WritingReview writingReview = writingReviewJsonFileDao.findByStoreName(storeName);
 
-      if (writingReview != null) {
-        out.writeUTF("OK");
-        out.writeObject(writingReview);
 
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 후기가 없습니다.");
-      }
+    if (writingReview != null) {
+      out.writeUTF("OK");
+      out.writeObject(writingReview);
 
-    } catch (Exception e) {
+    } else {
       out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
+      out.writeUTF("해당 후기가 없습니다.");
     }
   }
 }

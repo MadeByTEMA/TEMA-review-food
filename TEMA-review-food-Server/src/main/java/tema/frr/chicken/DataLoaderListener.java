@@ -2,8 +2,8 @@ package tema.frr.chicken;
 
 import java.util.Map;
 import tema.frr.chicken.context.ApplicationContextListener;
-import tema.frr.chicken.dao.ClientObjectFileDao;
-import tema.frr.chicken.dao.WritingReviewObjectFileDao;
+import tema.frr.chicken.dao.json.ClientJsonFileDao;
+import tema.frr.chicken.dao.json.WritingReviewJsonFileDao;
 
 public class DataLoaderListener implements ApplicationContextListener {
 
@@ -12,12 +12,12 @@ public class DataLoaderListener implements ApplicationContextListener {
   public void contextInitialized(Map<String, Object> context) {
     System.out.println("데이터를 로딩합니다.");
 
-    ClientObjectFileDao clientDao = new ClientObjectFileDao("./client.csv");
-    WritingReviewObjectFileDao writingReviewDao =
-        new WritingReviewObjectFileDao("./writingReview.csv");
+    ClientJsonFileDao clientDao = new ClientJsonFileDao("./client.json");
+    WritingReviewJsonFileDao writingReviewDao =
+        new WritingReviewJsonFileDao("./writingReview.json");
 
-    context.put("clientList", clientDao);
-    context.put("writingReviewList", writingReviewDao);
+    context.put("clientDao", clientDao);
+    context.put("writingReviewDao", writingReviewDao);
   }
 
   @Override

@@ -2,21 +2,20 @@ package tema.frr.chicken.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
-import tema.frr.chicken.domain.WritingReview;
+import tema.frr.chicken.dao.json.WritingReviewJsonFileDao;
 
 public class WritingReviewListServlet implements Servlet {
 
-  List<WritingReview> writingReviews;
+  WritingReviewJsonFileDao writingReviewJsonFileDao;
 
-  public WritingReviewListServlet(List<WritingReview> writingReviews) {
-    this.writingReviews = writingReviews;
+  public WritingReviewListServlet(WritingReviewJsonFileDao writingReviewJsonFileDao) {
+    this.writingReviewJsonFileDao = writingReviewJsonFileDao;
   }
 
   @Override
   public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
     out.writeUTF("OK");
     out.reset();
-    out.writeObject(writingReviews);
+    out.writeObject(writingReviewJsonFileDao.findAll());
   }
 }
