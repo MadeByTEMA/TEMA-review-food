@@ -31,51 +31,27 @@ public class ClientApp {
   Scanner keyboard = new Scanner(System.in);
   Prompt prompt = new Prompt(keyboard);
 
-  public void service() {
-    try (Scanner keyScan = new Scanner(System.in);
-        Socket socket = new Socket("localhost", 8888);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
+  Deque<String> commandStack;
+  Queue<String> commandQueue;
 
-      System.out.println("서버와 연결을 되었음!");
+  String host;
+  int port;
 
-      out.writeUTF(prompt.inputString("ID : "));
-      out.writeUTF(prompt.inputString("PWD : "));
-      System.out.println(in.readUTF());
-
-      processCommand(out, in);
-
-      System.out.println("서버와 연결을 끊었음!");
-
-    } catch (Exception e) {
-      System.out.println("서버 연결 중 오류 발생!");
-      e.printStackTrace();
-    }
-
-    keyboard.close();
+  public ClientApp() {
+    commandStack = new ArrayDeque<>();
+    commandQueue = new LinkedList<>();
   }
 
-  public void processCommand(ObjectOutputStream out, ObjectInputStream in) {
+  public void service() {
+    try {
+      host = prompt.inputString("서버? ");
+      port = prompt.inputInt("포트? ");
 
-    Deque<String> commandStack = new ArrayDeque<>();
-    Queue<String> commandQueue = new LinkedList<>();
-
-    HashMap<String, Command> commandMap = new HashMap<>();
-
-    ClientDaoProxy clientDao = new ClientDaoProxy(in, out);
-    WritingReviewDaoProxy writingReviewDao = new WritingReviewDaoProxy(in, out);
-
-    commandMap.put("/client/add", new ClientAddCommand(clientDao, prompt));
-    commandMap.put("/client/list", new ClientListCommand(clientDao));
-    commandMap.put("/client/detail", new ClientDetailCommand(clientDao, prompt));
-    commandMap.put("/client/delete", new ClientDeleteCommand(clientDao, prompt));
-    commandMap.put("/client/update", new ClientUpdateCommand(clientDao, prompt));
-
-    commandMap.put("/writingReview/add", new WritingReviewAddCommand(writingReviewDao, prompt));
-    commandMap.put("/writingReview/list", new WritingReviewListCommand(writingReviewDao));
-    commandMap.put("/writingReview/detail", new WritingReviewDetailCommand(writingReviewDao, prompt));
-    commandMap.put("/writingReview/delete", new WritingReviewDeleteCommand(writingReviewDao, prompt));
-    commandMap.put("/writingReview/update", new WritingReviewUpdateCommand(writingReviewDao, prompt));
+    } catch (Exception e) {
+      System.out.println("서버 주소 또는 포트 번호가 유효하지 않습니다!");
+      keyboard.close();
+      return;
+    }
 
     while (true) {
       String command;
@@ -99,19 +75,62 @@ public class ClientApp {
       commandStack.push(command);
       commandQueue.offer(command);
 
+      processCommand(command);
+
+    }
+
+    keyboard.close();
+  }
+
+  public void processCommand(String command) {
+    try (Scanner keyScan = new Scanner(System.in);
+        Socket socket = new Socket("localhost", 8888);
+        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
+
+      System.out.println("서버와 연결을 되었음!");
+      out.writeUTF(prompt.inputString("ID : "));
+      out.writeUTF(prompt.inputString("PWD : "));
+      System.out.println(in.readUTF());
+
+      HashMap<String, Command> commandMap = new HashMap<>();
+
+      ClientDaoProxy clientDao = new ClientDaoProxy(in, out);
+      WritingReviewDaoProxy writingReviewDao = new WritingReviewDaoProxy(in, out);
+
+      commandMap.put("/client/add", new ClientAddCommand(clientDao, prompt));
+      commandMap.put("/client/list", new ClientListCommand(clientDao));
+      commandMap.put("/client/detail", new ClientDetailCommand(clientDao, prompt));
+      commandMap.put("/client/delete", new ClientDeleteCommand(clientDao, prompt));
+      commandMap.put("/client/update", new ClientUpdateCommand(clientDao, prompt));
+
+      commandMap.put("/writingReview/add", new WritingReviewAddCommand(writingReviewDao, prompt));
+      commandMap.put("/writingReview/list", new WritingReviewListCommand(writingReviewDao));
+      commandMap.put("/writingReview/detail", new WritingReviewDetailCommand(writingReviewDao, prompt));
+      commandMap.put("/writingReview/delete", new WritingReviewDeleteCommand(writingReviewDao, prompt));
+      commandMap.put("/writingReview/update", new WritingReviewUpdateCommand(writingReviewDao, prompt));
+
+      commandMap.put("/server/stop", () -> {
+        try {
+          out.writeUTF(command);
+          out.flush();
+          System.out.println("서버: " + in.readUTF());
+          System.out.println("안녕!");
+        } catch (Exception e) {
+        }
+      });
+
       Command commandHandler = commandMap.get(command);
 
-      if (commandHandler != null) {
-        try {
-          commandHandler.execute();
-        } catch (Exception e) {
-          System.out.printf("명령어 실행 중 오류 발생: %s\n", e.getMessage());
-        }
-      } else {
+      if (commandHandler == null) {
         System.out.println("실행할 수 없는 명령입니다.");
+        return;
       }
+      commandHandler.execute();
+    } catch (Exception e) {
+      System.out.printf("명령어 실행 중 오류 발생: %s\n", e.getMessage());
     }
-    keyboard.close();
+    System.out.println("서버와 연결을 끊었음!");
 
   }
 
