@@ -1,36 +1,24 @@
 package tema.frr.chicken.handler;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import tema.frr.chicken.dao.proxy.WritingReviewDaoProxy;
 import tema.frr.chicken.domain.WritingReview;
 import tema.frr.chicken.util.Prompt;
 
 public class WritingReviewDetailCommand implements Command {
 
-  ObjectOutputStream out;
-  ObjectInputStream in;
+  WritingReviewDaoProxy writingReviewDao;
   Prompt prompt;
 
-  public WritingReviewDetailCommand(ObjectOutputStream out, ObjectInputStream in, Prompt prompt) {
-    this.out = out;
-    this.in = in;
+  public WritingReviewDetailCommand(WritingReviewDaoProxy writingReviewDao, Prompt prompt) {
+    this.writingReviewDao = writingReviewDao;
     this.prompt = prompt;
   }
 
   @Override
   public void execute() {
     try {
-      out.writeUTF("/writingReview/detail");
-      out.writeUTF((prompt.inputString("ID? ")));
-      out.flush();
-
-
-      if (in.readUTF().toString().equals("FAIL")) {
-        System.out.println(in.readUTF());
-        return;
-      }
-
-      WritingReview writingReview = (WritingReview) in.readObject();
+      String storeName =(prompt.inputString("스토어명? "));
+      WritingReview writingReview = writingReviewDao.findByStoreName(storeName);
 
       System.out.printf("메뉴 : %s\n", writingReview.getMenu());
       System.out.printf("가격 : %s\n", writingReview.getPrice());

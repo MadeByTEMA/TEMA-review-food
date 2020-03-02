@@ -10,6 +10,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
+
+import tema.frr.chicken.dao.proxy.ClientDaoProxy;
+import tema.frr.chicken.dao.proxy.WritingReviewDaoProxy;
 import tema.frr.chicken.handler.ClientAddCommand;
 import tema.frr.chicken.handler.ClientDeleteCommand;
 import tema.frr.chicken.handler.ClientDetailCommand;
@@ -31,8 +34,8 @@ public class ClientApp {
   public void service() {
     try (Scanner keyScan = new Scanner(System.in);
         Socket socket = new Socket("localhost", 8888);
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
 
       System.out.println("서버와 연결을 되었음!");
 
@@ -59,24 +62,28 @@ public class ClientApp {
 
     HashMap<String, Command> commandMap = new HashMap<>();
 
-    commandMap.put("/client/add", new ClientAddCommand(out, in, prompt));
-    commandMap.put("/client/list", new ClientListCommand(out, in));
-    commandMap.put("/client/detail", new ClientDetailCommand(out, in, prompt));
-    commandMap.put("/client/delete", new ClientDeleteCommand(out, in, prompt));
-    commandMap.put("/client/update", new ClientUpdateCommand(out, in, prompt));
+    ClientDaoProxy clientDao = new ClientDaoProxy(in, out);
+    WritingReviewDaoProxy writingReviewDao = new WritingReviewDaoProxy(in, out);
 
-    commandMap.put("/writingReview/add", new WritingReviewAddCommand(out, in, prompt));
-    commandMap.put("/writingReview/list", new WritingReviewListCommand(out, in));
-    commandMap.put("/writingReview/detail", new WritingReviewDetailCommand(out, in, prompt));
-    commandMap.put("/writingReview/delete", new WritingReviewDeleteCommand(out, in, prompt));
-    commandMap.put("/writingReview/update", new WritingReviewUpdateCommand(out, in, prompt));
+    commandMap.put("/client/add", new ClientAddCommand(clientDao, prompt));
+    commandMap.put("/client/list", new ClientListCommand(clientDao));
+    commandMap.put("/client/detail", new ClientDetailCommand(clientDao, prompt));
+    commandMap.put("/client/delete", new ClientDeleteCommand(clientDao, prompt));
+    commandMap.put("/client/update", new ClientUpdateCommand(clientDao, prompt));
+
+    commandMap.put("/writingReview/add", new WritingReviewAddCommand(writingReviewDao, prompt));
+    commandMap.put("/writingReview/list", new WritingReviewListCommand(writingReviewDao));
+    commandMap.put("/writingReview/detail", new WritingReviewDetailCommand(writingReviewDao, prompt));
+    commandMap.put("/writingReview/delete", new WritingReviewDeleteCommand(writingReviewDao, prompt));
+    commandMap.put("/writingReview/update", new WritingReviewUpdateCommand(writingReviewDao, prompt));
 
     while (true) {
       String command;
       command = prompt.inputString("명령> ");
 
-      if (command.length() == 0)
+      if (command.length() == 0) {
         continue;
+      }
 
       if (command.equalsIgnoreCase("quit")) {
         System.out.println("안녕!");

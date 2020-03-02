@@ -1,20 +1,18 @@
 package tema.frr.chicken.handler;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.sql.Date;
+
+import tema.frr.chicken.dao.proxy.ClientDaoProxy;
 import tema.frr.chicken.domain.Client;
 import tema.frr.chicken.util.Prompt;
 
 public class ClientAddCommand implements Command {
 
-  ObjectOutputStream out;
-  ObjectInputStream in;
+  ClientDaoProxy clientDao;
   Prompt prompt;
 
-  public ClientAddCommand(ObjectOutputStream out, ObjectInputStream in, Prompt prompt) {
-    this.out = out;
-    this.in = in;
+  public ClientAddCommand(ClientDaoProxy clientDao, Prompt prompt) {
+    this.clientDao = clientDao;
     this.prompt = prompt;
   }
 
@@ -32,22 +30,11 @@ public class ClientAddCommand implements Command {
     c.setSignUpDate(new Date(System.currentTimeMillis()));
 
     try {
-      out.writeUTF("/client/add");
-      out.writeObject(c);
-      out.flush();
-
-      if (in.readUTF().toString().equals("FAIL")) {
-        System.out.println(in.readUTF());
-        return;
-      } else {
-        System.out.println("저장하였습니다.");
-      }
+      clientDao.insert(c);
+      System.out.println("저장하였습니다.");
 
     } catch (Exception e) {
-      System.out.println("통신 오류 발생!");
+      System.out.println("저장 실패!");
     }
-
-
-    System.out.println("저장하였습니다.");
   }
 }

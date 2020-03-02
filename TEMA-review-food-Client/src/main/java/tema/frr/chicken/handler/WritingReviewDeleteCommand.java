@@ -1,35 +1,27 @@
 package tema.frr.chicken.handler;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import tema.frr.chicken.dao.proxy.WritingReviewDaoProxy;
 import tema.frr.chicken.util.Prompt;
 
 public class WritingReviewDeleteCommand implements Command {
 
-  ObjectOutputStream out;
-  ObjectInputStream in;
+  WritingReviewDaoProxy writingReviewDao;
   Prompt prompt;
 
-  public WritingReviewDeleteCommand(ObjectOutputStream out, ObjectInputStream in, Prompt prompt) {
-    this.out = out;
-    this.in = in;
+  public WritingReviewDeleteCommand(WritingReviewDaoProxy writingReviewDao, Prompt prompt) {
+    this.writingReviewDao = writingReviewDao;
     this.prompt = prompt;
   }
 
   @Override
   public void execute() {
     try {
-      out.writeUTF("/writingReview/delete");
-      out.writeUTF(prompt.inputString("가게명? "));
-      out.flush();
+      String storeName =(prompt.inputString("스토어명? "));
+      writingReviewDao.delete(storeName);
+      System.out.println("후기 정보를 삭제했습니다.");
 
-      if (in.readUTF().toString().equals("FAIL")) {
-        System.out.println(in.readUTF());
-        return;
-      }
-      System.out.println("후기를 삭제했습니다.");
     } catch (Exception e) {
-      System.out.println("명령 실행 중 오류 발생!");
+      System.out.println("삭제 실패!");
     }
   }
 }

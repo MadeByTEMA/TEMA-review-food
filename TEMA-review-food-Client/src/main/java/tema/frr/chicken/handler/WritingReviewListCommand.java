@@ -1,18 +1,18 @@
 package tema.frr.chicken.handler;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.List;
+
+import tema.frr.chicken.dao.proxy.WritingReviewDaoProxy;
 import tema.frr.chicken.domain.WritingReview;
+import tema.frr.chicken.util.Prompt;
 
 public class WritingReviewListCommand implements Command {
 
-  ObjectOutputStream out;
-  ObjectInputStream in;
+  WritingReviewDaoProxy writingReviewDao;
+  Prompt prompt;
 
-  public WritingReviewListCommand(ObjectOutputStream out, ObjectInputStream in) {
-    this.out = out;
-    this.in = in;
+  public WritingReviewListCommand(WritingReviewDaoProxy writingReviewDao) {
+    this.writingReviewDao = writingReviewDao;
   }
 
   @SuppressWarnings("unchecked")
@@ -20,19 +20,11 @@ public class WritingReviewListCommand implements Command {
   public void execute() {
 
     try {
-      out.writeUTF("/writingReview/list");
-      out.flush();
+      List<WritingReview> writingReviews = writingReviewDao.findAll();
 
-      if (in.readUTF().toString().equals("FAIL")) {
-        System.out.println(in.readUTF());
-        return;
-      } else {
-        List<WritingReview> writingReviews = (List<WritingReview>) in.readObject();
-
-        for (WritingReview r : writingReviews) {
-          System.out.printf("%s, %s, %s, %s, %s, %s\n", r.getStoreName(), r.getMenu(), r.getPrice(),
-              r.getStarQuality(), r.getStarQuantity(), r.getStarTotalSum());
-        }
+      for (WritingReview r : writingReviews) {
+        System.out.printf("%s, %s, %s, %s, %s, %s\n", r.getStoreName(), r.getMenu(), r.getPrice(),
+            r.getStarQuality(), r.getStarQuantity(), r.getStarTotalSum());
       }
     } catch (Exception e) {
       System.out.println("통신 오류 발생!");

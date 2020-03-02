@@ -1,36 +1,32 @@
 package tema.frr.chicken.handler;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import tema.frr.chicken.dao.proxy.ClientDaoProxy;
 import tema.frr.chicken.domain.Client;
 import tema.frr.chicken.util.Prompt;
 
 public class ClientUpdateCommand implements Command {
 
-  ObjectOutputStream out;
-  ObjectInputStream in;
+  ClientDaoProxy clientDao;
   Prompt prompt;
 
-  public ClientUpdateCommand(ObjectOutputStream out, ObjectInputStream in, Prompt prompt) {
-    this.out = out;
-    this.in = in;
+  public ClientUpdateCommand(ClientDaoProxy clientDao, Prompt prompt) {
+    this.clientDao = clientDao;
     this.prompt = prompt;
   }
 
   @Override
   public void execute() {
     try {
-      out.writeUTF("/client/detail");
-      out.writeUTF((prompt.inputString("ID? ")));
-      out.flush();
+      String id = prompt.inputString("ID? ");
 
-
-      if (in.readUTF().toString().equals("FAIL")) {
-        System.out.println(in.readUTF());
+      Client oldClient = null;
+      try {
+        oldClient = clientDao.findById(id);
+      } catch (Exception e) {
+        System.out.println("해당 ID의 회원이 없습니다!");
         return;
       }
 
-      Client oldClient = (Client) in.readObject();
       Client newClient = new Client();
 
       newClient.setId(oldClient.getId());
@@ -55,21 +51,11 @@ public class ClientUpdateCommand implements Command {
         return;
       }
 
-      newClient.setSignUpDate(oldClient.getSignUpDate());
-
-      out.writeUTF("/client/update");
-      out.writeObject(newClient);
-      out.flush();
-
-      if (in.readUTF().toString().equals("FAIL")) {
-        System.out.println(in.readUTF());
-        return;
-      }
-
+      clientDao.update(newClient);
       System.out.println("고객을 변경했습니다.");
 
     } catch (Exception e) {
-      System.out.println("명령 실행 중 오류 발생!");
+      System.out.println("변경 실패!");
     }
   }
 }

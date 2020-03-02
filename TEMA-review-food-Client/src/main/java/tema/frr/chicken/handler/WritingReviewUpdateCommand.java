@@ -1,36 +1,32 @@
 package tema.frr.chicken.handler;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import tema.frr.chicken.dao.proxy.WritingReviewDaoProxy;
 import tema.frr.chicken.domain.WritingReview;
 import tema.frr.chicken.util.Prompt;
 
 public class WritingReviewUpdateCommand implements Command {
 
-  ObjectOutputStream out;
-  ObjectInputStream in;
+  WritingReviewDaoProxy writingReviewDao;
   Prompt prompt;
 
-  public WritingReviewUpdateCommand(ObjectOutputStream out, ObjectInputStream in, Prompt prompt) {
-    this.out = out;
-    this.in = in;
+  public WritingReviewUpdateCommand(WritingReviewDaoProxy writingReviewDao, Prompt prompt) {
+    this.writingReviewDao = writingReviewDao;
     this.prompt = prompt;
   }
 
   @Override
   public void execute() {
     try {
-      out.writeUTF("/writingReview/detail");
-      out.writeUTF((prompt.inputString("ID? ")));
-      out.flush();
+      String storeName =(prompt.inputString("스토어명? "));
 
-
-      if (in.readUTF().toString().equals("FAIL")) {
-        System.out.println(in.readUTF());
+      WritingReview oldWritingReview = null;
+      try {
+        oldWritingReview = writingReviewDao.findByStoreName(storeName);
+      } catch (Exception e) {
+        System.out.println("해당 스토어의 게시글의 없습니다!");
         return;
       }
 
-      WritingReview oldWritingReview = (WritingReview) in.readObject();
       WritingReview newWritingReview = new WritingReview();
 
       newWritingReview.setCategory(oldWritingReview.getCategory());
@@ -57,19 +53,12 @@ public class WritingReviewUpdateCommand implements Command {
         System.out.println(" 후기 변경을 취소하였습니다.");
         return;
       }
-      out.writeUTF("/writingReview/update");
-      out.writeObject(newWritingReview);
-      out.flush();
 
-      if (in.readUTF().toString().equals("FAIL")) {
-        System.out.println(in.readUTF());
-        return;
-      }
-
-      System.out.println("후기를 변경하였습니다.");
+      writingReviewDao.update(newWritingReview);
+      System.out.println("후기를 변경했습니다.");
 
     } catch (Exception e) {
-      System.out.println("명령 실행 중 오류 발생!");
+      System.out.println("변경 실패!");
     }
   }
 }

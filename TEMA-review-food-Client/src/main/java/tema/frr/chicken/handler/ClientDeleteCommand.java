@@ -1,35 +1,27 @@
 package tema.frr.chicken.handler;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import tema.frr.chicken.dao.proxy.ClientDaoProxy;
 import tema.frr.chicken.util.Prompt;
 
 public class ClientDeleteCommand implements Command {
 
-  ObjectOutputStream out;
-  ObjectInputStream in;
+  ClientDaoProxy clientDao;
   Prompt prompt;
 
-  public ClientDeleteCommand(ObjectOutputStream out, ObjectInputStream in, Prompt prompt) {
-    this.out = out;
-    this.in = in;
+  public ClientDeleteCommand(ClientDaoProxy clientDao, Prompt prompt) {
+    this.clientDao = clientDao;
     this.prompt = prompt;
   }
 
   @Override
   public void execute() {
     try {
-      out.writeUTF("/client/delete");
-      out.writeUTF(prompt.inputString("ID? "));
-      out.flush();
+      String id = prompt.inputString("ID? ");
+      clientDao.delete(id);
+      System.out.println("고객 정보를 삭제했습니다.");
 
-      if (in.readUTF().toString().equals("FAIL")) {
-        System.out.println(in.readUTF());
-        return;
-      }
-      System.out.println("고객을 삭제했습니다.");
     } catch (Exception e) {
-      System.out.println("명령 실행 중 오류 발생!");
+      System.out.println("삭제 실패!");
     }
   }
 }
