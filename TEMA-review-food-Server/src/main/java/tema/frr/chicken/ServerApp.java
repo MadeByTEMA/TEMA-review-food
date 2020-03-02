@@ -109,10 +109,6 @@ public class ServerApp {
 
       System.out.println("통신을 위한 입출력 스트림을 준비하였음!");
 
-      String clientId = in.readUTF();
-      String clientPwd = in.readUTF();
-      out.writeUTF("먹어봐따 ( Try it )에 오신걸 환영합니다.");
-
       String request = in.readUTF();
       System.out.println("클라이언트가 보낸 메시지를 수신하였음!");
 
