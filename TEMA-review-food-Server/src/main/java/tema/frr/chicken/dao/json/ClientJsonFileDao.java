@@ -1,9 +1,12 @@
 package tema.frr.chicken.dao.json;
 
 import java.util.List;
-import tema.frr.chicken.domain.Client;
 
-public class ClientJsonFileDao extends AbstractJsonFileDao<Client> {
+import tema.frr.chicken.dao.ClientDao;
+import tema.frr.chicken.domain.Client;
+import tema.frr.chicken.domain.WritingReview;
+
+public class ClientJsonFileDao extends AbstractJsonFileDao<Client> implements ClientDao{
 
   public ClientJsonFileDao(String filename) {
     super(filename);
@@ -64,6 +67,8 @@ public class ClientJsonFileDao extends AbstractJsonFileDao<Client> {
     }
     return -1;
   }
+
+
 }
 
 

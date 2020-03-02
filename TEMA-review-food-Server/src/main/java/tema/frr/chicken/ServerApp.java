@@ -13,9 +13,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 import tema.frr.chicken.context.ApplicationContextListener;
-import tema.frr.chicken.dao.json.ClientJsonFileDao;
-import tema.frr.chicken.dao.json.WritingReviewJsonFileDao;
+import tema.frr.chicken.dao.ClientDao;
+import tema.frr.chicken.dao.WritingReviewDao;
 import tema.frr.chicken.servlet.ClientAddServlet;
 import tema.frr.chicken.servlet.ClientDeleteServlet;
 import tema.frr.chicken.servlet.ClientDetailServlet;
@@ -59,9 +60,9 @@ public class ServerApp {
 
     notifyApplicationInitialized();
 
-    ClientJsonFileDao clientDao = (ClientJsonFileDao) context.get("clientDao");
-    WritingReviewJsonFileDao writingReviewJsonFileDao =
-        (WritingReviewJsonFileDao) context.get("writingReviewDao");
+    ClientDao clientDao = (ClientDao) context.get("clientDao");
+    WritingReviewDao writingReviewJsonFileDao =
+        (WritingReviewDao) context.get("writingReviewDao");
 
     servletMap.put("/client/list", new ClientListServlet(clientDao));
     servletMap.put("/client/add", new ClientAddServlet(clientDao));
@@ -117,12 +118,12 @@ public class ServerApp {
         System.out.println("클라이언트가 보낸 메시지를 수신하였음!");
 
         switch (request) {
-          case "quit":
-            quit(out);
-            return 0;
-          case "/server/stop":
-            quit(out);
-            return 9;
+        case "quit":
+          quit(out);
+          return 0;
+        case "/server/stop":
+          quit(out);
+          return 9;
         }
 
         Servlet servlet = servletMap.get(request);

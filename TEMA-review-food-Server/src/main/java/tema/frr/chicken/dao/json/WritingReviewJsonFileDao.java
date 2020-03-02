@@ -1,9 +1,11 @@
 package tema.frr.chicken.dao.json;
 
 import java.util.List;
+
+import tema.frr.chicken.dao.WritingReviewDao;
 import tema.frr.chicken.domain.WritingReview;
 
-public class WritingReviewJsonFileDao extends AbstractJsonFileDao<WritingReview> {
+public class WritingReviewJsonFileDao extends AbstractJsonFileDao<WritingReview> implements WritingReviewDao{
 
   public WritingReviewJsonFileDao(String filename) {
     super(filename);

@@ -2,14 +2,15 @@ package tema.frr.chicken.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import tema.frr.chicken.dao.json.ClientJsonFileDao;
+
+import tema.frr.chicken.dao.ClientDao;
 import tema.frr.chicken.domain.Client;
 
 public class ClientUpdateServlet implements Servlet {
 
-  ClientJsonFileDao clientDao;
+  ClientDao clientDao;
 
-  public ClientUpdateServlet(ClientJsonFileDao clientDao) {
+  public ClientUpdateServlet(ClientDao clientDao) {
     this.clientDao = clientDao;
   }
 

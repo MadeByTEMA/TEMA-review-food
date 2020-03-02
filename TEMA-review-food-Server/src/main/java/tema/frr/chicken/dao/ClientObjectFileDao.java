@@ -3,7 +3,7 @@ package tema.frr.chicken.dao;
 import java.util.List;
 import tema.frr.chicken.domain.Client;
 
-public class ClientObjectFileDao extends AbstractObjectFileDao<Client> {
+public class ClientObjectFileDao extends AbstractObjectFileDao<Client> implements ClientDao{
 
   public ClientObjectFileDao(String filename) {
     super(filename);
@@ -24,7 +24,7 @@ public class ClientObjectFileDao extends AbstractObjectFileDao<Client> {
     return list;
   }
 
-  public Client findByNo(String id) throws Exception {
+  public Client findById(String id) throws Exception {
     int index = indexOf(id);
     if (index == -1) {
       return null;

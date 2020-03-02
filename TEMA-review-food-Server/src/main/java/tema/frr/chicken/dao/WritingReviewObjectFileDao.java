@@ -3,7 +3,7 @@ package tema.frr.chicken.dao;
 import java.util.List;
 import tema.frr.chicken.domain.WritingReview;
 
-public class WritingReviewObjectFileDao extends AbstractObjectFileDao<WritingReview> {
+public class WritingReviewObjectFileDao extends AbstractObjectFileDao<WritingReview> implements WritingReviewDao{
 
   public WritingReviewObjectFileDao(String filename) {
     super(filename);
@@ -25,8 +25,8 @@ public class WritingReviewObjectFileDao extends AbstractObjectFileDao<WritingRev
     return list;
   }
 
-  public WritingReview findByNo(String id) throws Exception {
-    int index = indexOf(id);
+  public WritingReview findByStoreName(String storeName) throws Exception {
+    int index = indexOf(storeName);
     if (index == -1) {
       return null;
     }

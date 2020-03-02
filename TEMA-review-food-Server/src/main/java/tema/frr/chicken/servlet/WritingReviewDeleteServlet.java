@@ -2,21 +2,22 @@ package tema.frr.chicken.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import tema.frr.chicken.dao.json.WritingReviewJsonFileDao;
+
+import tema.frr.chicken.dao.WritingReviewDao;
 
 public class WritingReviewDeleteServlet implements Servlet {
 
-  WritingReviewJsonFileDao writingReviewJsonFileDao;
+  WritingReviewDao writingReviewDao;
 
-  public WritingReviewDeleteServlet(WritingReviewJsonFileDao writingReviewJsonFileDao) {
-    this.writingReviewJsonFileDao = writingReviewJsonFileDao;
+  public WritingReviewDeleteServlet(WritingReviewDao writingReviewDao) {
+    this.writingReviewDao = writingReviewDao;
   }
 
   @Override
   public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
     String storeName = in.readUTF();
 
-    if (writingReviewJsonFileDao.delete(storeName) > 0) {
+    if (writingReviewDao.delete(storeName) > 0) {
       out.writeUTF("OK");
 
     } else {
