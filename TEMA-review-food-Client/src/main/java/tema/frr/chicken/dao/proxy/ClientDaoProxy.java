@@ -44,6 +44,21 @@ public class ClientDaoProxy implements ClientDao{
   }
 
   @Override
+  public Client findByClientNo(int clientNo) throws Exception {
+    return (Client) daoProxyHelper.request((in, out) -> {
+      out.writeUTF("/client/detail");
+      out.writeInt(clientNo);
+      out.flush();
+
+      String response = in.readUTF();
+      if (response.equals("FAIL")) {
+        throw new Exception(in.readUTF());
+      }
+      return (Client) in.readObject();
+    });
+  }
+
+  @Override
   public Client findById(String id) throws Exception {
     return (Client) daoProxyHelper.request((in, out) -> {
       out.writeUTF("/client/detail");
@@ -74,10 +89,10 @@ public class ClientDaoProxy implements ClientDao{
   }
 
   @Override
-  public int delete(String id) throws Exception {
+  public int delete(int clientNo) throws Exception {
     return (int) daoProxyHelper.request((in, out) -> {
       out.writeUTF("/client/delete");
-      out.writeUTF(id);
+      out.writeInt(clientNo);
       out.flush();
 
       String response = in.readUTF();

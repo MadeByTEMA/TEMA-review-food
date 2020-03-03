@@ -1,8 +1,5 @@
 package tema.frr.chicken;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
@@ -11,20 +8,21 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
-import tema.frr.chicken.dao.proxy.ClientDaoProxy;
-import tema.frr.chicken.dao.proxy.DaoProxyHelper;
-import tema.frr.chicken.dao.proxy.ReviewBoardDaoProxy;
+import tema.frr.chicken.dao.ClientDao;
+import tema.frr.chicken.dao.ReviewBoardDao;
+import tema.frr.chicken.dao.mariadb.ClientDaoImpl;
+import tema.frr.chicken.dao.mariadb.ReviewBoardDaoImpl;
 import tema.frr.chicken.handler.ClientAddCommand;
 import tema.frr.chicken.handler.ClientDeleteCommand;
 import tema.frr.chicken.handler.ClientDetailCommand;
 import tema.frr.chicken.handler.ClientListCommand;
 import tema.frr.chicken.handler.ClientUpdateCommand;
 import tema.frr.chicken.handler.Command;
-import tema.frr.chicken.handler.WritingReviewAddCommand;
-import tema.frr.chicken.handler.WritingReviewDeleteCommand;
-import tema.frr.chicken.handler.WritingReviewDetailCommand;
-import tema.frr.chicken.handler.WritingReviewListCommand;
-import tema.frr.chicken.handler.WritingReviewUpdateCommand;
+import tema.frr.chicken.handler.ReviewBoardAddCommand;
+import tema.frr.chicken.handler.ReviewBoardDeleteCommand;
+import tema.frr.chicken.handler.ReviewBoardDetailCommand;
+import tema.frr.chicken.handler.ReviewBoardListCommand;
+import tema.frr.chicken.handler.ReviewBoardUpdateCommand;
 import tema.frr.chicken.util.Prompt;
 
 public class ClientApp {
@@ -44,21 +42,8 @@ public class ClientApp {
     commandStack = new ArrayDeque<>();
     commandQueue = new LinkedList<>();
 
-    try {
-      host = prompt.inputString("서버? ");
-      port = prompt.inputInt("포트? ");
-
-    } catch (Exception e) {
-      System.out.println("서버 주소 또는 포트 번호가 유효하지 않습니다!");
-      keyboard.close();
-      return;
-    }
-
-
-    DaoProxyHelper daoProxyHelper = new DaoProxyHelper(host, port);
-
-    ClientDaoProxy clientDao = new ClientDaoProxy(daoProxyHelper);
-    ReviewBoardDaoProxy writingReviewDao = new ReviewBoardDaoProxy(daoProxyHelper);
+    ClientDao clientDao = new ClientDaoImpl();
+    ReviewBoardDao reviewBoardDao = new ReviewBoardDaoImpl();
 
     commandMap.put("/client/add", new ClientAddCommand(clientDao, prompt));
     commandMap.put("/client/list", new ClientListCommand(clientDao));
@@ -66,25 +51,11 @@ public class ClientApp {
     commandMap.put("/client/delete", new ClientDeleteCommand(clientDao, prompt));
     commandMap.put("/client/update", new ClientUpdateCommand(clientDao, prompt));
 
-    commandMap.put("/writingReview/add", new WritingReviewAddCommand(writingReviewDao, prompt));
-    commandMap.put("/writingReview/list", new WritingReviewListCommand(writingReviewDao));
-    commandMap.put("/writingReview/detail", new WritingReviewDetailCommand(writingReviewDao, prompt));
-    commandMap.put("/writingReview/delete", new WritingReviewDeleteCommand(writingReviewDao, prompt));
-    commandMap.put("/writingReview/update", new WritingReviewUpdateCommand(writingReviewDao, prompt));
-
-    commandMap.put("/server/stop", () -> {
-      try {
-        try (Socket socket = new Socket(host, port);
-            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
-          out.flush();
-          System.out.println("서버: " + in.readUTF());
-          System.out.println("안녕!");
-        }
-      } catch (Exception e) {
-      }
-    });
-
+    commandMap.put("/reviewboard/add", new ReviewBoardAddCommand(reviewBoardDao, prompt));
+    commandMap.put("/reviewboard/list", new ReviewBoardListCommand(reviewBoardDao));
+    commandMap.put("/reviewboard/detail", new ReviewBoardDetailCommand(reviewBoardDao, prompt));
+    commandMap.put("/reviewboard/delete", new ReviewBoardDeleteCommand(reviewBoardDao, prompt));
+    commandMap.put("/reviewboard/update", new ReviewBoardUpdateCommand(reviewBoardDao, prompt));
   }
 
   public void service() {

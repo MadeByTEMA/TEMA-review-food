@@ -12,6 +12,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
 import com.google.gson.Gson;
 
 public abstract class AbstractJsonFileDao<T> {
@@ -28,7 +29,6 @@ public abstract class AbstractJsonFileDao<T> {
 
   @SuppressWarnings("unchecked")
   File file = new File(filename);
-
 
   @SuppressWarnings({"unchecked", "rawtypes"})
   protected void loadData() {

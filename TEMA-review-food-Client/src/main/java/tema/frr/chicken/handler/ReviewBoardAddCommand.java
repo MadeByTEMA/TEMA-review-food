@@ -1,22 +1,22 @@
 package tema.frr.chicken.handler;
 
-import tema.frr.chicken.dao.proxy.ReviewBoardDaoProxy;
-import tema.frr.chicken.domain.WritingReview;
+import tema.frr.chicken.dao.ReviewBoardDao;
+import tema.frr.chicken.domain.ReviewBoard;
 import tema.frr.chicken.util.Prompt;
 
-public class WritingReviewAddCommand implements Command {
+public class ReviewBoardAddCommand implements Command {
 
-  ReviewBoardDaoProxy writingReviewDao;
+  ReviewBoardDao reviewBoardDao;
   Prompt prompt;
 
-  public WritingReviewAddCommand(ReviewBoardDaoProxy writingReviewDao, Prompt prompt) {
-    this.writingReviewDao = writingReviewDao;
+  public ReviewBoardAddCommand(ReviewBoardDao reviewBoardwDao, Prompt prompt) {
+    this.reviewBoardDao = reviewBoardwDao;
     this.prompt = prompt;
   }
 
   @Override
   public void execute() {
-    WritingReview r = new WritingReview();
+    ReviewBoard r = new ReviewBoard();
 
     r.setStoreName(prompt.inputString("가게명을 입력해주세요. "));
     r.setMenu(prompt.inputString("메뉴을 입력해주세요. "));
@@ -26,7 +26,7 @@ public class WritingReviewAddCommand implements Command {
     r.setReview(prompt.inputString("후기를 입력해주세요. "));
 
     try {
-      writingReviewDao.insert(r);
+      reviewBoardDao.insert(r);
       System.out.println("저장하였습니다.");
 
     } catch (Exception e) {

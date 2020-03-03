@@ -1,15 +1,15 @@
 package tema.frr.chicken.handler;
 
-import tema.frr.chicken.dao.proxy.ClientDaoProxy;
+import tema.frr.chicken.dao.ClientDao;
 import tema.frr.chicken.domain.Client;
 import tema.frr.chicken.util.Prompt;
 
 public class ClientDetailCommand implements Command {
 
-  ClientDaoProxy clientDao;
+  ClientDao clientDao;
   Prompt prompt;
 
-  public ClientDetailCommand(ClientDaoProxy clientDao, Prompt prompt) {
+  public ClientDetailCommand(ClientDao clientDao, Prompt prompt) {
     this.clientDao = clientDao;
     this.prompt = prompt;
   }
@@ -17,9 +17,9 @@ public class ClientDetailCommand implements Command {
   @Override
   public void execute() {
     try {
-      String id = prompt.inputString("ID? ");
+      int clientNo = prompt.inputInt("번호? ");
 
-      Client client = clientDao.findById(id);
+      Client client = clientDao.findByClientNo(clientNo);
 
       System.out.printf("이름 : %s\n", client.getName());
       System.out.printf("생일 : %s\n", client.getBirthday());

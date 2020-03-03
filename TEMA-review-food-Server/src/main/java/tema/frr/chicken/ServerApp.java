@@ -18,18 +18,18 @@ import java.util.concurrent.Executors;
 
 import tema.frr.chicken.context.ApplicationContextListener;
 import tema.frr.chicken.dao.ClientDao;
-import tema.frr.chicken.dao.WritingReviewDao;
+import tema.frr.chicken.dao.ReviewBoardDao;
 import tema.frr.chicken.servlet.ClientAddServlet;
 import tema.frr.chicken.servlet.ClientDeleteServlet;
 import tema.frr.chicken.servlet.ClientDetailServlet;
 import tema.frr.chicken.servlet.ClientListServlet;
 import tema.frr.chicken.servlet.ClientUpdateServlet;
 import tema.frr.chicken.servlet.Servlet;
-import tema.frr.chicken.servlet.WritingReviewAddServlet;
-import tema.frr.chicken.servlet.WritingReviewDeleteServlet;
-import tema.frr.chicken.servlet.WritingReviewDetailServlet;
-import tema.frr.chicken.servlet.WritingReviewListServlet;
-import tema.frr.chicken.servlet.WritingReviewUpdateServlet;
+import tema.frr.chicken.servlet.ReviewBoardAddServlet;
+import tema.frr.chicken.servlet.ReviewBoardDeleteServlet;
+import tema.frr.chicken.servlet.ReviewBoardDetailServlet;
+import tema.frr.chicken.servlet.ReviewBoardListServlet;
+import tema.frr.chicken.servlet.ReviewBoardUpdateServlet;
 
 public class ServerApp {
 
@@ -65,22 +65,22 @@ public class ServerApp {
     notifyApplicationInitialized();
 
     ClientDao clientDao = (ClientDao) context.get("clientDao");
-    WritingReviewDao writingReviewJsonFileDao =
-        (WritingReviewDao) context.get("writingReviewDao");
+    ReviewBoardDao writingReviewJsonFileDao =
+        (ReviewBoardDao) context.get("writingReviewDao");
 
     servletMap.put("/client/list", new ClientListServlet(clientDao));
     servletMap.put("/client/add", new ClientAddServlet(clientDao));
     servletMap.put("/client/detail", new ClientDetailServlet(clientDao));
     servletMap.put("/client/update", new ClientUpdateServlet(clientDao));
     servletMap.put("/client/delete", new ClientDeleteServlet(clientDao));
-    servletMap.put("/writingReview/list", new WritingReviewListServlet(writingReviewJsonFileDao));
-    servletMap.put("/writingReview/add", new WritingReviewAddServlet(writingReviewJsonFileDao));
+    servletMap.put("/writingReview/list", new ReviewBoardListServlet(writingReviewJsonFileDao));
+    servletMap.put("/writingReview/add", new ReviewBoardAddServlet(writingReviewJsonFileDao));
     servletMap.put("/writingReview/detail",
-        new WritingReviewDetailServlet(writingReviewJsonFileDao));
+        new ReviewBoardDetailServlet(writingReviewJsonFileDao));
     servletMap.put("/writingReview/update",
-        new WritingReviewUpdateServlet(writingReviewJsonFileDao));
+        new ReviewBoardUpdateServlet(writingReviewJsonFileDao));
     servletMap.put("/writingReview/delete",
-        new WritingReviewDeleteServlet(writingReviewJsonFileDao));
+        new ReviewBoardDeleteServlet(writingReviewJsonFileDao));
 
     try (ServerSocket serverSocket = new ServerSocket(9999)) {
 

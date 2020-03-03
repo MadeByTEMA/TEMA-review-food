@@ -2,16 +2,16 @@ package tema.frr.chicken.handler;
 
 import java.sql.Date;
 
-import tema.frr.chicken.dao.proxy.ClientDaoProxy;
+import tema.frr.chicken.dao.ClientDao;
 import tema.frr.chicken.domain.Client;
 import tema.frr.chicken.util.Prompt;
 
 public class ClientAddCommand implements Command {
 
-  ClientDaoProxy clientDao;
+  ClientDao clientDao;
   Prompt prompt;
 
-  public ClientAddCommand(ClientDaoProxy clientDao, Prompt prompt) {
+  public ClientAddCommand(ClientDao clientDao, Prompt prompt) {
     this.clientDao = clientDao;
     this.prompt = prompt;
   }

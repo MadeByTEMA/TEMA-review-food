@@ -2,14 +2,14 @@ package tema.frr.chicken.handler;
 
 import java.util.List;
 
-import tema.frr.chicken.dao.proxy.ClientDaoProxy;
+import tema.frr.chicken.dao.ClientDao;
 import tema.frr.chicken.domain.Client;
 
 public class ClientListCommand implements Command {
 
-  ClientDaoProxy clientDao;
+  ClientDao clientDao;
 
-  public ClientListCommand(ClientDaoProxy clientDao) {
+  public ClientListCommand(ClientDao clientDao) {
     this.clientDao = clientDao;
   }
 

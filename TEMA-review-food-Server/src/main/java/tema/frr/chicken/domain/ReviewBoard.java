@@ -2,7 +2,7 @@ package tema.frr.chicken.domain;
 
 import java.io.Serializable;
 
-public class WritingReview implements Serializable {
+public class ReviewBoard implements Serializable {
 
   private static final long serialVersionUID = 202002007L;
 
@@ -10,6 +10,7 @@ public class WritingReview implements Serializable {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
+    result = prime * result + boardNo;
     result = prime * result + ((category == null) ? 0 : category.hashCode());
     result = prime * result + ((menu == null) ? 0 : menu.hashCode());
     result = prime * result + price;
@@ -24,48 +25,84 @@ public class WritingReview implements Serializable {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
-    WritingReview other = (WritingReview) obj;
+    }
+    ReviewBoard other = (ReviewBoard) obj;
+    if (boardNo != other.boardNo) {
+      return false;
+    }
     if (category == null) {
-      if (other.category != null)
+      if (other.category != null) {
         return false;
-    } else if (!category.equals(other.category))
+      }
+    } else if (!category.equals(other.category)) {
       return false;
+    }
     if (menu == null) {
-      if (other.menu != null)
+      if (other.menu != null) {
         return false;
-    } else if (!menu.equals(other.menu))
+      }
+    } else if (!menu.equals(other.menu)) {
       return false;
-    if (price != other.price)
+    }
+    if (price != other.price) {
       return false;
+    }
     if (review == null) {
-      if (other.review != null)
+      if (other.review != null) {
         return false;
-    } else if (!review.equals(other.review))
+      }
+    } else if (!review.equals(other.review)) {
       return false;
-    if (starPrice != other.starPrice)
+    }
+    if (starPrice != other.starPrice) {
       return false;
-    if (starQuality != other.starQuality)
+    }
+    if (starQuality != other.starQuality) {
       return false;
-    if (starQuantity != other.starQuantity)
+    }
+    if (starQuantity != other.starQuantity) {
       return false;
-    if (starTotalSum != other.starTotalSum)
+    }
+    if (starTotalSum != other.starTotalSum) {
       return false;
+    }
     if (storeName == null) {
-      if (other.storeName != null)
+      if (other.storeName != null) {
         return false;
-    } else if (!storeName.equals(other.storeName))
+      }
+    } else if (!storeName.equals(other.storeName)) {
       return false;
+    }
     return true;
   }
 
+  private int boardNo;
   private String category;
   private String storeName;
+
+  @Override
+  public String toString() {
+    return "ReviewBoard [boardNo=" + boardNo + ", category=" + category + ", storeName=" + storeName + ", menu=" + menu
+        + ", price=" + price + ", starQuality=" + starQuality + ", starQuantity=" + starQuantity + ", starPrice="
+        + starPrice + ", starTotalSum=" + starTotalSum + ", review=" + review + "]";
+  }
+
+  public int getBoardNo() {
+    return boardNo;
+  }
+
+  public void setBoardNo(int boardNo) {
+    this.boardNo = boardNo;
+  }
+
   private String menu;
   private int price;
   private int starQuality;
@@ -152,27 +189,27 @@ public class WritingReview implements Serializable {
 
 
 
-  public static WritingReview valueOf(String csv) {
+  public static ReviewBoard valueOf(String csv) {
     String[] data = csv.split(",");
 
-    WritingReview writingReview = new WritingReview();
+    ReviewBoard reviewBoard = new ReviewBoard();
 
-    writingReview.setCategory(data[0]);
-    writingReview.setStoreName(data[1]);
-    writingReview.setMenu(data[2]);
-    writingReview.setPrice(Integer.parseInt(data[3]));
-    writingReview.setStarQuality(Integer.parseInt(data[4]));
-    writingReview.setStarQuantity(Integer.parseInt(data[5]));
-    writingReview.setStarPrice(Integer.parseInt(data[6]));
-    writingReview.setReview(data[7]);
+    reviewBoard.setBoardNo(Integer.parseInt(data[0]));
+    reviewBoard.setCategory(data[1]);
+    reviewBoard.setStoreName(data[2]);
+    reviewBoard.setMenu(data[3]);
+    reviewBoard.setPrice(Integer.parseInt(data[4]));
+    reviewBoard.setStarQuality(Integer.parseInt(data[5]));
+    reviewBoard.setStarQuantity(Integer.parseInt(data[6]));
+    reviewBoard.setStarPrice(Integer.parseInt(data[7]));
+    reviewBoard.setReview(data[8]);
 
-    return writingReview;
+    return reviewBoard;
   }
 
   public String toCsvString() {
-    return String.format("%s,%s,%s,%s,%d,%d,%d,%s\n", this.getCategory(), this.getStoreName(),
+    return String.format("%d,%s,%s,%s,%s,%d,%d,%d,%s\n",this.getBoardNo(), this.getCategory(), this.getStoreName(),
         this.getMenu(), this.getPrice(), this.getStarQuality(), this.getStarQuantity(),
         this.getStarPrice(), this.getStarTotalSum(), this.getReview());
   }
-
 }

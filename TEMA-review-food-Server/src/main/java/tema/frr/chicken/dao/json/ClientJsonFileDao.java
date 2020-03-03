@@ -4,7 +4,6 @@ import java.util.List;
 
 import tema.frr.chicken.dao.ClientDao;
 import tema.frr.chicken.domain.Client;
-import tema.frr.chicken.domain.WritingReview;
 
 public class ClientJsonFileDao extends AbstractJsonFileDao<Client> implements ClientDao{
 
@@ -12,6 +11,7 @@ public class ClientJsonFileDao extends AbstractJsonFileDao<Client> implements Cl
     super(filename);
   }
 
+  @Override
   public int insert(Client client) throws Exception {
 
     if (indexOf(client.getId()) > -1) { // 같은 번호의 게시물이 있다면,
@@ -23,10 +23,12 @@ public class ClientJsonFileDao extends AbstractJsonFileDao<Client> implements Cl
     return 1;
   }
 
+  @Override
   public List<Client> findAll() throws Exception {
     return list;
   }
 
+  @Override
   public Client findById(String id) throws Exception {
     int index = indexOf(id);
     if (index == -1) {
@@ -35,6 +37,16 @@ public class ClientJsonFileDao extends AbstractJsonFileDao<Client> implements Cl
     return list.get(index);
   }
 
+  @Override
+  public Client findByClientNo(int clientNo) throws Exception {
+    int index = indexOf(clientNo);
+    if (index == -1) {
+      return null;
+    }
+    return list.get(index);
+  }
+
+  @Override
   public int update(Client client) throws Exception {
     int index = indexOf(client.getId());
 
@@ -47,6 +59,7 @@ public class ClientJsonFileDao extends AbstractJsonFileDao<Client> implements Cl
     return 1;
   }
 
+  @Override
   public int delete(String id) throws Exception {
     int index = indexOf(id);
     if (index == -1) {

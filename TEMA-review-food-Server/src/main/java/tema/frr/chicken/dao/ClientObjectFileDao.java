@@ -1,6 +1,7 @@
 package tema.frr.chicken.dao;
 
 import java.util.List;
+
 import tema.frr.chicken.domain.Client;
 
 public class ClientObjectFileDao extends AbstractObjectFileDao<Client> implements ClientDao{
@@ -9,6 +10,7 @@ public class ClientObjectFileDao extends AbstractObjectFileDao<Client> implement
     super(filename);
   }
 
+  @Override
   public int insert(Client client) throws Exception {
 
     if (indexOf(client.getId()) > -1) { // 같은 번호의 게시물이 있다면,
@@ -20,10 +22,22 @@ public class ClientObjectFileDao extends AbstractObjectFileDao<Client> implement
     return 1;
   }
 
+  @Override
   public List<Client> findAll() throws Exception {
     return list;
   }
 
+  @Override
+  public Client findByClientNo(int clientNo) throws Exception {
+    int index = indexOf(clientNo);
+    if (index == -1) {
+      return null;
+    }
+    return list.get(index);
+  }
+
+
+  @Override
   public Client findById(String id) throws Exception {
     int index = indexOf(id);
     if (index == -1) {
@@ -32,6 +46,7 @@ public class ClientObjectFileDao extends AbstractObjectFileDao<Client> implement
     return list.get(index);
   }
 
+  @Override
   public int update(Client client) throws Exception {
     int index = indexOf(client.getId());
 
@@ -44,6 +59,7 @@ public class ClientObjectFileDao extends AbstractObjectFileDao<Client> implement
     return 1;
   }
 
+  @Override
   public int delete(String id) throws Exception {
     int index = indexOf(id);
     if (index == -1) {
