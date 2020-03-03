@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import tema.frr.chicken.context.ApplicationContextListener;
 import tema.frr.chicken.dao.ClientDao;
@@ -34,6 +36,8 @@ public class ServerApp {
   Set<ApplicationContextListener> listeners = new HashSet<>();
   Map<String, Object> context = new HashMap<>();
   Map<String, Servlet> servletMap = new HashMap<>();
+  ExecutorService executorService = Executors.newCachedThreadPool();
+
 
   public void addApplicationContextListener(ApplicationContextListener listener) {
     listeners.add(listener);
@@ -86,15 +90,16 @@ public class ServerApp {
         Socket socket = serverSocket.accept();
         System.out.println("Client 연결 되었음!");
 
-        new Thread(() -> {
+        executorService.submit(() -> {
           processRequest(socket);
-        }).start();
+        });
       }
 
     } catch (Exception e) {
       System.out.println("서버 준비 중 오류 발생!");
-      System.out.println("--------------------------------------");
     }
+
+    executorService.shutdown();
 
     notifyApplicationDestroyed();
 
