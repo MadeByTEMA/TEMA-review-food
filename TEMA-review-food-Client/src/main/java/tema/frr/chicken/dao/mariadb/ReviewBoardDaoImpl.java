@@ -1,7 +1,6 @@
 package tema.frr.chicken.dao.mariadb;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -12,12 +11,15 @@ import tema.frr.chicken.domain.ReviewBoard;
 
 public class ReviewBoardDaoImpl implements ReviewBoardDao{
 
+  Connection con;
+
+  public ReviewBoardDaoImpl(Connection con) {
+    this.con = con;
+  }
+
   @Override
   public int insert(ReviewBoard reviewBoard) throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
-    try (Connection con = DriverManager.getConnection(
-        "jdbc:mariadb://localhost:3306/frr", "tema", "1111");
-        Statement stmt = con.createStatement()) {
+    try (Statement stmt = con.createStatement()) {
       int result = stmt.executeUpdate("insert into frr_board(stnm, menu, price, stqul, stquan, revi)" +
           " values( '" + reviewBoard.getStoreName() + "', '" + reviewBoard.getMenu() + "', '" + reviewBoard.getPrice() + "', '" + reviewBoard.getStarQuality() + "', '" + reviewBoard.getStarQuantity() + "', '" + reviewBoard.getReview() +"')");
       return result;
@@ -26,10 +28,7 @@ public class ReviewBoardDaoImpl implements ReviewBoardDao{
 
   @Override
   public List<ReviewBoard> findAll() throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
-    try (Connection con = DriverManager.getConnection(
-        "jbdc:mariadb://localhost:3306/frr", "tema", "1111");
-        Statement stmt = con.createStatement();
+    try (Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery("select board_no, cg, stnm, menu, price, stqul, stquan, stprice revi from frr_board")) {
       ArrayList<ReviewBoard> list = new ArrayList<>();
 
@@ -53,10 +52,7 @@ public class ReviewBoardDaoImpl implements ReviewBoardDao{
 
   @Override
   public ReviewBoard findByBoardNo(int boardNo) throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
-    try (Connection con = DriverManager.getConnection(
-        "jdbc:mariadb://localhost:3306/frr", "tema", "1111");
-        Statement stmt = con.createStatement();
+    try (Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery("select board_no, cg, stnm, menu, price, stqul, stquan, stprice revi from frr_board where board_no=" + boardNo)) {
 
       if (rs.next()) {
@@ -80,10 +76,7 @@ public class ReviewBoardDaoImpl implements ReviewBoardDao{
 
   @Override
   public int update(ReviewBoard reviewBoard) throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
-    try (Connection con = DriverManager.getConnection(
-        "jdbc:mariadb://localhost:3306/frr", "tema", "1111");
-        Statement stmt = con.createStatement()) {
+    try (Statement stmt = con.createStatement()) {
       int result = stmt.executeUpdate("update frr_board set stnm='" + reviewBoard.getStoreName() + "', menu='" + reviewBoard.getMenu() + "', price='"+ reviewBoard.getPrice() + "', stqul='"+ reviewBoard.getStarQuality() + "', stquan='"+ reviewBoard.getStarQuantity() + "', revi='"+ reviewBoard.getReview() + "' where board_no=" + reviewBoard.getBoardNo());
       return result;
     }
@@ -91,11 +84,7 @@ public class ReviewBoardDaoImpl implements ReviewBoardDao{
 
   @Override
   public int delete(int boardNo) throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
-
-    try (Connection con = DriverManager.getConnection( //
-        "jdbc:mariadb://localhost:3306/frr", "tema", "1111");
-        Statement stmt = con.createStatement()) {
+    try (Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("delete from frr_board where board_no=" + boardNo);
 

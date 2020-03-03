@@ -1,5 +1,7 @@
 package tema.frr.chicken;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
@@ -33,17 +35,21 @@ public class ClientApp {
   Deque<String> commandStack;
   Queue<String> commandQueue;
 
-  String host;
-  int port;
+  Connection con;
 
   HashMap<String, Command> commandMap = new HashMap<>();
 
-  public ClientApp() {
+  public ClientApp() throws Exception {
+
+    Class.forName("org.mariadb.jdbc.Driver");
+    con = DriverManager.getConnection(
+        "jdbc:mariadb://localhost:3306/studydb", "study", "1111");
+
     commandStack = new ArrayDeque<>();
     commandQueue = new LinkedList<>();
 
-    ClientDao clientDao = new ClientDaoImpl();
-    ReviewBoardDao reviewBoardDao = new ReviewBoardDaoImpl();
+    ClientDao clientDao = new ClientDaoImpl(con);
+    ReviewBoardDao reviewBoardDao = new ReviewBoardDaoImpl(con);
 
     commandMap.put("/client/add", new ClientAddCommand(clientDao, prompt));
     commandMap.put("/client/list", new ClientListCommand(clientDao));
@@ -112,13 +118,10 @@ public class ClientApp {
     }
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
     System.out.println("먹어봐따 ( Try it ) Client 시스템입니다.");
 
     ClientApp app = new ClientApp();
     app.service();
-
   }
-
-
 }
