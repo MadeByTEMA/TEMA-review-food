@@ -1,14 +1,14 @@
 package tema.frr.chicken.handler;
 
-import tema.frr.chicken.dao.proxy.WritingReviewDaoProxy;
+import tema.frr.chicken.dao.proxy.ReviewBoardDaoProxy;
 import tema.frr.chicken.util.Prompt;
 
 public class WritingReviewDeleteCommand implements Command {
 
-  WritingReviewDaoProxy writingReviewDao;
+  ReviewBoardDaoProxy writingReviewDao;
   Prompt prompt;
 
-  public WritingReviewDeleteCommand(WritingReviewDaoProxy writingReviewDao, Prompt prompt) {
+  public WritingReviewDeleteCommand(ReviewBoardDaoProxy writingReviewDao, Prompt prompt) {
     this.writingReviewDao = writingReviewDao;
     this.prompt = prompt;
   }

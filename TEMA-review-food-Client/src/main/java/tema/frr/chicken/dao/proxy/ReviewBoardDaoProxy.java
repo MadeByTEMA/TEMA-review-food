@@ -5,11 +5,11 @@ import java.util.List;
 import tema.frr.chicken.dao.WritingReviewDao;
 import tema.frr.chicken.domain.WritingReview;
 
-public class WritingReviewDaoProxy implements WritingReviewDao{
+public class ReviewBoardDaoProxy implements WritingReviewDao{
 
   DaoProxyHelper daoProxyHelper;
 
-  public WritingReviewDaoProxy(DaoProxyHelper daoProxyHelper) {
+  public ReviewBoardDaoProxy(DaoProxyHelper daoProxyHelper) {
     this.daoProxyHelper = daoProxyHelper;
   }
 

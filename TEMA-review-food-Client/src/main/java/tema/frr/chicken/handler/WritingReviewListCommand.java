@@ -2,16 +2,16 @@ package tema.frr.chicken.handler;
 
 import java.util.List;
 
-import tema.frr.chicken.dao.proxy.WritingReviewDaoProxy;
+import tema.frr.chicken.dao.proxy.ReviewBoardDaoProxy;
 import tema.frr.chicken.domain.WritingReview;
 import tema.frr.chicken.util.Prompt;
 
 public class WritingReviewListCommand implements Command {
 
-  WritingReviewDaoProxy writingReviewDao;
+  ReviewBoardDaoProxy writingReviewDao;
   Prompt prompt;
 
-  public WritingReviewListCommand(WritingReviewDaoProxy writingReviewDao) {
+  public WritingReviewListCommand(ReviewBoardDaoProxy writingReviewDao) {
     this.writingReviewDao = writingReviewDao;
   }
 
