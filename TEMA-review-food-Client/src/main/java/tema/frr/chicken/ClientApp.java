@@ -12,6 +12,7 @@ import java.util.Queue;
 import java.util.Scanner;
 
 import tema.frr.chicken.dao.proxy.ClientDaoProxy;
+import tema.frr.chicken.dao.proxy.DaoProxyHelper;
 import tema.frr.chicken.dao.proxy.WritingReviewDaoProxy;
 import tema.frr.chicken.handler.ClientAddCommand;
 import tema.frr.chicken.handler.ClientDeleteCommand;
@@ -54,8 +55,10 @@ public class ClientApp {
     }
 
 
-    ClientDaoProxy clientDao = new ClientDaoProxy(host, port);
-    WritingReviewDaoProxy writingReviewDao = new WritingReviewDaoProxy(host, port);
+    DaoProxyHelper daoProxyHelper = new DaoProxyHelper(host, port);
+
+    ClientDaoProxy clientDao = new ClientDaoProxy(daoProxyHelper);
+    WritingReviewDaoProxy writingReviewDao = new WritingReviewDaoProxy(daoProxyHelper);
 
     commandMap.put("/client/add", new ClientAddCommand(clientDao, prompt));
     commandMap.put("/client/list", new ClientListCommand(clientDao));
