@@ -86,15 +86,14 @@ public class ServerApp {
         Socket socket = serverSocket.accept();
         System.out.println("Client 연결 되었음!");
 
-        if (processRequest(socket) == 9) {
-          break;
-        }
-
+        new Thread(() -> {
+          processRequest(socket);
+        }).start();
       }
 
     } catch (Exception e) {
       System.out.println("서버 준비 중 오류 발생!");
-      return;
+      System.out.println("--------------------------------------");
     }
 
     notifyApplicationDestroyed();
