@@ -1,30 +1,14 @@
 package tema.frr.chicken;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.io.PrintStream;
+import java.net.Socket;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
-import tema.frr.chicken.dao.ClientDao;
-import tema.frr.chicken.dao.ReviewBoardDao;
-import tema.frr.chicken.dao.mariadb.ClientDaoImpl;
-import tema.frr.chicken.dao.mariadb.ReviewBoardDaoImpl;
-import tema.frr.chicken.handler.ClientAddCommand;
-import tema.frr.chicken.handler.ClientDeleteCommand;
-import tema.frr.chicken.handler.ClientDetailCommand;
-import tema.frr.chicken.handler.ClientListCommand;
-import tema.frr.chicken.handler.ClientUpdateCommand;
-import tema.frr.chicken.handler.Command;
-import tema.frr.chicken.handler.ReviewBoardAddCommand;
-import tema.frr.chicken.handler.ReviewBoardDeleteCommand;
-import tema.frr.chicken.handler.ReviewBoardDetailCommand;
-import tema.frr.chicken.handler.ReviewBoardListCommand;
-import tema.frr.chicken.handler.ReviewBoardUpdateCommand;
 import tema.frr.chicken.util.Prompt;
 
 public class ClientApp {
@@ -35,33 +19,10 @@ public class ClientApp {
   Deque<String> commandStack;
   Queue<String> commandQueue;
 
-  Connection con;
-
-  HashMap<String, Command> commandMap = new HashMap<>();
-
   public ClientApp() throws Exception {
-
-    Class.forName("org.mariadb.jdbc.Driver");
-    con = DriverManager.getConnection(
-        "jdbc:mariadb://localhost:3306/studydb", "study", "1111");
 
     commandStack = new ArrayDeque<>();
     commandQueue = new LinkedList<>();
-
-    ClientDao clientDao = new ClientDaoImpl(con);
-    ReviewBoardDao reviewBoardDao = new ReviewBoardDaoImpl(con);
-
-    commandMap.put("/client/add", new ClientAddCommand(clientDao, prompt));
-    commandMap.put("/client/list", new ClientListCommand(clientDao));
-    commandMap.put("/client/detail", new ClientDetailCommand(clientDao, prompt));
-    commandMap.put("/client/delete", new ClientDeleteCommand(clientDao, prompt));
-    commandMap.put("/client/update", new ClientUpdateCommand(clientDao, prompt));
-
-    commandMap.put("/reviewboard/add", new ReviewBoardAddCommand(reviewBoardDao, prompt));
-    commandMap.put("/reviewboard/list", new ReviewBoardListCommand(reviewBoardDao));
-    commandMap.put("/reviewboard/detail", new ReviewBoardDetailCommand(reviewBoardDao, prompt));
-    commandMap.put("/reviewboard/delete", new ReviewBoardDeleteCommand(reviewBoardDao, prompt));
-    commandMap.put("/reviewboard/update", new ReviewBoardUpdateCommand(reviewBoardDao, prompt));
   }
 
   public void service() {
@@ -94,15 +55,44 @@ public class ClientApp {
   }
 
   public void processCommand(String command) {
-    Command commandHandler = commandMap.get(command);
 
-    if (commandHandler == null) {
-      System.out.println("실행할 수 없는 명령입니다.");
-      return;
+    String host = null;
+    int port = 9999;
+    String servletPath = null;
+
+    int index = command.indexOf('/');
+    String[] str =
+        command.substring(0, index)
+        .split(":");
+
+    host = str[0];
+    if (str.length == 2) {
+      port = Integer.parseInt(str[1]);
     }
-    commandHandler.execute();
-  }
 
+    servletPath = command.substring(index);
+    System.out.printf("=> %s\n", servletPath);
+
+    try (Socket socket = new Socket(host, port);
+        PrintStream out = new PrintStream(socket.getOutputStream());
+        Scanner in = new Scanner(socket.getInputStream())) {
+
+      out.println(servletPath);
+      out.flush();
+
+      while (true) {
+        String response = in.nextLine();
+        if (response.equals("!end!")) {
+          break;
+        }
+
+        System.out.println(response);
+      }
+
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+    }
+  }
   void printCommandHistory(Iterator<String> iterator) {
     int count = 0;
     while (!iterator.hasNext()) {

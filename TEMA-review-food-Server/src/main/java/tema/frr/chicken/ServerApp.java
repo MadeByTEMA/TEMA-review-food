@@ -5,13 +5,14 @@
 package tema.frr.chicken;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,12 +25,12 @@ import tema.frr.chicken.servlet.ClientDeleteServlet;
 import tema.frr.chicken.servlet.ClientDetailServlet;
 import tema.frr.chicken.servlet.ClientListServlet;
 import tema.frr.chicken.servlet.ClientUpdateServlet;
-import tema.frr.chicken.servlet.Servlet;
 import tema.frr.chicken.servlet.ReviewBoardAddServlet;
 import tema.frr.chicken.servlet.ReviewBoardDeleteServlet;
 import tema.frr.chicken.servlet.ReviewBoardDetailServlet;
 import tema.frr.chicken.servlet.ReviewBoardListServlet;
 import tema.frr.chicken.servlet.ReviewBoardUpdateServlet;
+import tema.frr.chicken.servlet.Servlet;
 
 public class ServerApp {
 
@@ -99,18 +100,26 @@ public class ServerApp {
       System.out.println("서버 준비 중 오류 발생!");
     }
 
-    executorService.shutdown();
-
     notifyApplicationDestroyed();
+
+    executorService.shutdown();
 
   }
 
   @SuppressWarnings("unchecked")
   int processRequest(Socket clientSocket) {
     try (Socket socket = clientSocket;
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+        Scanner in = new Scanner(socket.getInputStream());
+        PrintStream out = new PrintStream(socket.getOutputStream())) {
+      String request = in.nextLine();
+      System.out.printf("=> %s\n", request);
 
+      // 클라이언트에게 응답한다.
+      out.println("안녕하세요!");
+      out.println("반가워요!");
+      out.println("!end!");
+
+      /*
       System.out.println("통신을 위한 입출력 스트림을 준비하였음!");
 
       String request = in.readUTF();
@@ -137,7 +146,7 @@ public class ServerApp {
       } else {
         notFound(out);
       }
-
+       */
       out.flush();
       System.out.println("클라이언트에게 응답하였음!");
       return 0;
