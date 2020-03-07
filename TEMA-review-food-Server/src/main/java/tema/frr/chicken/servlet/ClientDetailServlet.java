@@ -1,7 +1,7 @@
 package tema.frr.chicken.servlet;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.PrintStream;
+import java.util.Scanner;
 
 import tema.frr.chicken.dao.ClientDao;
 import tema.frr.chicken.domain.Client;
@@ -15,18 +15,23 @@ public class ClientDetailServlet implements Servlet {
   }
 
   @Override
-  public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
-    String id = in.readUTF();
+  public void service(Scanner in, PrintStream out) throws Exception {
+    out.println("번호? ");
+    out.println("!{}!");
+    out.flush();
+    int clientNo = Integer.parseInt(in.nextLine());
 
-    Client client = clientDao.findById(id);
+    Client client = clientDao.findByClientNo(clientNo);
 
     if (client != null) {
-      out.writeUTF("OK");
-      out.writeObject(client);
-
+      out.printf("이름 : %s\n", client.getName());
+      out.printf("생일 : %s\n", client.getBirthday());
+      out.printf("성별 : %s\n", client.getSex());
+      out.printf("전화번호 : %s\n", client.getTel());
+      out.printf("주소 : %s\n", client.getAddress());
+      out.printf("가입일 : %s\n", client.getSignUpDate());
     } else {
-      out.writeUTF("FAIL");
-      out.writeUTF("해당 ID의 고객이 없습니다.");
+      out.println("해당 번호의 고객이 없습니다.");
     }
   }
 }

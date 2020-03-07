@@ -1,7 +1,7 @@
 package tema.frr.chicken.servlet;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.PrintStream;
+import java.util.Scanner;
 
 import tema.frr.chicken.dao.ReviewBoardDao;
 import tema.frr.chicken.domain.ReviewBoard;
@@ -15,19 +15,27 @@ public class ReviewBoardDetailServlet implements Servlet {
   }
 
   @Override
-  public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
-    int boardNo = in.readInt();
+  public void service(Scanner in, PrintStream out) throws Exception {
+    out.println("번호? ");
+    out.println("!{}!");
+    out.flush();
 
-    ReviewBoard ReviewBoard = reviewBoardDao.findByBoardNo(boardNo);
+    int boardNo = Integer.parseInt(in.nextLine());
+
+    ReviewBoard reviewBoard = reviewBoardDao.findByBoardNo(boardNo);
 
 
-    if (ReviewBoard != null) {
-      out.writeUTF("OK");
-      out.writeObject(ReviewBoard);
+    if (reviewBoard != null) {
+      out.printf("메뉴 : %s\n", reviewBoard.getStoreName());
+      out.printf("메뉴 : %s\n", reviewBoard.getMenu());
+      out.printf("가격 : %s\n", reviewBoard.getPrice());
+      out.printf("총 별점 : %s\n", reviewBoard.getStarTotalSum());
+      out.printf("맛 별점:  %s\n", reviewBoard.getStarQuality());
+      out.printf("양 별점 : %s\n", reviewBoard.getStarQuantity());
+      out.printf("후기 : %s\n", reviewBoard.getReview());
 
     } else {
-      out.writeUTF("FAIL");
-      out.writeUTF("해당 후기가 없습니다.");
+      out.println("해당 후기가 없습니다.");
     }
   }
 }

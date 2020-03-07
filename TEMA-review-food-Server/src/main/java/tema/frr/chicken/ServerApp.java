@@ -93,6 +93,7 @@ public class ServerApp {
 
         executorService.submit(() -> {
           processRequest(socket);
+          System.out.println("--------------------------------------");
         });
       }
 
@@ -110,6 +111,7 @@ public class ServerApp {
     try (Socket socket = clientSocket;
         Scanner in = new Scanner(socket.getInputStream());
         PrintStream out = new PrintStream(socket.getOutputStream())) {
+
       String request = in.nextLine();
       System.out.printf("=> %s\n", request);
 

@@ -1,7 +1,7 @@
 package tema.frr.chicken.servlet;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.PrintStream;
+import java.util.Scanner;
 
 import tema.frr.chicken.dao.ReviewBoardDao;
 import tema.frr.chicken.domain.ReviewBoard;
@@ -15,14 +15,59 @@ public class ReviewBoardUpdateServlet implements Servlet {
   }
 
   @Override
-  public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
-    ReviewBoard ReviewBoard = (ReviewBoard) in.readObject();
+  public void service(Scanner in, PrintStream out) throws Exception {
+    out.println("번호? ");
+    out.println("!{}!");
+    out.flush();
+    int boardNo = Integer.parseInt(in.nextLine());
 
-    if (reviewBoardDao.update(ReviewBoard) > 0) {
-      out.writeUTF("OK");
+    ReviewBoard oldReviewBoard = null;
+
+    try {
+      oldReviewBoard = reviewBoardDao.findByBoardNo(boardNo);
+    } catch (Exception e) {
+      System.out.println("해당 스토어의 게시글의 없습니다!");
+      return;
+    }
+
+    ReviewBoard newReviewBoard = new ReviewBoard();
+
+    newReviewBoard.setCategory(oldReviewBoard.getCategory());
+
+    out.printf("가게명(%s) \n", oldReviewBoard.getStoreName());
+    out.println("!{}!");
+    out.flush();
+    newReviewBoard.setStoreName(in.nextLine());
+
+    out.printf("메뉴(%s) \n", oldReviewBoard.getMenu());
+    out.println("!{}!");
+    out.flush();
+    newReviewBoard.setMenu(in.nextLine());
+
+    out.printf("가격(%s) \n", oldReviewBoard.getPrice());
+    out.println("!{}!");
+    out.flush();
+    newReviewBoard.setPrice(Integer.parseInt(in.nextLine()));
+
+    out.printf("맛 별점(%s) \n", oldReviewBoard.getStarQuality());
+    out.println("!{}!");
+    out.flush();
+    newReviewBoard.setStarQuality(Integer.parseInt(in.nextLine()));
+
+    out.printf("양 별점(%s) \n", oldReviewBoard.getStarQuantity());
+    out.println("!{}!");
+    out.flush();
+    newReviewBoard.setStarQuantity(Integer.parseInt(in.nextLine()));
+
+    out.printf("후기(%s) \n", oldReviewBoard.getReview());
+    out.println("!{}!");
+    out.flush();
+    newReviewBoard.setReview(in.nextLine());
+
+    if (reviewBoardDao.update(oldReviewBoard) > 0) {
+      out.println("후기를 변경했습니다.");
     } else {
-      out.writeUTF("FAIL");
-      out.writeUTF("해당 후기가 없습니다.");
+      out.println("변경 실패!");
     }
   }
 }

@@ -1,7 +1,7 @@
 package tema.frr.chicken.servlet;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.PrintStream;
+import java.util.Scanner;
 
 import tema.frr.chicken.dao.ReviewBoardDao;
 
@@ -14,15 +14,17 @@ public class ReviewBoardDeleteServlet implements Servlet {
   }
 
   @Override
-  public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
-    int boardNo = in.readInt();
+  public void service(Scanner in, PrintStream out) throws Exception {
+    out.println("번호? ");
+    out.println("!{}!");
+    out.flush();
+    int boardNo = Integer.parseInt(in.nextLine());
 
     if (reviewBoardDao.delete(boardNo) > 0) {
-      out.writeUTF("OK");
+      out.println("후기를 삭제했습니다.");
 
     } else {
-      out.writeUTF("FAIL");
-      out.writeUTF("해당 후기가 없습니다.");
+      out.println("해당 후기가 없습니다.");
     }
   }
 }
