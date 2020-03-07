@@ -1,7 +1,6 @@
 package tema.frr.chicken;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.Map;
 
 import tema.frr.chicken.context.ApplicationContextListener;
@@ -18,14 +17,14 @@ public class DataLoaderListener implements ApplicationContextListener {
   @Override
   public void contextInitialized(Map<String, Object> context) {
     try {
-      Class.forName("org.mariadb.jdbc.Driver");
-      con = DriverManager.getConnection(
-          "jdbc:mariadb://localhost:3306/frr", "tema", "1111");
+      String jdbcUrl = "jdbc:mariadb://localhost:3306/studydb";
+      String username = "study";
+      String password = "1111";
 
-      context.put("clientDao", new ClientDaoImpl(con));
-      context.put("reviewBoardDao", new ReviewBoardDaoImpl(con));
-      context.put("photoBoardDao", new PhotoBoardDaoImpl(con));
-      context.put("photoFileDao", new PhotoFileDaoImpl(con));
+      context.put("clientDao", new ClientDaoImpl(jdbcUrl, username, password));
+      context.put("reviewBoardDao", new ReviewBoardDaoImpl(jdbcUrl, username, password));
+      context.put("photoBoardDao", new PhotoBoardDaoImpl(jdbcUrl, username, password));
+      context.put("photoFileDao", new PhotoFileDaoImpl(jdbcUrl, username, password));
 
     } catch (Exception e) {
       e.printStackTrace();
