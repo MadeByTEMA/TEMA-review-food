@@ -17,6 +17,10 @@ public interface ClientDao {
   public int update(Client client) throws Exception;
 
   public int delete(int clientNo) throws Exception;
+
+  default List<Client> findByKeyword(String keyword) throws Exception {
+    return null;
+  }
 }
 
 

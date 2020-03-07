@@ -114,4 +114,31 @@ public class ClientDaoImpl implements ClientDao{
       return result;
     }
   }
+
+  @Override
+  public List<Client> findByKeyword(String keyword) throws Exception {
+    try (Statement stmt = con.createStatement();
+        ResultSet rs = stmt.executeQuery("select client_no, id, pwd, name, vdt, gen, tel, address, sud from frr_client where id like '%" + keyword + "%' or name like '%" + keyword + "%' or tel like '%" + keyword + "%'")) {
+
+      ArrayList<Client> list = new ArrayList<>();
+
+      while (rs.next()) {
+        Client c = new Client();
+
+        c.setClientNo(rs.getInt("client_no"));
+        c.setId(rs.getString("id"));
+        c.setPwd(rs.getString("pwd"));
+        c.setName(rs.getString("name"));
+        c.setBirthday(rs.getDate("vdt"));
+        c.setSex(rs.getString("gen"));
+        c.setTel(rs.getString("tel"));
+        c.setAddress(rs.getString("address"));
+        c.setSignUpDate(rs.getDate("sud"));
+
+        list.add(c);
+      }
+
+      return list;
+    }
+  }
 }

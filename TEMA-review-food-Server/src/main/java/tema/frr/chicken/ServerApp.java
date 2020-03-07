@@ -24,6 +24,7 @@ import tema.frr.chicken.servlet.ClientAddServlet;
 import tema.frr.chicken.servlet.ClientDeleteServlet;
 import tema.frr.chicken.servlet.ClientDetailServlet;
 import tema.frr.chicken.servlet.ClientListServlet;
+import tema.frr.chicken.servlet.ClientSearchServlet;
 import tema.frr.chicken.servlet.ClientUpdateServlet;
 import tema.frr.chicken.servlet.ReviewBoardAddServlet;
 import tema.frr.chicken.servlet.ReviewBoardDeleteServlet;
@@ -74,6 +75,7 @@ public class ServerApp {
     servletMap.put("/client/detail", new ClientDetailServlet(clientDao));
     servletMap.put("/client/update", new ClientUpdateServlet(clientDao));
     servletMap.put("/client/delete", new ClientDeleteServlet(clientDao));
+    servletMap.put("/client/search", new ClientSearchServlet(clientDao));
     servletMap.put("/writingReview/list", new ReviewBoardListServlet(writingReviewJsonFileDao));
     servletMap.put("/writingReview/add", new ReviewBoardAddServlet(writingReviewJsonFileDao));
     servletMap.put("/writingReview/detail",
