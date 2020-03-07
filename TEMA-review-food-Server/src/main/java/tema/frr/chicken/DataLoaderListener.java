@@ -1,6 +1,5 @@
 package tema.frr.chicken;
 
-import java.sql.Connection;
 import java.util.Map;
 
 import tema.frr.chicken.context.ApplicationContextListener;
@@ -10,8 +9,6 @@ import tema.frr.chicken.dao.mariadb.PhotoFileDaoImpl;
 import tema.frr.chicken.dao.mariadb.ReviewBoardDaoImpl;
 
 public class DataLoaderListener implements ApplicationContextListener {
-
-  public static Connection con;
 
 
   @Override
@@ -33,10 +30,5 @@ public class DataLoaderListener implements ApplicationContextListener {
 
   @Override
   public void contextDestroyed(Map<String, Object> context) {
-    try {
-      con.close();
-    } catch (Exception e) {
-    }
   }
 }
-
