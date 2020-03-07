@@ -1,23 +1,38 @@
 package tema.frr.chicken;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.Map;
 
 import tema.frr.chicken.context.ApplicationContextListener;
-import tema.frr.chicken.dao.json.ClientJsonFileDao;
-import tema.frr.chicken.dao.json.ReviewBoardJsonFileDao;
+import tema.frr.chicken.dao.mariadb.ClientDaoImpl;
+import tema.frr.chicken.dao.mariadb.ReviewBoardDaoImpl;
 
 public class DataLoaderListener implements ApplicationContextListener {
+
+  Connection con;
 
 
   @Override
   public void contextInitialized(Map<String, Object> context) {
-    System.out.println("데이터를 로딩합니다.");
+    try {
+      Class.forName("org.mariadb.jdbc.Driver");
+      con = DriverManager.getConnection(
+          "jdbc:mariadb://localhost:3306/frr", "tema", "1111");
 
-    context.put("clientDao", new ClientJsonFileDao("./client.json"));
-    context.put("ReviewBoardDao", new ReviewBoardJsonFileDao("./ReviewBoard.json"));
+      context.put("clientDao", new ClientDaoImpl(con));
+      context.put("ReviewBoardDao", new ReviewBoardDaoImpl(con));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   @Override
-  public void contextDestroyed(Map<String, Object> context) {}
+  public void contextDestroyed(Map<String, Object> context) {
+    try {
+      con.close();
+    } catch (Exception e) {
+    }
+  }
 }
 

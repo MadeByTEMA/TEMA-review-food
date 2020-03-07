@@ -60,8 +60,8 @@ public class ClientJsonFileDao extends AbstractJsonFileDao<Client> implements Cl
   }
 
   @Override
-  public int delete(String id) throws Exception {
-    int index = indexOf(id);
+  public int delete(int clientNo) throws Exception {
+    int index = indexOf(clientNo);
     if (index == -1) {
       return 0;
     }

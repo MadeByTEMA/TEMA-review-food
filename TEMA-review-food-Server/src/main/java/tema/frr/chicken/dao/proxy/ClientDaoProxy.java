@@ -89,10 +89,10 @@ public class ClientDaoProxy implements ClientDao{
   }
 
   @Override
-  public int delete(String id) throws Exception {
+  public int delete(int clientNo) throws Exception {
     return (int) daoProxyHelper.request((in, out) -> {
       out.writeUTF("/client/delete");
-      out.writeUTF(id);
+      out.writeInt(clientNo);
       out.flush();
 
       String response = in.readUTF();

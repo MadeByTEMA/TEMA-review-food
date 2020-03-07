@@ -10,8 +10,8 @@ public class ReviewBoardAddServlet implements Servlet {
 
   ReviewBoardDao reviewBoardwDao;
 
-  public ReviewBoardAddServlet(ReviewBoardDao ReviewBoardDao) {
-    this.reviewBoardwDao = ReviewBoardDao;
+  public ReviewBoardAddServlet(ReviewBoardDao reviewBoardDao) {
+    this.reviewBoardwDao = reviewBoardDao;
   }
 
   @Override

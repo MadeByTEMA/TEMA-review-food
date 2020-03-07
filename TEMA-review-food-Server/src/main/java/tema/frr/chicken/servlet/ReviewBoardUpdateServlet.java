@@ -8,17 +8,17 @@ import tema.frr.chicken.domain.ReviewBoard;
 
 public class ReviewBoardUpdateServlet implements Servlet {
 
-  ReviewBoardDao ReviewBoardDao;
+  ReviewBoardDao reviewBoardDao;
 
-  public ReviewBoardUpdateServlet(ReviewBoardDao ReviewBoardDao) {
-    this.ReviewBoardDao = ReviewBoardDao;
+  public ReviewBoardUpdateServlet(ReviewBoardDao reviewBoardDao) {
+    this.reviewBoardDao = reviewBoardDao;
   }
 
   @Override
   public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
     ReviewBoard ReviewBoard = (ReviewBoard) in.readObject();
 
-    if (ReviewBoardDao.update(ReviewBoard) > 0) {
+    if (reviewBoardDao.update(ReviewBoard) > 0) {
       out.writeUTF("OK");
     } else {
       out.writeUTF("FAIL");

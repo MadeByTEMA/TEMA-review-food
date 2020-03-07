@@ -15,9 +15,9 @@ public class ClientDeleteServlet implements Servlet {
 
   @Override
   public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
-    String id = in.readUTF();
+    int clinetNo = in.readInt();
 
-    if (clientDao.delete(id) > 0) {
+    if (clientDao.delete(clinetNo) > 0) {
       out.writeUTF("OK");
 
     } else {

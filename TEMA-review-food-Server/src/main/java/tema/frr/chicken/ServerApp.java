@@ -106,29 +106,12 @@ public class ServerApp {
 
   }
 
-  @SuppressWarnings("unchecked")
   int processRequest(Socket clientSocket) {
     try (Socket socket = clientSocket;
         Scanner in = new Scanner(socket.getInputStream());
         PrintStream out = new PrintStream(socket.getOutputStream())) {
       String request = in.nextLine();
       System.out.printf("=> %s\n", request);
-
-      // 클라이언트에게 응답한다.
-      out.println("안녕하세요!");
-      out.println("반가워요!");
-      out.println("!end!");
-
-      /*
-      System.out.println("통신을 위한 입출력 스트림을 준비하였음!");
-
-      String request = in.readUTF();
-      System.out.println("클라이언트가 보낸 메시지를 수신하였음!");
-
-      if (request.equalsIgnoreCase("/server/stop")) {
-        quit(out);
-        return 9;
-      }
 
       Servlet servlet = servletMap.get(request);
 
@@ -137,8 +120,8 @@ public class ServerApp {
           servlet.service(in, out);
 
         } catch (Exception e) {
-          out.writeUTF("FAIL");
-          out.writeUTF(e.getMessage());
+          out.println("요청 처리 중 오류 발생!");
+          out.println(e.getMessage());
 
           System.out.println("클라이언트 요청 처리 중 오류 발생:");
           e.printStackTrace();
@@ -146,7 +129,7 @@ public class ServerApp {
       } else {
         notFound(out);
       }
-       */
+      out.println("!end!");
       out.flush();
       System.out.println("클라이언트에게 응답하였음!");
       return 0;
@@ -158,9 +141,8 @@ public class ServerApp {
     }
   }
 
-  private void notFound(ObjectOutputStream out) throws IOException {
-    out.writeUTF("FAIL");
-    out.writeUTF("요청한 명령을 처리할 수 없습니다.");
+  private void notFound(PrintStream out) throws IOException {
+    out.println("요청한 명령을 처리할 수 없습니다.");
   }
 
   private void quit(ObjectOutputStream out) throws IOException {

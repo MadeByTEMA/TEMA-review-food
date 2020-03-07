@@ -16,7 +16,7 @@ public interface ClientDao {
 
   public int update(Client client) throws Exception;
 
-  public int delete(String id) throws Exception;
+  public int delete(int clientNo) throws Exception;
 }
 
 
