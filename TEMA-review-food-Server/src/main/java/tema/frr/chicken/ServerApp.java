@@ -18,6 +18,7 @@ import java.util.concurrent.Executors;
 
 import tema.frr.chicken.context.ApplicationContextListener;
 import tema.frr.chicken.dao.ClientDao;
+import tema.frr.chicken.dao.PhotoBoardDao;
 import tema.frr.chicken.dao.ReviewBoardDao;
 import tema.frr.chicken.servlet.ClientAddServlet;
 import tema.frr.chicken.servlet.ClientDeleteServlet;
@@ -25,6 +26,11 @@ import tema.frr.chicken.servlet.ClientDetailServlet;
 import tema.frr.chicken.servlet.ClientListServlet;
 import tema.frr.chicken.servlet.ClientSearchServlet;
 import tema.frr.chicken.servlet.ClientUpdateServlet;
+import tema.frr.chicken.servlet.PhotoBoardAddServlet;
+import tema.frr.chicken.servlet.PhotoBoardDeleteServlet;
+import tema.frr.chicken.servlet.PhotoBoardDetailServlet;
+import tema.frr.chicken.servlet.PhotoBoardListServlet;
+import tema.frr.chicken.servlet.PhotoBoardUpdateServlet;
 import tema.frr.chicken.servlet.ReviewBoardAddServlet;
 import tema.frr.chicken.servlet.ReviewBoardDeleteServlet;
 import tema.frr.chicken.servlet.ReviewBoardDetailServlet;
@@ -68,6 +74,7 @@ public class ServerApp {
     ClientDao clientDao = (ClientDao) context.get("clientDao");
     ReviewBoardDao reviewBoardDao =
         (ReviewBoardDao) context.get("reviewBoardDao");
+    PhotoBoardDao photoBoardDao = (PhotoBoardDao) context.get("photoBoardDao");
 
     servletMap.put("/client/list", new ClientListServlet(clientDao));
     servletMap.put("/client/add", new ClientAddServlet(clientDao));
@@ -75,14 +82,26 @@ public class ServerApp {
     servletMap.put("/client/update", new ClientUpdateServlet(clientDao));
     servletMap.put("/client/delete", new ClientDeleteServlet(clientDao));
     servletMap.put("/client/search", new ClientSearchServlet(clientDao));
-    servletMap.put("/reviewBoardDao/list", new ReviewBoardListServlet(reviewBoardDao));
-    servletMap.put("/reviewBoardDao/add", new ReviewBoardAddServlet(reviewBoardDao));
-    servletMap.put("/reviewBoardDao/detail",
+
+    servletMap.put("/reviewBoard/list", new ReviewBoardListServlet(reviewBoardDao));
+    servletMap.put("/reviewBoard/add", new ReviewBoardAddServlet(reviewBoardDao));
+    servletMap.put("/reviewBoard/detail",
         new ReviewBoardDetailServlet(reviewBoardDao));
-    servletMap.put("/reviewBoardDao/update",
+    servletMap.put("/reviewBoard/update",
         new ReviewBoardUpdateServlet(reviewBoardDao));
-    servletMap.put("/reviewBoardDao/delete",
+    servletMap.put("/reviewBoard/delete",
         new ReviewBoardDeleteServlet(reviewBoardDao));
+
+    servletMap.put("/photoboard/list", new PhotoBoardListServlet( //
+        photoBoardDao, reviewBoardDao));
+    servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet( //
+        photoBoardDao));
+    servletMap.put("/photoboard/add", new PhotoBoardAddServlet( //
+        photoBoardDao));
+    servletMap.put("/photoboard/update", new PhotoBoardUpdateServlet( //
+        photoBoardDao));
+    servletMap.put("/photoboard/delete", new PhotoBoardDeleteServlet( //
+        photoBoardDao));
 
     try (ServerSocket serverSocket = new ServerSocket(9999)) {
 

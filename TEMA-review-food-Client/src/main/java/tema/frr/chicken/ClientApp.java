@@ -29,25 +29,26 @@ public class ClientApp {
 
     while (true) {
       String command;
-      command = prompt.inputString("명령> ");
+      command = prompt.inputString("\n명령> ");
 
       if (command.length() == 0) {
         continue;
       }
 
-      if (command.equalsIgnoreCase("quit")) {
-        System.out.println("안녕!");
-        break;
-      } else if (command.equalsIgnoreCase("history")) {
+      if (command.equals("history")) {
         printCommandHistory(commandStack.iterator());
         continue;
-      } else if (command.equalsIgnoreCase("history")) {
+      } else if (command.equals("history2")) {
         printCommandHistory(commandQueue.iterator());
         continue;
+      } else if (command.equals("quit")) {
+        break;
       }
 
       commandStack.push(command);
       commandQueue.offer(command);
+
+      processCommand(command);
 
       if (command.endsWith("/server/stop")) {
         processCommand(command);

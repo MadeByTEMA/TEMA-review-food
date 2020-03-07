@@ -6,6 +6,7 @@ import java.util.Map;
 
 import tema.frr.chicken.context.ApplicationContextListener;
 import tema.frr.chicken.dao.mariadb.ClientDaoImpl;
+import tema.frr.chicken.dao.mariadb.PhotoBoardDaoImpl;
 import tema.frr.chicken.dao.mariadb.ReviewBoardDaoImpl;
 
 public class DataLoaderListener implements ApplicationContextListener {
@@ -22,6 +23,8 @@ public class DataLoaderListener implements ApplicationContextListener {
 
       context.put("clientDao", new ClientDaoImpl(con));
       context.put("reviewBoardDao", new ReviewBoardDaoImpl(con));
+      context.put("photoBoardDao", new PhotoBoardDaoImpl(con));
+
     } catch (Exception e) {
       e.printStackTrace();
     }

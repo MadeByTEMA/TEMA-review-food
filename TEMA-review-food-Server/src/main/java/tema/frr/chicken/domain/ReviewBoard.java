@@ -84,16 +84,23 @@ public class ReviewBoard implements Serializable {
     return true;
   }
 
-  private int boardNo;
-  private String category;
-  private String storeName;
-
   @Override
   public String toString() {
     return "ReviewBoard [boardNo=" + boardNo + ", category=" + category + ", storeName=" + storeName + ", menu=" + menu
         + ", price=" + price + ", starQuality=" + starQuality + ", starQuantity=" + starQuantity + ", starPrice="
         + starPrice + ", starTotalSum=" + starTotalSum + ", review=" + review + "]";
   }
+
+  private int boardNo;
+  private String category;
+  private String storeName;
+  private String menu;
+  private int price;
+  private int starQuality;
+  private int starQuantity;
+  private int starPrice;
+  private int starTotalSum;
+  private String review;
 
   public int getBoardNo() {
     return boardNo;
@@ -102,14 +109,6 @@ public class ReviewBoard implements Serializable {
   public void setBoardNo(int boardNo) {
     this.boardNo = boardNo;
   }
-
-  private String menu;
-  private int price;
-  private int starQuality;
-  private int starQuantity;
-  private int starPrice;
-  private int starTotalSum;
-  private String review;
 
   void starTotalSum() {
     this.starTotalSum = this.starQuality + this.starQuantity + this.starPrice;
