@@ -19,6 +19,7 @@ import java.util.concurrent.Executors;
 import tema.frr.chicken.context.ApplicationContextListener;
 import tema.frr.chicken.dao.ClientDao;
 import tema.frr.chicken.dao.PhotoBoardDao;
+import tema.frr.chicken.dao.PhotoFileDao;
 import tema.frr.chicken.dao.ReviewBoardDao;
 import tema.frr.chicken.servlet.ClientAddServlet;
 import tema.frr.chicken.servlet.ClientDeleteServlet;
@@ -75,6 +76,7 @@ public class ServerApp {
     ReviewBoardDao reviewBoardDao =
         (ReviewBoardDao) context.get("reviewBoardDao");
     PhotoBoardDao photoBoardDao = (PhotoBoardDao) context.get("photoBoardDao");
+    PhotoFileDao photoFileDao = (PhotoFileDao) context.get("photoFileDao");
 
     servletMap.put("/client/list", new ClientListServlet(clientDao));
     servletMap.put("/client/add", new ClientAddServlet(clientDao));
@@ -92,16 +94,16 @@ public class ServerApp {
     servletMap.put("/reviewBoard/delete",
         new ReviewBoardDeleteServlet(reviewBoardDao));
 
-    servletMap.put("/photoboard/list", new PhotoBoardListServlet( //
+    servletMap.put("/photoboard/list", new PhotoBoardListServlet(
         photoBoardDao, reviewBoardDao));
-    servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet( //
-        photoBoardDao));
-    servletMap.put("/photoboard/add", new PhotoBoardAddServlet( //
-        photoBoardDao));
-    servletMap.put("/photoboard/update", new PhotoBoardUpdateServlet( //
-        photoBoardDao));
-    servletMap.put("/photoboard/delete", new PhotoBoardDeleteServlet( //
-        photoBoardDao));
+    servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet(
+        photoBoardDao, photoFileDao));
+    servletMap.put("/photoboard/add", new PhotoBoardAddServlet(
+        photoBoardDao, reviewBoardDao ,photoFileDao));
+    servletMap.put("/photoboard/update", new PhotoBoardUpdateServlet(
+        photoBoardDao, photoFileDao));
+    servletMap.put("/photoboard/delete", new PhotoBoardDeleteServlet(
+        photoBoardDao, photoFileDao));
 
     try (ServerSocket serverSocket = new ServerSocket(9999)) {
 

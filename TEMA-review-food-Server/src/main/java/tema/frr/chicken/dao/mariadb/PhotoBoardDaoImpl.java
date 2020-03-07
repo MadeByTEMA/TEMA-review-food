@@ -22,11 +22,17 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   public int insert(PhotoBoard photoBoard) throws Exception {
     try (Statement stmt = con.createStatement()) {
 
-      int result = stmt.executeUpdate( //
-          "insert into frr_photo(titl,board_no) values('" //
-          + photoBoard.getTitle() + "', " + photoBoard.getReviewBoard().getBoardNo() //
-          + ")");
+      int result = stmt.executeUpdate(
+          "insert into frr_photo(titl,board_no) values('"
+              + photoBoard.getTitle() + "', " + photoBoard.getReviewBoard().getBoardNo()
+              + ")",
+              Statement.RETURN_GENERATED_KEYS);
 
+      try (ResultSet generatedKeySet = stmt.getGeneratedKeys()) {
+        generatedKeySet.next();
+
+        photoBoard.setNo(generatedKeySet.getInt(1));
+      }
       return result;
     }
   }
@@ -34,11 +40,11 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   @Override
   public List<PhotoBoard> findAllByBoardNo(int boardNo) throws Exception {
     try (Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery( //
-            "select photo_no, titl, cdt, vw_cnt, board_no" //
-            + " from frr_photo" //
-            + " where board_no=" + boardNo //
-            + " order by photo_no desc")) {
+        ResultSet rs = stmt.executeQuery(
+            "select photo_no, titl, cdt, vw_cnt, board_no"
+                + " from frr_photo"
+                + " where board_no=" + boardNo
+                + " order by photo_no desc")) {
 
       ArrayList<PhotoBoard> list = new ArrayList<>();
 
@@ -59,32 +65,29 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   @Override
   public PhotoBoard findByNo(int no) throws Exception {
     try (Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery( //
-            "select" //
-            + " p.photo_no," //
-            + " p.titl," //
-            + " p.cdt," //
-            + " p.vw_cnt,"//
-            + " b.board_no,"//
-            + " b.revi board_review" //
-            + " from frr_photo p" //
-            + " inner join frr_board b on p.board_no=b.board_no" //
-            + " where photo_no=" + no)) {
+        ResultSet rs = stmt.executeQuery(
+            "select"
+                + " p.photo_no,"
+                + " p.titl,"
+                + " p.cdt,"
+                + " p.vw_cnt,"
+                + " b.board_no,"
+                + " b.revi board_review"
+                + " from frr_photo p"
+                + " inner join frr_board b on p.board_no=b.board_no"
+                + " where photo_no=" + no)) {
 
       if (rs.next()) {
-        // 조인 결과 중에서 사진 게시글 결과를 PhotoBoard에 저장한다.
         PhotoBoard photoBoard = new PhotoBoard();
         photoBoard.setNo(rs.getInt("photo_no"));
         photoBoard.setTitle(rs.getString("titl"));
         photoBoard.setCreatedDate(rs.getDate("cdt"));
         photoBoard.setViewCount(rs.getInt("vw_cnt"));
 
-        // 조인 결과 중에서 수업 데이터를 Lesson에 저장한다.
         ReviewBoard reviewBoard = new ReviewBoard();
         reviewBoard.setBoardNo(rs.getInt("lesson_id"));
         reviewBoard.setReview(rs.getString("board_review"));
 
-        // Lesson을 PhotoBoard에 저장한다.
         photoBoard.setReviewBoard(reviewBoard);
 
         return photoBoard;
@@ -98,10 +101,10 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   @Override
   public int update(PhotoBoard photoBoard) throws Exception {
     try (Statement stmt = con.createStatement()) {
-      int result = stmt.executeUpdate( //
-          "update frr_photo set titl='" //
-          + photoBoard.getTitle() //
-          + "' where photo_no=" + photoBoard.getNo());
+      int result = stmt.executeUpdate(
+          "update frr_photo set titl='"
+              + photoBoard.getTitle()
+              + "' where photo_no=" + photoBoard.getNo());
       return result;
     }
   }
@@ -109,9 +112,9 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   @Override
   public int delete(int no) throws Exception {
     try (Statement stmt = con.createStatement()) {
-      int result = stmt.executeUpdate( //
-          "delete from frr_photo" //
-          + " where photo_no=" + no);
+      int result = stmt.executeUpdate(
+          "delete from frr_photo"
+              + " where photo_no=" + no);
       return result;
     }
   }

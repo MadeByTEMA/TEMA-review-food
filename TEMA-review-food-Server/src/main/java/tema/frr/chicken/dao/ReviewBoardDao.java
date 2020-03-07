@@ -10,7 +10,7 @@ public interface ReviewBoardDao {
 
   public List<ReviewBoard> findAll() throws Exception;
 
-  public ReviewBoard findByBoardNo(int bBoardNo) throws Exception;
+  public ReviewBoard findByBoardNo(int boardNo) throws Exception;
 
   public int update(ReviewBoard reviewBoard) throws Exception;
 
