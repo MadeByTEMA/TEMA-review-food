@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import tema.frr.chicken.dao.ReviewBoardDao;
 import tema.frr.chicken.domain.ReviewBoard;
+import tema.frr.util.Prompt;
 
 public class ReviewBoardAddServlet implements Servlet {
 
@@ -18,35 +19,12 @@ public class ReviewBoardAddServlet implements Servlet {
   public void service(Scanner in, PrintStream out) throws Exception {
     ReviewBoard r = new ReviewBoard();
 
-    out.println("가게명을 입력해주세요. ");
-    out.println("!{}!");
-    out.flush();
-    r.setStoreName(in.nextLine());
-
-    out.println("메뉴을 입력해주세요. ");
-    out.println("!{}!");
-    out.flush();
-    r.setMenu(in.nextLine());
-
-    out.println("가격을 입력해주세요. ");
-    out.println("!{}!");
-    out.flush();
-    r.setPrice(Integer.parseInt(in.nextLine()));
-
-    out.println("맛 별점을 입력해주세요. ");
-    out.println("!{}!");
-    out.flush();
-    r.setStarQuality(Integer.parseInt(in.nextLine()));
-
-    out.println("양 별점을 입력해주세요. ");
-    out.println("!{}!");
-    out.flush();
-    r.setStarQuantity(Integer.parseInt(in.nextLine()));
-
-    out.println("후기를 입력해주세요. ");
-    out.println("!{}!");
-    out.flush();
-    r.setReview(in.nextLine());
+    r.setStoreName(Prompt.getString(in, out, "가게명을 입력해주세요. "));
+    r.setMenu(Prompt.getString(in, out, "메뉴을 입력해주세요. "));
+    r.setPrice(Prompt.getInt(in, out, "가격을 입력해주세요. "));
+    r.setStarQuality(Prompt.getInt(in, out, "맛 별점을 입력해주세요. "));
+    r.setStarQuantity(Prompt.getInt(in, out, "양 별점을 입력해주세요. "));
+    r.setReview(Prompt.getString(in, out, "후기를 입력해주세요. "));
 
     if (reviewBoardDao.update(r) > 0) {
       out.println("후기를 변경했습니다.");

@@ -2,6 +2,7 @@ package tema.frr.chicken.servlet;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import tema.frr.chicken.dao.PhotoBoardDao;
@@ -10,6 +11,7 @@ import tema.frr.chicken.dao.ReviewBoardDao;
 import tema.frr.chicken.domain.PhotoBoard;
 import tema.frr.chicken.domain.PhotoFile;
 import tema.frr.chicken.domain.ReviewBoard;
+import tema.frr.util.Prompt;
 
 public class PhotoBoardAddServlet implements Servlet {
 
@@ -28,16 +30,9 @@ public class PhotoBoardAddServlet implements Servlet {
 
     PhotoBoard photoBoard = new PhotoBoard();
 
-    out.println("제목? ");
-    out.println("!{}!");
-    out.flush();
-    photoBoard.setTitle(in.nextLine());
+    photoBoard.setTitle(Prompt.getString(in, out, "제목? "));
 
-    out.println("후기 번호? ");
-    out.println("!{}!");
-    out.flush();
-
-    int boardNo = Integer.parseInt(in.nextLine());
+    int boardNo = Prompt.getInt(in, out, "후기 번호? ");
 
     ReviewBoard reviewBoard = reviewBoardDao.findByBoardNo(boardNo);
     if (reviewBoard == null) {
@@ -48,32 +43,10 @@ public class PhotoBoardAddServlet implements Servlet {
     photoBoard.setReviewBoard(reviewBoard);
 
     if (photoBoardDao.insert(photoBoard) > 0) {
-      out.println("최소 한 개의 사진 파일을 등록해야 합니다.");
-      out.println("파일명 입력 없이 그냥 엔터를 치면 파일 추가를 마칩니다.");
 
-      ArrayList<PhotoFile> photoFiles = new ArrayList<>();
-
-      while (true) {
-        out.println("사진 파일? ");
-        out.println("!{}!");
-        out.flush();
-        String filepath = in.nextLine();
-
-        if (filepath.length() == 0) {
-          if (photoFiles.size() > 0) {
-            break;
-          } else {
-            out.println("최소 한 개의 사진 파일을 등록해야 합니다.");
-            continue;
-          }
-        }
-
-        photoFiles.add(new PhotoFile()
-            .setFilepath(filepath)
-            .setBoardNo(photoBoard.getNo()));
-      }
-
+      List<PhotoFile> photoFiles = inputPhotoFiles(in, out);
       for (PhotoFile photoFile : photoFiles) {
+        photoFile.setBoardNo(photoBoard.getNo());
         photoFileDao.insert(photoFile);
       }
 
@@ -82,5 +55,27 @@ public class PhotoBoardAddServlet implements Servlet {
     } else {
       out.println("사진 게시글 등록에 실패했습니다.");
     }
+  }
+
+  private List<PhotoFile> inputPhotoFiles(Scanner in, PrintStream out) {
+    out.println("최소 한 개의 사진 파일을 등록해야 합니다.");
+    out.println("파일명 입력 없이 그냥 엔터를 치면 파일 추가를 마칩니다.");
+
+    ArrayList<PhotoFile> photoFiles = new ArrayList<>();
+
+    while (true) {
+      String filepath = Prompt.getString(in, out, "사진 파일? ");
+
+      if (filepath.length() == 0) {
+        if (photoFiles.size() > 0) {
+          break;
+        } else {
+          out.println("최소 한 개의 사진 파일을 등록해야 합니다.");
+          continue;
+        }
+      }
+      photoFiles.add(new PhotoFile().setFilepath(filepath));
+    }
+    return photoFiles;
   }
 }

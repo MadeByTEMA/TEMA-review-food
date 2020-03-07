@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import tema.frr.chicken.dao.ReviewBoardDao;
 import tema.frr.chicken.domain.ReviewBoard;
+import tema.frr.util.Prompt;
 
 public class ReviewBoardDetailServlet implements Servlet {
 
@@ -16,11 +17,7 @@ public class ReviewBoardDetailServlet implements Servlet {
 
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
-    out.println("번호? ");
-    out.println("!{}!");
-    out.flush();
-
-    int boardNo = Integer.parseInt(in.nextLine());
+    int boardNo = Prompt.getInt(in, out, "번호? ");
 
     ReviewBoard reviewBoard = reviewBoardDao.findByBoardNo(boardNo);
 

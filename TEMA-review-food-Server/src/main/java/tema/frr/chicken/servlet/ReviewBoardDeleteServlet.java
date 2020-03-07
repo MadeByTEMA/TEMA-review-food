@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.Scanner;
 
 import tema.frr.chicken.dao.ReviewBoardDao;
+import tema.frr.util.Prompt;
 
 public class ReviewBoardDeleteServlet implements Servlet {
 
@@ -15,10 +16,7 @@ public class ReviewBoardDeleteServlet implements Servlet {
 
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
-    out.println("번호? ");
-    out.println("!{}!");
-    out.flush();
-    int boardNo = Integer.parseInt(in.nextLine());
+    int boardNo = Prompt.getInt(in, out, "번호? ");
 
     if (reviewBoardDao.delete(boardNo) > 0) {
       out.println("후기를 삭제했습니다.");

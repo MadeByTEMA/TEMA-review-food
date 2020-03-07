@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 import tema.frr.chicken.dao.ClientDao;
 import tema.frr.chicken.domain.Client;
+import tema.frr.util.Prompt;
 
 public class ClientAddServlet implements Servlet {
 
@@ -19,41 +20,13 @@ public class ClientAddServlet implements Servlet {
   public void service(Scanner in, PrintStream out) throws Exception {
     Client c = new Client();
 
-    out.println("ID를 입력해주세요. ");
-    out.println("!{}!");
-    out.flush();
-    c.setId(in.nextLine());
-
-    out.println("Pwd를 입력해주세요. ");
-    out.println("!{}!");
-    out.flush();
-    c.setPwd(in.nextLine());
-
-    out.println("이름을 입력해주세요. ");
-    out.println("!{}!");
-    out.flush();
-    c.setName(in.nextLine());
-
-    out.println("생년월일을 입력해주세요. ");
-    out.println("!{}!");
-    out.flush();
-    c.setBirthday(Date.valueOf(in.nextLine()));
-
-    out.println("성별을 입력해주세요. ");
-    out.println("!{}!");
-    out.flush();
-    c.setSex(in.nextLine());
-
-    out.println("전화번호를 입력해주세요. ");
-    out.println("!{}!");
-    out.flush();
-    c.setTel(in.nextLine());
-
-    out.println("주소를 입력해주세요. ");
-    out.println("!{}!");
-    out.flush();
-    c.setAddress(in.nextLine());
-
+    c.setId(Prompt.getString(in, out, "ID를 입력해주세요. "));
+    c.setPwd(Prompt.getString(in, out, "Pwd를 입력해주세요. "));
+    c.setName(Prompt.getString(in, out, "이름을 입력해주세요. "));
+    c.setBirthday(Prompt.getDate(in, out, "생년월일을 입력해주세요. "));
+    c.setSex(Prompt.getString(in, out, "성별을 입력해주세요. "));
+    c.setTel(Prompt.getString(in, out, "전화번호를 입력해주세요. "));
+    c.setAddress(Prompt.getString(in, out, "주소를 입력해주세요. "));
     c.setSignUpDate(new Date(System.currentTimeMillis()));
 
     if (clientDao.update(c) > 0) {

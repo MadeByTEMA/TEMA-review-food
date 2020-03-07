@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.Scanner;
 
 import tema.frr.chicken.dao.ClientDao;
+import tema.frr.util.Prompt;
 
 public class ClientDeleteServlet implements Servlet {
 
@@ -15,10 +16,7 @@ public class ClientDeleteServlet implements Servlet {
 
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
-    out.println("번호? ");
-    out.println("!{}!");
-    out.flush();
-    int clientno = Integer.parseInt(in.nextLine());
+    int clientno = Prompt.getInt(in, out, "번호? ");
 
     if (clientDao.delete(clientno) > 0) {
       out.println("고객을 삭제했습니다.");

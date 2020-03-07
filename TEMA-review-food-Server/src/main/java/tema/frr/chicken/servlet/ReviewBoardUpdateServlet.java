@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import tema.frr.chicken.dao.ReviewBoardDao;
 import tema.frr.chicken.domain.ReviewBoard;
+import tema.frr.util.Prompt;
 
 public class ReviewBoardUpdateServlet implements Servlet {
 
@@ -16,10 +17,7 @@ public class ReviewBoardUpdateServlet implements Servlet {
 
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
-    out.println("번호? ");
-    out.println("!{}!");
-    out.flush();
-    int boardNo = Integer.parseInt(in.nextLine());
+    int boardNo = Prompt.getInt(in, out, "번호? ");
 
     ReviewBoard oldReviewBoard = null;
 
@@ -33,36 +31,18 @@ public class ReviewBoardUpdateServlet implements Servlet {
     ReviewBoard newReviewBoard = new ReviewBoard();
 
     newReviewBoard.setCategory(oldReviewBoard.getCategory());
-
-    out.printf("가게명(%s) \n", oldReviewBoard.getStoreName());
-    out.println("!{}!");
-    out.flush();
-    newReviewBoard.setStoreName(in.nextLine());
-
-    out.printf("메뉴(%s) \n", oldReviewBoard.getMenu());
-    out.println("!{}!");
-    out.flush();
-    newReviewBoard.setMenu(in.nextLine());
-
-    out.printf("가격(%s) \n", oldReviewBoard.getPrice());
-    out.println("!{}!");
-    out.flush();
-    newReviewBoard.setPrice(Integer.parseInt(in.nextLine()));
-
-    out.printf("맛 별점(%s) \n", oldReviewBoard.getStarQuality());
-    out.println("!{}!");
-    out.flush();
-    newReviewBoard.setStarQuality(Integer.parseInt(in.nextLine()));
-
-    out.printf("양 별점(%s) \n", oldReviewBoard.getStarQuantity());
-    out.println("!{}!");
-    out.flush();
-    newReviewBoard.setStarQuantity(Integer.parseInt(in.nextLine()));
-
-    out.printf("후기(%s) \n", oldReviewBoard.getReview());
-    out.println("!{}!");
-    out.flush();
-    newReviewBoard.setReview(in.nextLine());
+    newReviewBoard.setStoreName(Prompt.getString(in, out,
+        String.format("가게명(%s) \n", oldReviewBoard.getStoreName()), oldReviewBoard.getStoreName()));
+    newReviewBoard.setMenu(Prompt.getString(in, out,
+        String.format("메뉴(%s) \n", oldReviewBoard.getMenu()), oldReviewBoard.getMenu()));
+    newReviewBoard.setPrice(Prompt.getInt(in, out,
+        String.format("가격(%s) \n", oldReviewBoard.getPrice()), String.valueOf(oldReviewBoard.getPrice())));
+    newReviewBoard.setStarQuality(Prompt.getInt(in, out,
+        String.format("맛 별점(%s) \n", oldReviewBoard.getStarQuality()), String.valueOf(oldReviewBoard.getStarQuality())));
+    newReviewBoard.setStarQuantity(Prompt.getInt(in, out,
+        String.format("양 별점(%s) \n", oldReviewBoard.getStarQuantity()), String.valueOf(oldReviewBoard.getStarQuantity())));
+    newReviewBoard.setReview(Prompt.getString(in, out,
+        String.format("후기(%s) \n", oldReviewBoard.getReview()), oldReviewBoard.getReview()));
 
     if (reviewBoardDao.update(oldReviewBoard) > 0) {
       out.println("후기를 변경했습니다.");

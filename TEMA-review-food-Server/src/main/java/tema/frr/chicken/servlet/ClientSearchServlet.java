@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 import tema.frr.chicken.dao.ClientDao;
 import tema.frr.chicken.domain.Client;
+import tema.frr.util.Prompt;
 
 public class ClientSearchServlet implements Servlet{
 
@@ -18,11 +19,7 @@ public class ClientSearchServlet implements Servlet{
 
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
-    out.println("키워드? ");
-    out.println("!{}!");
-    out.flush();
-
-    String keyword = in.nextLine();
+    String keyword = Prompt.getString(in, out, "키워드? ");
 
     List<Client> clients = clientDao.findByKeyword(keyword);
 

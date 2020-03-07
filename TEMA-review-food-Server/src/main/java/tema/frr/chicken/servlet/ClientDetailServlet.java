@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import tema.frr.chicken.dao.ClientDao;
 import tema.frr.chicken.domain.Client;
+import tema.frr.util.Prompt;
 
 public class ClientDetailServlet implements Servlet {
 
@@ -16,10 +17,7 @@ public class ClientDetailServlet implements Servlet {
 
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
-    out.println("번호? ");
-    out.println("!{}!");
-    out.flush();
-    int clientNo = Integer.parseInt(in.nextLine());
+    int clientNo = Prompt.getInt(in, out, "번호? ");
 
     Client client = clientDao.findByClientNo(clientNo);
 

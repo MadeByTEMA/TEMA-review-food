@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import tema.frr.chicken.dao.PhotoBoardDao;
 import tema.frr.chicken.dao.PhotoFileDao;
+import tema.frr.util.Prompt;
 
 public class PhotoBoardDeleteServlet implements Servlet {
 
@@ -20,11 +21,7 @@ public class PhotoBoardDeleteServlet implements Servlet {
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
 
-    out.println("번호? ");
-    out.println("!{}!");
-    out.flush();
-
-    int no = Integer.parseInt(in.nextLine());
+    int no = Prompt.getInt(in, out, "번호? ");
 
     photoFileDao.deleteAll(no);
 

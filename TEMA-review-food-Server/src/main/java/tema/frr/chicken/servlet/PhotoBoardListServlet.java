@@ -8,6 +8,7 @@ import tema.frr.chicken.dao.PhotoBoardDao;
 import tema.frr.chicken.dao.ReviewBoardDao;
 import tema.frr.chicken.domain.PhotoBoard;
 import tema.frr.chicken.domain.ReviewBoard;
+import tema.frr.util.Prompt;
 
 public class PhotoBoardListServlet implements Servlet {
 
@@ -21,11 +22,7 @@ public class PhotoBoardListServlet implements Servlet {
 
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
-    out.println("수업번호? ");
-    out.println("!{}!");
-    out.flush();
-
-    int boardNo = Integer.parseInt(in.nextLine());
+    int boardNo = Prompt.getInt(in, out, "수업번호? ");
 
     ReviewBoard reviewBoard = reviewBoardDao.findByBoardNo(boardNo);
 

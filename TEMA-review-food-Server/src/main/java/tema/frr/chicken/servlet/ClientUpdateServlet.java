@@ -1,11 +1,11 @@
 package tema.frr.chicken.servlet;
 
 import java.io.PrintStream;
-import java.sql.Date;
 import java.util.Scanner;
 
 import tema.frr.chicken.dao.ClientDao;
 import tema.frr.chicken.domain.Client;
+import tema.frr.util.Prompt;
 
 public class ClientUpdateServlet implements Servlet {
 
@@ -17,10 +17,7 @@ public class ClientUpdateServlet implements Servlet {
 
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
-    out.println("번호? ");
-    out.println("!{}!");
-    out.flush();
-    int clientNo = Integer.parseInt(in.nextLine());
+    int clientNo = Prompt.getInt(in, out, "번호? ");
 
     Client oldClient = null;
     try {
@@ -33,31 +30,11 @@ public class ClientUpdateServlet implements Servlet {
     Client newClient = new Client();
 
     newClient.setId(oldClient.getId());
-
-    out.printf("이름(%s): \n", oldClient.getName());
-    out.println("!{}!");
-    out.flush();
-    newClient.setName(in.nextLine());
-
-    out.printf("생일(%s): \n", oldClient.getBirthday());
-    out.println("!{}!");
-    out.flush();
-    newClient.setBirthday(Date.valueOf(in.nextLine()));
-
-    out.printf("성별(%s): \n", oldClient.getSex());
-    out.println("!{}!");
-    out.flush();
-    newClient.setSex(in.nextLine());
-
-    out.printf("전화번호(%s): \n", oldClient.getTel());
-    out.println("!{}!");
-    out.flush();
-    newClient.setTel(in.nextLine());
-
-    out.printf("주소(%s): \n", oldClient.getAddress());
-    out.println("!{}!");
-    out.flush();
-    newClient.setAddress(in.nextLine());
+    newClient.setName(Prompt.getString(in, out, "이름(%s): \n", oldClient.getName()));
+    newClient.setBirthday(Prompt.getDate(in, out, String.format("생일(%s): \n", oldClient.getBirthday()), oldClient.getBirthday().toString()));
+    newClient.setSex(Prompt.getString(in, out, "성별(%s): \n", oldClient.getSex()));
+    newClient.setTel(Prompt.getString(in, out, "전화번호(%s): \n", oldClient.getTel()));
+    newClient.setAddress(Prompt.getString(in, out, "주소(%s): \n", oldClient.getAddress()));
 
 
     if (clientDao.update(oldClient) > 0) {
