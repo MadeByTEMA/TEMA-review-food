@@ -19,7 +19,7 @@ public class ClientListServlet implements Servlet {
   public void service(Scanner in, PrintStream out) throws Exception {
     List<Client> clients = clientDao.findAll();
     for (Client c : clients) {
-      System.out.printf("%s, %s, %s, %s, %s, %s\n", c.getId(), c.getName(), c.getBirthday(),
+      out.printf("%s, %s, %s, %s, %s, %s\n", c.getId(), c.getName(), c.getBirthday(),
           c.getSex(), c.getTel(), c.getSignUpDate());
     }
   }

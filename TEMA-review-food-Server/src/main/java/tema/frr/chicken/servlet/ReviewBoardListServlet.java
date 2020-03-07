@@ -21,11 +21,11 @@ public class ReviewBoardListServlet implements Servlet {
       List<ReviewBoard> reviewBoards = reviewBoardDao.findAll();
 
       for (ReviewBoard r : reviewBoards) {
-        System.out.printf("%d, %s, %s, %s, %s, %s, %s\n",r.getBoardNo(), r.getStoreName(), r.getMenu(), r.getPrice(),
+        out.printf("%d, %s, %s, %d, %d, %d, %d\n",r.getBoardNo(), r.getStoreName(), r.getMenu(), r.getPrice(),
             r.getStarQuality(), r.getStarQuantity(), r.getStarTotalSum());
       }
     } catch (Exception e) {
-      System.out.println("통신 오류 발생!");
+      out.println("통신 오류 발생!");
     }
   }
 }

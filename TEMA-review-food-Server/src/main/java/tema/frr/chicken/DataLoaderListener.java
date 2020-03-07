@@ -21,7 +21,7 @@ public class DataLoaderListener implements ApplicationContextListener {
           "jdbc:mariadb://localhost:3306/frr", "tema", "1111");
 
       context.put("clientDao", new ClientDaoImpl(con));
-      context.put("ReviewBoardDao", new ReviewBoardDaoImpl(con));
+      context.put("reviewBoardDao", new ReviewBoardDaoImpl(con));
     } catch (Exception e) {
       e.printStackTrace();
     }

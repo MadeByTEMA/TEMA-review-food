@@ -118,7 +118,12 @@ public class ClientDaoImpl implements ClientDao{
   @Override
   public List<Client> findByKeyword(String keyword) throws Exception {
     try (Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery("select client_no, id, pwd, name, vdt, gen, tel, address, sud from frr_client where id like '%" + keyword + "%' or name like '%" + keyword + "%' or tel like '%" + keyword + "%'")) {
+        ResultSet rs = stmt.executeQuery(
+            "select client_no, id, pwd, name, vdt, gen, tel, address, sud"
+                + " from frr_client"
+                + " where id like '%" + keyword
+                + "%' or name like '%" + keyword
+                + "%' or tel like '%" + keyword + "%'")) {
 
       ArrayList<Client> list = new ArrayList<>();
 

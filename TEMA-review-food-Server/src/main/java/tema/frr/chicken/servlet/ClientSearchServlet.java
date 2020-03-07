@@ -21,12 +21,13 @@ public class ClientSearchServlet implements Servlet{
     out.println("키워드? ");
     out.println("!{}!");
     out.flush();
+
     String keyword = in.nextLine();
 
     List<Client> clients = clientDao.findByKeyword(keyword);
 
     for (Client c : clients) {
-      System.out.printf("%s, %s, %s, %s, %s, %s\n", c.getId(), c.getName(), c.getBirthday(),
+      out.printf("%s, %s, %s, %s, %s, %s\n", c.getId(), c.getName(), c.getBirthday(),
           c.getSex(), c.getTel(), c.getSignUpDate());
     }
   }

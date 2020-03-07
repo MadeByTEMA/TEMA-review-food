@@ -67,8 +67,8 @@ public class ServerApp {
     notifyApplicationInitialized();
 
     ClientDao clientDao = (ClientDao) context.get("clientDao");
-    ReviewBoardDao writingReviewJsonFileDao =
-        (ReviewBoardDao) context.get("writingReviewDao");
+    ReviewBoardDao reviewBoardDao =
+        (ReviewBoardDao) context.get("reviewBoardDao");
 
     servletMap.put("/client/list", new ClientListServlet(clientDao));
     servletMap.put("/client/add", new ClientAddServlet(clientDao));
@@ -76,14 +76,14 @@ public class ServerApp {
     servletMap.put("/client/update", new ClientUpdateServlet(clientDao));
     servletMap.put("/client/delete", new ClientDeleteServlet(clientDao));
     servletMap.put("/client/search", new ClientSearchServlet(clientDao));
-    servletMap.put("/writingReview/list", new ReviewBoardListServlet(writingReviewJsonFileDao));
-    servletMap.put("/writingReview/add", new ReviewBoardAddServlet(writingReviewJsonFileDao));
-    servletMap.put("/writingReview/detail",
-        new ReviewBoardDetailServlet(writingReviewJsonFileDao));
-    servletMap.put("/writingReview/update",
-        new ReviewBoardUpdateServlet(writingReviewJsonFileDao));
-    servletMap.put("/writingReview/delete",
-        new ReviewBoardDeleteServlet(writingReviewJsonFileDao));
+    servletMap.put("/reviewBoardDao/list", new ReviewBoardListServlet(reviewBoardDao));
+    servletMap.put("/reviewBoardDao/add", new ReviewBoardAddServlet(reviewBoardDao));
+    servletMap.put("/reviewBoardDao/detail",
+        new ReviewBoardDetailServlet(reviewBoardDao));
+    servletMap.put("/reviewBoardDao/update",
+        new ReviewBoardUpdateServlet(reviewBoardDao));
+    servletMap.put("/reviewBoardDao/delete",
+        new ReviewBoardDeleteServlet(reviewBoardDao));
 
     try (ServerSocket serverSocket = new ServerSocket(9999)) {
 
