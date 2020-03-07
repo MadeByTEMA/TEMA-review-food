@@ -12,7 +12,7 @@ import tema.frr.chicken.dao.mariadb.ReviewBoardDaoImpl;
 
 public class DataLoaderListener implements ApplicationContextListener {
 
-  Connection con;
+  public static Connection con;
 
 
   @Override

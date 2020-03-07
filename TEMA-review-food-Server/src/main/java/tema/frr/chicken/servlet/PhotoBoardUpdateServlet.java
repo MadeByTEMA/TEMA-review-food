@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import tema.frr.chicken.DataLoaderListener;
 import tema.frr.chicken.dao.PhotoBoardDao;
 import tema.frr.chicken.dao.PhotoFileDao;
 import tema.frr.chicken.domain.PhotoBoard;
@@ -36,9 +37,12 @@ public class PhotoBoardUpdateServlet implements Servlet {
 
     photoBoard.setNo(no);
 
-    if (photoBoardDao.update(photoBoard) > 0) {
-      printPhotoFiles(out, no);
+    DataLoaderListener.con.setAutoCommit(false);
 
+    try {
+      if (photoBoardDao.update(photoBoard) == 0) {
+        throw new Exception("사진 게시글 변경에 실패했습니다.");
+      }
       out.println();
       out.println("사진은 일부만 변경할 수 없습니다.");
       out.println("전체를 새로 등록해야 합니다.");
@@ -54,10 +58,15 @@ public class PhotoBoardUpdateServlet implements Servlet {
           photoFileDao.insert(photoFile);
         }
       }
+      DataLoaderListener.con.commit();
       out.println("사진 게시글을 변경했습니다.");
 
-    } else {
-      out.println("사진 게시글 변경에 실패했습니다.");
+    } catch (Exception e) {
+      DataLoaderListener.con.rollback();
+      out.println(e.getMessage());
+
+    } finally {
+      DataLoaderListener.con.setAutoCommit(true);
     }
   }
 
