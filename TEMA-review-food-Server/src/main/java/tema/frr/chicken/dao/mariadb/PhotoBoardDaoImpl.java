@@ -85,7 +85,7 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
         photoBoard.setViewCount(rs.getInt("vw_cnt"));
 
         ReviewBoard reviewBoard = new ReviewBoard();
-        reviewBoard.setBoardNo(rs.getInt("lesson_id"));
+        reviewBoard.setBoardNo(rs.getInt("board_no"));
         reviewBoard.setReview(rs.getString("board_review"));
 
         photoBoard.setReviewBoard(reviewBoard);

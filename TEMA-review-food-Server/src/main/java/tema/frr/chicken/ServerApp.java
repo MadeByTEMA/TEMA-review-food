@@ -105,7 +105,7 @@ public class ServerApp {
     servletMap.put("/photoboard/delete", new PhotoBoardDeleteServlet(
         photoBoardDao, photoFileDao));
 
-    try (ServerSocket serverSocket = new ServerSocket(9999)) {
+    try (ServerSocket serverSocket = new ServerSocket(8888)) {
 
       System.out.println("Client 연결 대기중");
 
@@ -127,8 +127,6 @@ public class ServerApp {
     } catch (Exception e) {
       System.out.println("서버 준비 중 오류 발생!");
     }
-
-
 
     executorService.shutdown();
 

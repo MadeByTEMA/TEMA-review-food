@@ -60,7 +60,7 @@ public class ClientApp {
   public void processCommand(String command) {
 
     String host = null;
-    int port = 9999;
+    int port = 8888;
     String servletPath = null;
 
     int index = command.indexOf('/');
