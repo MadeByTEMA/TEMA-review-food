@@ -27,6 +27,7 @@ import tema.frr.chicken.servlet.ClientDetailServlet;
 import tema.frr.chicken.servlet.ClientListServlet;
 import tema.frr.chicken.servlet.ClientSearchServlet;
 import tema.frr.chicken.servlet.ClientUpdateServlet;
+import tema.frr.chicken.servlet.LoginServlet;
 import tema.frr.chicken.servlet.PhotoBoardAddServlet;
 import tema.frr.chicken.servlet.PhotoBoardDeleteServlet;
 import tema.frr.chicken.servlet.PhotoBoardDetailServlet;
@@ -111,6 +112,8 @@ public class ServerApp {
         txManager, photoBoardDao, photoFileDao));
     servletMap.put("/photoboard/delete", new PhotoBoardDeleteServlet(
         txManager, photoBoardDao, photoFileDao));
+
+    servletMap.put("/auth/login", new LoginServlet(clientDao));
 
     try (ServerSocket serverSocket = new ServerSocket(8888)) {
 

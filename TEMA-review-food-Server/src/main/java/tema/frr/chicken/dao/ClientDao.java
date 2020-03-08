@@ -21,6 +21,10 @@ public interface ClientDao {
   default List<Client> findByKeyword(String keyword) throws Exception {
     return null;
   }
+
+  default Client findByIdAndPassword(String id, String password) throws Exception {
+    return null;
+  }
 }
 
 

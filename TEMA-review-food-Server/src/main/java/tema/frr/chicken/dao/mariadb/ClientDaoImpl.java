@@ -154,4 +154,33 @@ public class ClientDaoImpl implements ClientDao{
       return list;
     }
   }
+
+  @Override
+  public Client findByIdAndPassword(String id, String password) throws Exception {
+    try (Connection con = dataSource.getConnection(); //
+        Statement stmt = con.createStatement();
+        ResultSet rs = stmt.executeQuery( //
+            "select client_no, id, pwd, name, vdt, gen, tel, address, sud" //
+            + " from frr_client" //
+            + " where id='" + id //
+            + "' and pwd=password('" + password + "')")) {
+
+      if (rs.next()) {
+        Client c = new Client();
+        c.setClientNo(rs.getInt("client_no"));
+        c.setId(rs.getString("id"));
+        c.setPwd(rs.getString("pwd"));
+        c.setName(rs.getString("name"));
+        c.setBirthday(rs.getDate("vdt"));
+        c.setSex(rs.getString("gen"));
+        c.setTel(rs.getString("tel"));
+        c.setAddress(rs.getString("address"));
+        c.setSignUpDate(rs.getDate("sud"));
+        return c;
+
+      } else {
+        return null;
+      }
+    }
+  }
 }
