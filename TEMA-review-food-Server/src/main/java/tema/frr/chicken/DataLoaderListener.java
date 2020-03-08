@@ -7,6 +7,7 @@ import tema.frr.chicken.dao.mariadb.ClientDaoImpl;
 import tema.frr.chicken.dao.mariadb.PhotoBoardDaoImpl;
 import tema.frr.chicken.dao.mariadb.PhotoFileDaoImpl;
 import tema.frr.chicken.dao.mariadb.ReviewBoardDaoImpl;
+import tema.frr.util.ConnectionFactory;
 
 public class DataLoaderListener implements ApplicationContextListener {
 
@@ -18,10 +19,13 @@ public class DataLoaderListener implements ApplicationContextListener {
       String username = "study";
       String password = "1111";
 
-      context.put("clientDao", new ClientDaoImpl(jdbcUrl, username, password));
-      context.put("reviewBoardDao", new ReviewBoardDaoImpl(jdbcUrl, username, password));
-      context.put("photoBoardDao", new PhotoBoardDaoImpl(jdbcUrl, username, password));
-      context.put("photoFileDao", new PhotoFileDaoImpl(jdbcUrl, username, password));
+      ConnectionFactory conFactory = new ConnectionFactory(//
+          jdbcUrl, username, password);
+
+      context.put("clientDao", new ClientDaoImpl(conFactory));
+      context.put("reviewBoardDao", new ReviewBoardDaoImpl(conFactory));
+      context.put("photoBoardDao", new PhotoBoardDaoImpl(conFactory));
+      context.put("photoFileDao", new PhotoFileDaoImpl(conFactory));
 
     } catch (Exception e) {
       e.printStackTrace();

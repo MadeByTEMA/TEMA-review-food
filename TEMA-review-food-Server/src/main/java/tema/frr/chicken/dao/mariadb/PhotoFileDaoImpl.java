@@ -1,7 +1,6 @@
 package tema.frr.chicken.dao.mariadb;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -9,22 +8,19 @@ import java.util.List;
 
 import tema.frr.chicken.dao.PhotoFileDao;
 import tema.frr.chicken.domain.PhotoFile;
+import tema.frr.util.ConnectionFactory;
 
 public class PhotoFileDaoImpl implements PhotoFileDao {
 
-  String jdbcUrl;
-  String username;
-  String password;
+  ConnectionFactory conFactory;
 
-  public PhotoFileDaoImpl(String jdbcUrl, String username, String password) {
-    this.jdbcUrl = jdbcUrl;
-    this.username = username;
-    this.password = password;
+  public PhotoFileDaoImpl(ConnectionFactory conFactory) {
+    this.conFactory = conFactory;
   }
 
   @Override
   public int insert(PhotoFile photoFile) throws Exception {
-    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+    try (Connection con = conFactory.getConnection();
         Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate(
@@ -38,7 +34,7 @@ public class PhotoFileDaoImpl implements PhotoFileDao {
 
   @Override
   public List<PhotoFile> findAll(int boardNo) throws Exception {
-    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+    try (Connection con = conFactory.getConnection();
         Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(
             "select photo_file_no, photo_no, file_path"
@@ -59,7 +55,7 @@ public class PhotoFileDaoImpl implements PhotoFileDao {
 
   @Override
   public int deleteAll(int boardNo) throws Exception {
-    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+    try (Connection con = conFactory.getConnection();
         Statement stmt = con.createStatement()) {
       int result = stmt.executeUpdate(
           "delete from frr_photo_file"
