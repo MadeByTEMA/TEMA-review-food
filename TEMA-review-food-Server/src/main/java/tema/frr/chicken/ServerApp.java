@@ -38,6 +38,7 @@ import tema.frr.chicken.servlet.ReviewBoardDetailServlet;
 import tema.frr.chicken.servlet.ReviewBoardListServlet;
 import tema.frr.chicken.servlet.ReviewBoardUpdateServlet;
 import tema.frr.chicken.servlet.Servlet;
+import tema.frr.sql.ConnectionProxy;
 import tema.frr.util.ConnectionFactory;
 
 public class ServerApp {
@@ -119,7 +120,13 @@ public class ServerApp {
 
         executorService.submit(() -> {
           processRequest(socket);
-          conFactory.removeConnection();
+          ConnectionProxy con = (ConnectionProxy) conFactory.removeConnection();
+          if (con != null) {
+            try {
+              con.realClose();
+            } catch (Exception e) {
+            }
+          }
           System.out.println("--------------------------------------");
         });
 

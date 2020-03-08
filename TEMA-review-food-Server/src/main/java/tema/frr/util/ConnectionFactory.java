@@ -31,10 +31,12 @@ public class ConnectionFactory {
     return con;
   }
 
-  public void removeConnection() {
+  public Connection removeConnection() {
     Connection con = connectionLocal.get();
     if (con != null) {
       connectionLocal.remove();
+      System.out.println("스레드에 보관된 Connection 객체 제거 했음!");
     }
+    return con;
   }
 }
