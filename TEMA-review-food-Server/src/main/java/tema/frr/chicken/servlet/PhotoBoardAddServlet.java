@@ -12,17 +12,18 @@ import tema.frr.chicken.domain.PhotoBoard;
 import tema.frr.chicken.domain.PhotoFile;
 import tema.frr.chicken.domain.ReviewBoard;
 import tema.frr.sql.PlatformTransactionManager;
+import tema.frr.sql.TransactionTemplate;
 import tema.frr.util.Prompt;
 
 public class PhotoBoardAddServlet implements Servlet {
 
-  PlatformTransactionManager txManager;
+  TransactionTemplate transactionTemplate;
   PhotoBoardDao photoBoardDao;
   ReviewBoardDao reviewBoardDao;
   PhotoFileDao photoFileDao;
 
   public PhotoBoardAddServlet(PlatformTransactionManager txManager, PhotoBoardDao photoBoardDao , ReviewBoardDao reviewBoardDao, PhotoFileDao photoFileDao) {
-    this.txManager = txManager;
+    this.transactionTemplate = new TransactionTemplate(txManager);
     this.photoBoardDao = photoBoardDao;
     this.reviewBoardDao = reviewBoardDao;
     this.photoFileDao = photoFileDao;
@@ -45,24 +46,20 @@ public class PhotoBoardAddServlet implements Servlet {
 
     photoBoard.setReviewBoard(reviewBoard);
 
-    txManager.beginTransaction();
+    List<PhotoFile> photoFiles = inputPhotoFiles(in, out);
 
-    try {
+    transactionTemplate.execute(() -> {
       if (photoBoardDao.insert(photoBoard) == 0) {
         throw new Exception("사진 게시글 등록에 실패했습니다.");
       }
-      List<PhotoFile> photoFiles = inputPhotoFiles(in, out);
       for (PhotoFile photoFile : photoFiles) {
         photoFile.setBoardNo(photoBoard.getNo());
         photoFileDao.insert(photoFile);
       }
-      txManager.commit();
       out.println("새 사진 게시글을 등록했습니다.");
 
-    } catch (Exception e) {
-      txManager.rollback();
-      out.println(e.getMessage());
-    }
+      return null;
+    });
   }
 
   private List<PhotoFile> inputPhotoFiles(Scanner in, PrintStream out) {
