@@ -7,6 +7,7 @@ import tema.frr.chicken.dao.mariadb.ClientDaoImpl;
 import tema.frr.chicken.dao.mariadb.PhotoBoardDaoImpl;
 import tema.frr.chicken.dao.mariadb.PhotoFileDaoImpl;
 import tema.frr.chicken.dao.mariadb.ReviewBoardDaoImpl;
+import tema.frr.sql.PlatformTransactionManager;
 import tema.frr.util.ConnectionFactory;
 
 public class DataLoaderListener implements ApplicationContextListener {
@@ -27,6 +28,9 @@ public class DataLoaderListener implements ApplicationContextListener {
       context.put("reviewBoardDao", new ReviewBoardDaoImpl(conFactory));
       context.put("photoBoardDao", new PhotoBoardDaoImpl(conFactory));
       context.put("photoFileDao", new PhotoFileDaoImpl(conFactory));
+
+      PlatformTransactionManager txManager = new PlatformTransactionManager(conFactory);
+      context.put("transactionManager", txManager);
 
     } catch (Exception e) {
       e.printStackTrace();

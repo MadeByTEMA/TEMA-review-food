@@ -1,7 +1,6 @@
 package tema.frr.chicken.servlet;
 
 import java.io.PrintStream;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -12,18 +11,18 @@ import tema.frr.chicken.dao.ReviewBoardDao;
 import tema.frr.chicken.domain.PhotoBoard;
 import tema.frr.chicken.domain.PhotoFile;
 import tema.frr.chicken.domain.ReviewBoard;
-import tema.frr.util.ConnectionFactory;
+import tema.frr.sql.PlatformTransactionManager;
 import tema.frr.util.Prompt;
 
 public class PhotoBoardAddServlet implements Servlet {
 
-  ConnectionFactory conFactory;
+  PlatformTransactionManager txManager;
   PhotoBoardDao photoBoardDao;
   ReviewBoardDao reviewBoardDao;
   PhotoFileDao photoFileDao;
 
-  public PhotoBoardAddServlet(ConnectionFactory conFactory, PhotoBoardDao photoBoardDao , ReviewBoardDao reviewBoardDao, PhotoFileDao photoFileDao) {
-    this.conFactory = conFactory;
+  public PhotoBoardAddServlet(PlatformTransactionManager txManager, PhotoBoardDao photoBoardDao , ReviewBoardDao reviewBoardDao, PhotoFileDao photoFileDao) {
+    this.txManager = txManager;
     this.photoBoardDao = photoBoardDao;
     this.reviewBoardDao = reviewBoardDao;
     this.photoFileDao = photoFileDao;
@@ -46,9 +45,7 @@ public class PhotoBoardAddServlet implements Servlet {
 
     photoBoard.setReviewBoard(reviewBoard);
 
-    Connection con = conFactory.getConnection();
-
-    con.setAutoCommit(false);
+    txManager.beginTransaction();
 
     try {
       if (photoBoardDao.insert(photoBoard) == 0) {
@@ -59,15 +56,12 @@ public class PhotoBoardAddServlet implements Servlet {
         photoFile.setBoardNo(photoBoard.getNo());
         photoFileDao.insert(photoFile);
       }
-      con.commit();
+      txManager.commit();
       out.println("새 사진 게시글을 등록했습니다.");
 
     } catch (Exception e) {
-      con.rollback();
+      txManager.rollback();
       out.println(e.getMessage());
-
-    } finally {
-      con.setAutoCommit(true);
     }
   }
 

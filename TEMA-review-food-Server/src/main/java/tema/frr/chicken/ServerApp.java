@@ -39,6 +39,7 @@ import tema.frr.chicken.servlet.ReviewBoardListServlet;
 import tema.frr.chicken.servlet.ReviewBoardUpdateServlet;
 import tema.frr.chicken.servlet.Servlet;
 import tema.frr.sql.ConnectionProxy;
+import tema.frr.sql.PlatformTransactionManager;
 import tema.frr.util.ConnectionFactory;
 
 public class ServerApp {
@@ -83,6 +84,8 @@ public class ServerApp {
     PhotoBoardDao photoBoardDao = (PhotoBoardDao) context.get("photoBoardDao");
     PhotoFileDao photoFileDao = (PhotoFileDao) context.get("photoFileDao");
 
+    PlatformTransactionManager txManager = (PlatformTransactionManager) context.get("transactionManager");
+
     servletMap.put("/client/list", new ClientListServlet(clientDao));
     servletMap.put("/client/add", new ClientAddServlet(clientDao));
     servletMap.put("/client/detail", new ClientDetailServlet(clientDao));
@@ -104,11 +107,11 @@ public class ServerApp {
     servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet(
         photoBoardDao, photoFileDao));
     servletMap.put("/photoboard/add", new PhotoBoardAddServlet(
-        conFactory, photoBoardDao, reviewBoardDao ,photoFileDao));
+        txManager, photoBoardDao, reviewBoardDao ,photoFileDao));
     servletMap.put("/photoboard/update", new PhotoBoardUpdateServlet(
-        conFactory, photoBoardDao, photoFileDao));
+        txManager, photoBoardDao, photoFileDao));
     servletMap.put("/photoboard/delete", new PhotoBoardDeleteServlet(
-        conFactory, photoBoardDao, photoFileDao));
+        txManager, photoBoardDao, photoFileDao));
 
     try (ServerSocket serverSocket = new ServerSocket(8888)) {
 
