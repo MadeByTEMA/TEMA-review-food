@@ -21,16 +21,15 @@ public class ReviewBoardDaoImpl implements ReviewBoardDao{
   @Override
   public int insert(ReviewBoard reviewBoard) throws Exception {
     try (Connection con = dataSource.getConnection();
-        PreparedStatement stmt = con.prepareStatement()) {
-      int result = stmt.executeUpdate("insert into frr_board(stnm, menu, price, stqul, stquan, revi)" +
-          " values(?, ?, ?, ?, ?, ?)");
+        PreparedStatement stmt = con.prepareStatement("insert into frr_board(stnm, menu, price, stqul, stquan, revi)" +
+            " values(?, ?, ?, ?, ?, ?)")) {
       stmt.setString(1, reviewBoard.getStoreName());
       stmt.setString(2, reviewBoard.getMenu());
       stmt.setInt(3, reviewBoard.getPrice());
       stmt.setInt(4, reviewBoard.getStarQuality());
       stmt.setInt(5, reviewBoard.getStarQuantity());
       stmt.setString(6, reviewBoard.getReview());
-      return result;
+      return stmt.executeUpdate();
     }
   }
 
