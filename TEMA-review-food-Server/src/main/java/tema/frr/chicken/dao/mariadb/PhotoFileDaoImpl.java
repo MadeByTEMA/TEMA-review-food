@@ -8,19 +8,19 @@ import java.util.List;
 
 import tema.frr.chicken.dao.PhotoFileDao;
 import tema.frr.chicken.domain.PhotoFile;
-import tema.frr.util.ConnectionFactory;
+import tema.frr.sql.DataSource;
 
 public class PhotoFileDaoImpl implements PhotoFileDao {
 
-  ConnectionFactory conFactory;
+  DataSource dataSource;
 
-  public PhotoFileDaoImpl(ConnectionFactory conFactory) {
-    this.conFactory = conFactory;
+  public PhotoFileDaoImpl(DataSource dataSource) {
+    this.dataSource = dataSource;
   }
 
   @Override
   public int insert(PhotoFile photoFile) throws Exception {
-    try (Connection con = conFactory.getConnection();
+    try (Connection con = dataSource.getConnection();
         Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate(
@@ -34,7 +34,7 @@ public class PhotoFileDaoImpl implements PhotoFileDao {
 
   @Override
   public List<PhotoFile> findAll(int boardNo) throws Exception {
-    try (Connection con = conFactory.getConnection();
+    try (Connection con = dataSource.getConnection();
         Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(
             "select photo_file_no, photo_no, file_path"
@@ -55,7 +55,7 @@ public class PhotoFileDaoImpl implements PhotoFileDao {
 
   @Override
   public int deleteAll(int boardNo) throws Exception {
-    try (Connection con = conFactory.getConnection();
+    try (Connection con = dataSource.getConnection();
         Statement stmt = con.createStatement()) {
       int result = stmt.executeUpdate(
           "delete from frr_photo_file"

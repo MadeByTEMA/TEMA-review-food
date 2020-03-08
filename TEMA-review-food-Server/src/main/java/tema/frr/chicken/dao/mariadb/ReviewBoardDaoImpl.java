@@ -8,19 +8,19 @@ import java.util.List;
 
 import tema.frr.chicken.dao.ReviewBoardDao;
 import tema.frr.chicken.domain.ReviewBoard;
-import tema.frr.util.ConnectionFactory;
+import tema.frr.sql.DataSource;
 
 public class ReviewBoardDaoImpl implements ReviewBoardDao{
 
-  ConnectionFactory conFactory;
+  DataSource dataSource;
 
-  public ReviewBoardDaoImpl(ConnectionFactory conFactory) {
-    this.conFactory = conFactory;
+  public ReviewBoardDaoImpl(DataSource dataSource) {
+    this.dataSource = dataSource;
   }
 
   @Override
   public int insert(ReviewBoard reviewBoard) throws Exception {
-    try (Connection con = conFactory.getConnection();
+    try (Connection con = dataSource.getConnection();
         Statement stmt = con.createStatement()) {
       int result = stmt.executeUpdate("insert into frr_board(stnm, menu, price, stqul, stquan, revi)" +
           " values( '" + reviewBoard.getStoreName() + "', '" + reviewBoard.getMenu() + "', '" + reviewBoard.getPrice() + "', '" + reviewBoard.getStarQuality() + "', '" + reviewBoard.getStarQuantity() + "', '" + reviewBoard.getReview() +"')");
@@ -30,7 +30,7 @@ public class ReviewBoardDaoImpl implements ReviewBoardDao{
 
   @Override
   public List<ReviewBoard> findAll() throws Exception {
-    try (Connection con = conFactory.getConnection();
+    try (Connection con = dataSource.getConnection();
         Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery("select board_no, cg, stnm, menu, price, stqul, stquan, stprice revi from frr_board")) {
       ArrayList<ReviewBoard> list = new ArrayList<>();
@@ -55,7 +55,7 @@ public class ReviewBoardDaoImpl implements ReviewBoardDao{
 
   @Override
   public ReviewBoard findByBoardNo(int boardNo) throws Exception {
-    try (Connection con = conFactory.getConnection();
+    try (Connection con = dataSource.getConnection();
         Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery("select board_no, cg, stnm, menu, price, stqul, stquan, stprice revi from frr_board where board_no=" + boardNo)) {
 
@@ -80,7 +80,7 @@ public class ReviewBoardDaoImpl implements ReviewBoardDao{
 
   @Override
   public int update(ReviewBoard reviewBoard) throws Exception {
-    try (Connection con = conFactory.getConnection();
+    try (Connection con = dataSource.getConnection();
         Statement stmt = con.createStatement()) {
       int result = stmt.executeUpdate("update frr_board set stnm='" + reviewBoard.getStoreName() + "', menu='" + reviewBoard.getMenu() + "', price='"+ reviewBoard.getPrice() + "', stqul='"+ reviewBoard.getStarQuality() + "', stquan='"+ reviewBoard.getStarQuantity() + "', revi='"+ reviewBoard.getReview() + "' where board_no=" + reviewBoard.getBoardNo());
       return result;
@@ -89,7 +89,7 @@ public class ReviewBoardDaoImpl implements ReviewBoardDao{
 
   @Override
   public int delete(int boardNo) throws Exception {
-    try (Connection con = conFactory.getConnection();
+    try (Connection con = dataSource.getConnection();
         Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("delete from frr_board where board_no=" + boardNo);

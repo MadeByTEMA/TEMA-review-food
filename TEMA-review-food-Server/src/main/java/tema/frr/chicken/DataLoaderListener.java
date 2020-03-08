@@ -7,8 +7,8 @@ import tema.frr.chicken.dao.mariadb.ClientDaoImpl;
 import tema.frr.chicken.dao.mariadb.PhotoBoardDaoImpl;
 import tema.frr.chicken.dao.mariadb.PhotoFileDaoImpl;
 import tema.frr.chicken.dao.mariadb.ReviewBoardDaoImpl;
+import tema.frr.sql.DataSource;
 import tema.frr.sql.PlatformTransactionManager;
-import tema.frr.util.ConnectionFactory;
 
 public class DataLoaderListener implements ApplicationContextListener {
 
@@ -20,16 +20,16 @@ public class DataLoaderListener implements ApplicationContextListener {
       String username = "study";
       String password = "1111";
 
-      ConnectionFactory conFactory = new ConnectionFactory(//
+      DataSource dataSource = new DataSource(//
           jdbcUrl, username, password);
-      context.put("connectionFactory", conFactory);
+      context.put("connectionFactory", dataSource);
 
-      context.put("clientDao", new ClientDaoImpl(conFactory));
-      context.put("reviewBoardDao", new ReviewBoardDaoImpl(conFactory));
-      context.put("photoBoardDao", new PhotoBoardDaoImpl(conFactory));
-      context.put("photoFileDao", new PhotoFileDaoImpl(conFactory));
+      context.put("clientDao", new ClientDaoImpl(dataSource));
+      context.put("reviewBoardDao", new ReviewBoardDaoImpl(dataSource));
+      context.put("photoBoardDao", new PhotoBoardDaoImpl(dataSource));
+      context.put("photoFileDao", new PhotoFileDaoImpl(dataSource));
 
-      PlatformTransactionManager txManager = new PlatformTransactionManager(conFactory);
+      PlatformTransactionManager txManager = new PlatformTransactionManager(dataSource);
       context.put("transactionManager", txManager);
 
     } catch (Exception e) {
@@ -39,5 +39,7 @@ public class DataLoaderListener implements ApplicationContextListener {
 
   @Override
   public void contextDestroyed(Map<String, Object> context) {
+    DataSource dataSource = (DataSource) context.get("dataSource");
+    dataSource.clean();
   }
 }

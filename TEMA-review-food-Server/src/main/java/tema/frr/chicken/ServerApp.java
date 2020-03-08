@@ -38,9 +38,8 @@ import tema.frr.chicken.servlet.ReviewBoardDetailServlet;
 import tema.frr.chicken.servlet.ReviewBoardListServlet;
 import tema.frr.chicken.servlet.ReviewBoardUpdateServlet;
 import tema.frr.chicken.servlet.Servlet;
-import tema.frr.sql.ConnectionProxy;
+import tema.frr.sql.DataSource;
 import tema.frr.sql.PlatformTransactionManager;
-import tema.frr.util.ConnectionFactory;
 
 public class ServerApp {
 
@@ -75,8 +74,8 @@ public class ServerApp {
 
     notifyApplicationInitialized();
 
-    ConnectionFactory conFactory = (ConnectionFactory) context.get(//
-        "connectionFactory");
+    DataSource dataSource = (DataSource) context.get(//
+        "dataSource");
 
     ClientDao clientDao = (ClientDao) context.get("clientDao");
     ReviewBoardDao reviewBoardDao =
@@ -123,13 +122,7 @@ public class ServerApp {
 
         executorService.submit(() -> {
           processRequest(socket);
-          ConnectionProxy con = (ConnectionProxy) conFactory.removeConnection();
-          if (con != null) {
-            try {
-              con.realClose();
-            } catch (Exception e) {
-            }
-          }
+          dataSource.removeConnection();
           System.out.println("--------------------------------------");
         });
 
