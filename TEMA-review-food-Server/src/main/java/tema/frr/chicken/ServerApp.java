@@ -104,11 +104,11 @@ public class ServerApp {
     servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet(
         photoBoardDao, photoFileDao));
     servletMap.put("/photoboard/add", new PhotoBoardAddServlet(
-        photoBoardDao, reviewBoardDao ,photoFileDao));
+        conFactory, photoBoardDao, reviewBoardDao ,photoFileDao));
     servletMap.put("/photoboard/update", new PhotoBoardUpdateServlet(
-        photoBoardDao, photoFileDao));
+        conFactory, photoBoardDao, photoFileDao));
     servletMap.put("/photoboard/delete", new PhotoBoardDeleteServlet(
-        photoBoardDao, photoFileDao));
+        conFactory, photoBoardDao, photoFileDao));
 
     try (ServerSocket serverSocket = new ServerSocket(8888)) {
 

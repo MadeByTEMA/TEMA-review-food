@@ -1,23 +1,26 @@
 package tema.frr.chicken.servlet;
 
 import java.io.PrintStream;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import tema.frr.chicken.DataLoaderListener;
 import tema.frr.chicken.dao.PhotoBoardDao;
 import tema.frr.chicken.dao.PhotoFileDao;
 import tema.frr.chicken.domain.PhotoBoard;
 import tema.frr.chicken.domain.PhotoFile;
+import tema.frr.util.ConnectionFactory;
 import tema.frr.util.Prompt;
 
 public class PhotoBoardUpdateServlet implements Servlet {
 
+  ConnectionFactory conFactory;
   PhotoBoardDao photoBoardDao;
   PhotoFileDao photoFileDao;
 
-  public PhotoBoardUpdateServlet(PhotoBoardDao photoBoardDao, PhotoFileDao photoFileDao) {
+  public PhotoBoardUpdateServlet(ConnectionFactory conFactory, PhotoBoardDao photoBoardDao, PhotoFileDao photoFileDao) {
+    this.conFactory = conFactory;
     this.photoBoardDao = photoBoardDao;
     this.photoFileDao = photoFileDao;
   }
@@ -37,7 +40,9 @@ public class PhotoBoardUpdateServlet implements Servlet {
 
     photoBoard.setNo(no);
 
-    DataLoaderListener.con.setAutoCommit(false);
+    Connection con = conFactory.getConnection();
+
+    con.setAutoCommit(false);
 
     try {
       if (photoBoardDao.update(photoBoard) == 0) {
@@ -58,15 +63,15 @@ public class PhotoBoardUpdateServlet implements Servlet {
           photoFileDao.insert(photoFile);
         }
       }
-      DataLoaderListener.con.commit();
+      con.commit();
       out.println("사진 게시글을 변경했습니다.");
 
     } catch (Exception e) {
-      DataLoaderListener.con.rollback();
+      con.rollback();
       out.println(e.getMessage());
 
     } finally {
-      DataLoaderListener.con.setAutoCommit(true);
+      con.setAutoCommit(true);
     }
   }
 
