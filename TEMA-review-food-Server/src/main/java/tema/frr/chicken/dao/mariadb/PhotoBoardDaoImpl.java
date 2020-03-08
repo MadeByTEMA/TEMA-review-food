@@ -1,6 +1,7 @@
 package tema.frr.chicken.dao.mariadb;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -22,17 +23,14 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   @Override
   public int insert(PhotoBoard photoBoard) throws Exception {
     try (Connection con = dataSource.getConnection();
-        Statement stmt = con.createStatement()) {
+        PreparedStatement stmt = con.prepareStatement("insert into frr_photo(titl,board_no) values(?,?)", Statement.RETURN_GENERATED_KEYS)) {
 
-      int result = stmt.executeUpdate(
-          "insert into frr_photo(titl,board_no) values('"
-              + photoBoard.getTitle() + "', " + photoBoard.getReviewBoard().getBoardNo()
-              + ")",
-              Statement.RETURN_GENERATED_KEYS);
+      stmt.setString(1, photoBoard.getTitle());
+      stmt.setInt(2, photoBoard.getReviewBoard().getBoardNo());
 
+      int result = stmt.executeUpdate();
       try (ResultSet generatedKeySet = stmt.getGeneratedKeys()) {
         generatedKeySet.next();
-
         photoBoard.setNo(generatedKeySet.getInt(1));
       }
       return result;
@@ -42,34 +40,33 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   @Override
   public List<PhotoBoard> findAllByBoardNo(int boardNo) throws Exception {
     try (Connection con = dataSource.getConnection();
-        Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery(
+        PreparedStatement stmt = con.prepareStatement(
             "select photo_no, titl, cdt, vw_cnt, board_no"
                 + " from frr_photo"
-                + " where board_no=" + boardNo
+                + " where board_no=?"
                 + " order by photo_no desc")) {
+      stmt.setInt(1, boardNo);
 
-      ArrayList<PhotoBoard> list = new ArrayList<>();
+      try (ResultSet rs = stmt.executeQuery()) {
+        ArrayList<PhotoBoard> list = new ArrayList<>();
 
-      while (rs.next()) {
-        PhotoBoard photoBoard = new PhotoBoard();
-        photoBoard.setNo(rs.getInt("photo_no"));
-        photoBoard.setTitle(rs.getString("titl"));
-        photoBoard.setCreatedDate(rs.getDate("cdt"));
-        photoBoard.setViewCount(rs.getInt("vw_cnt"));
-
-        list.add(photoBoard);
+        while (rs.next()) {
+          PhotoBoard photoBoard = new PhotoBoard();
+          photoBoard.setNo(rs.getInt("photo_no"));
+          photoBoard.setTitle(rs.getString("titl"));
+          photoBoard.setCreatedDate(rs.getDate("cdt"));
+          photoBoard.setViewCount(rs.getInt("vw_cnt"));
+          list.add(photoBoard);
+        }
+        return list;
       }
-
-      return list;
     }
   }
 
   @Override
   public PhotoBoard findByNo(int no) throws Exception {
     try (Connection con = dataSource.getConnection();
-        Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery(
+        PreparedStatement stmt = con.prepareStatement(
             "select"
                 + " p.photo_no,"
                 + " p.titl,"
@@ -79,25 +76,27 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
                 + " b.revi board_review"
                 + " from frr_photo p"
                 + " inner join frr_board b on p.board_no=b.board_no"
-                + " where photo_no=" + no)) {
+                + " where photo_no=?")) {
+      stmt.setInt(1, no);
+      try (ResultSet rs = stmt.executeQuery()) {
+        if (rs.next()) {
+          PhotoBoard photoBoard = new PhotoBoard();
+          photoBoard.setNo(rs.getInt("photo_no"));
+          photoBoard.setTitle(rs.getString("titl"));
+          photoBoard.setCreatedDate(rs.getDate("cdt"));
+          photoBoard.setViewCount(rs.getInt("vw_cnt"));
 
-      if (rs.next()) {
-        PhotoBoard photoBoard = new PhotoBoard();
-        photoBoard.setNo(rs.getInt("photo_no"));
-        photoBoard.setTitle(rs.getString("titl"));
-        photoBoard.setCreatedDate(rs.getDate("cdt"));
-        photoBoard.setViewCount(rs.getInt("vw_cnt"));
+          ReviewBoard reviewBoard = new ReviewBoard();
+          reviewBoard.setBoardNo(rs.getInt("board_no"));
+          reviewBoard.setReview(rs.getString("board_review"));
 
-        ReviewBoard reviewBoard = new ReviewBoard();
-        reviewBoard.setBoardNo(rs.getInt("board_no"));
-        reviewBoard.setReview(rs.getString("board_review"));
+          photoBoard.setReviewBoard(reviewBoard);
 
-        photoBoard.setReviewBoard(reviewBoard);
+          return photoBoard;
 
-        return photoBoard;
-
-      } else {
-        return null;
+        } else {
+          return null;
+        }
       }
     }
   }
@@ -105,24 +104,22 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   @Override
   public int update(PhotoBoard photoBoard) throws Exception {
     try (Connection con = dataSource.getConnection();
-        Statement stmt = con.createStatement()) {
-      int result = stmt.executeUpdate(
-          "update frr_photo set titl='"
-              + photoBoard.getTitle()
-              + "' where photo_no=" + photoBoard.getNo());
-      return result;
+        PreparedStatement stmt = con.prepareStatement(
+            "update frr_photo set titl=? where photo_no=?")) {
+      stmt.setString(1, photoBoard.getTitle());
+      stmt.setInt(2, photoBoard.getNo());
+      return stmt.executeUpdate();
     }
   }
 
   @Override
   public int delete(int no) throws Exception {
     try (Connection con = dataSource.getConnection();
-        Statement stmt = con.createStatement()) {
-      int result = stmt.executeUpdate(
-          "delete from frr_photo"
-              + " where photo_no=" + no);
-      return result;
+        PreparedStatement stmt = con.prepareStatement(
+            "delete from frr_photo"
+                + " where photo_no=?")) {
+      stmt.setInt(1, no);
+      return stmt.executeUpdate();
     }
   }
-
 }

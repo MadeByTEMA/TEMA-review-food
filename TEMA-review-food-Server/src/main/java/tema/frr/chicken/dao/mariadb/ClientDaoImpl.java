@@ -1,8 +1,8 @@
 package tema.frr.chicken.dao.mariadb;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,18 +20,24 @@ public class ClientDaoImpl implements ClientDao{
   @Override
   public int insert(Client client) throws Exception {
     try (Connection con = dataSource.getConnection();
-        Statement stmt = con.createStatement()) {
-      int result = stmt.executeUpdate("insert into frr_client(id, pwd, name, vdt, gen, tel, address)" +
-          " values( '" + client.getId() + "', '" + client.getPwd() + "', '" + client.getName() + "', '" + client.getBirthday().toString() + "', '" + client.getSex() + "', '" + client.getTel() + "', '" + client.getAddress() +"')");
-      return result;
+        PreparedStatement stmt = con.prepareStatement("insert into frr_client(id, pwd, name, vdt, gen, tel, address)" +
+            " values(?, ?, ?, ?, ?, ?, ?)")) {
+      stmt.setString(1, client.getId());
+      stmt.setString(2, client.getPwd());
+      stmt.setString(3, client.getName());
+      stmt.setDate(4, client.getBirthday());
+      stmt.setString(5, client.getSex());
+      stmt.setString(6, client.getTel());
+      stmt.setString(7, client.getAddress());
+      return stmt.executeUpdate();
     }
   }
 
   @Override
   public List<Client> findAll() throws Exception {
     try (Connection con = dataSource.getConnection();
-        Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery("select client_no, id, pwd, name, vdt, gen, tel, address, sud from frr_client")) {
+        PreparedStatement stmt = con.prepareStatement("select client_no, id, pwd, name, vdt, gen, tel, address, sud from frr_client");
+        ResultSet rs = stmt.executeQuery()) {
       ArrayList<Client> list = new ArrayList<>();
 
       while (rs.next()) {
@@ -55,24 +61,26 @@ public class ClientDaoImpl implements ClientDao{
   @Override
   public Client findByClientNo(int clientNo) throws Exception {
     try (Connection con = dataSource.getConnection();
-        Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery("select client_no, id, pwd, name, vdt, gen, tel, address, sud from frr_client where client_no="+ clientNo)) {
+        PreparedStatement stmt = con.prepareStatement("select client_no, id, pwd, name, vdt, gen, tel, address, sud from frr_client where client_no=?");
+        ) {
+      stmt.setInt(1, clientNo);
+      try (ResultSet rs = stmt.executeQuery()) {
+        if (rs.next()) {
+          Client c = new Client();
+          c.setClientNo(rs.getInt("client_no"));
+          c.setId(rs.getString("id"));
+          c.setPwd(rs.getString("pwd"));
+          c.setName(rs.getString("name"));
+          c.setBirthday(rs.getDate("vdt"));
+          c.setSex(rs.getString("gen"));
+          c.setTel(rs.getString("tel"));
+          c.setAddress(rs.getString("address"));
+          c.setSignUpDate(rs.getDate("sud"));
+          return c;
 
-      if (rs.next()) {
-        Client c = new Client();
-        c.setClientNo(rs.getInt("client_no"));
-        c.setId(rs.getString("id"));
-        c.setPwd(rs.getString("pwd"));
-        c.setName(rs.getString("name"));
-        c.setBirthday(rs.getDate("vdt"));
-        c.setSex(rs.getString("gen"));
-        c.setTel(rs.getString("tel"));
-        c.setAddress(rs.getString("address"));
-        c.setSignUpDate(rs.getDate("sud"));
-        return c;
-
-      } else {
-        return null;
+        } else {
+          return null;
+        }
       }
     }
   }
@@ -80,24 +88,25 @@ public class ClientDaoImpl implements ClientDao{
   @Override
   public Client findById(String id) throws Exception {
     try (Connection con = dataSource.getConnection();
-        Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery("select client_no, id, pwd, name, vdt, gen, tel, address, sud from frr_client where id="+ id)) {
+        PreparedStatement stmt = con.prepareStatement("select client_no, id, pwd, name, vdt, gen, tel, address, sud from frr_client where id=")) {
+      stmt.setString(1, id);
+      try (ResultSet rs = stmt.executeQuery()) {
+        if (rs.next()) {
+          Client c = new Client();
+          c.setClientNo(rs.getInt("client_no"));
+          c.setId(rs.getString("id"));
+          c.setPwd(rs.getString("pwd"));
+          c.setName(rs.getString("name"));
+          c.setBirthday(rs.getDate("vdt"));
+          c.setSex(rs.getString("gen"));
+          c.setTel(rs.getString("tel"));
+          c.setAddress(rs.getString("address"));
+          c.setSignUpDate(rs.getDate("sud"));
+          return c;
 
-      if (rs.next()) {
-        Client c = new Client();
-        c.setClientNo(rs.getInt("client_no"));
-        c.setId(rs.getString("id"));
-        c.setPwd(rs.getString("pwd"));
-        c.setName(rs.getString("name"));
-        c.setBirthday(rs.getDate("vdt"));
-        c.setSex(rs.getString("gen"));
-        c.setTel(rs.getString("tel"));
-        c.setAddress(rs.getString("address"));
-        c.setSignUpDate(rs.getDate("sud"));
-        return c;
-
-      } else {
-        return null;
+        } else {
+          return null;
+        }
       }
     }
   }
@@ -105,81 +114,93 @@ public class ClientDaoImpl implements ClientDao{
   @Override
   public int update(Client client) throws Exception {
     try (Connection con = dataSource.getConnection();
-        Statement stmt = con.createStatement()) {
-      int result = stmt.executeUpdate("update frr_client set id='" + client.getId() + "', pwd='" + client.getPwd() + "', name='"+ client.getName() + "', vdt='"+ client.getBirthday() + "', gen='"+ client.getSex() + "', address='"+ client.getAddress() + "' where client_no=" + client.getClientNo());
-      return result;
+        PreparedStatement stmt = con.prepareStatement("update frr_client set id=?, pwd=password(?), name=?, vdt=?, gen=?, tel=? address=? where client_no=?")) {
+      stmt.setString(1, client.getId());
+      stmt.setString(2, client.getPwd());
+      stmt.setString(3, client.getName());
+      stmt.setDate(4, client.getBirthday());
+      stmt.setString(5, client.getSex());
+      stmt.setString(6, client.getTel());
+      stmt.setString(7, client.getAddress());
+      stmt.setInt(8, client.getClientNo());
+      return stmt.executeUpdate();
     }
   }
 
   @Override
   public int delete(int clientNo) throws Exception {
     try (Connection con = dataSource.getConnection();
-        Statement stmt = con.createStatement()) {
-
-      int result = stmt.executeUpdate("delete from frr_client where client_no=" + clientNo);
-
-      return result;
+        PreparedStatement stmt = con.prepareStatement("delete from frr_client where client_no=?")) {
+      stmt.setInt(1, clientNo);
+      return stmt.executeUpdate();
     }
   }
 
   @Override
   public List<Client> findByKeyword(String keyword) throws Exception {
     try (Connection con = dataSource.getConnection();
-        Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery(
-            "select client_no, id, pwd, name, vdt, gen, tel, address, sud"
-                + " from frr_client"
-                + " where id like '%" + keyword
-                + "%' or name like '%" + keyword
-                + "%' or tel like '%" + keyword + "%'")) {
+        PreparedStatement stmt = con.prepareStatement("select client_no, id, pwd, name, vdt, gen, tel, address, sud"
+            + " from frr_client"
+            + " where id like ?"
+            + "%' or name like ?"
+            + "%' or tel like ?")) {
 
-      ArrayList<Client> list = new ArrayList<>();
+      String value = "%" + keyword + "%";
+      stmt.setString(1, value);
+      stmt.setString(2, value);
+      stmt.setString(3, value);
 
-      while (rs.next()) {
-        Client c = new Client();
+      try (ResultSet rs = stmt.executeQuery()) {
+        ArrayList<Client> list = new ArrayList<>();
+        while (rs.next()) {
+          Client c = new Client();
+          c.setClientNo(rs.getInt("client_no"));
+          c.setId(rs.getString("id"));
+          c.setPwd(rs.getString("pwd"));
+          c.setName(rs.getString("name"));
+          c.setBirthday(rs.getDate("vdt"));
+          c.setSex(rs.getString("gen"));
+          c.setTel(rs.getString("tel"));
+          c.setAddress(rs.getString("address"));
+          c.setSignUpDate(rs.getDate("sud"));
 
-        c.setClientNo(rs.getInt("client_no"));
-        c.setId(rs.getString("id"));
-        c.setPwd(rs.getString("pwd"));
-        c.setName(rs.getString("name"));
-        c.setBirthday(rs.getDate("vdt"));
-        c.setSex(rs.getString("gen"));
-        c.setTel(rs.getString("tel"));
-        c.setAddress(rs.getString("address"));
-        c.setSignUpDate(rs.getDate("sud"));
+          list.add(c);
+        }
 
-        list.add(c);
+        return list;
       }
-
-      return list;
     }
   }
 
   @Override
   public Client findByIdAndPassword(String id, String password) throws Exception {
-    try (Connection con = dataSource.getConnection(); //
-        Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery( //
-            "select client_no, id, pwd, name, vdt, gen, tel, address, sud" //
-            + " from frr_client" //
-            + " where id='" + id //
-            + "' and pwd=password('" + password + "')")) {
+    try (Connection con = dataSource.getConnection();
+        PreparedStatement stmt = con.prepareStatement("select client_no, id, pwd, name, vdt, gen, tel, address, sud"
+            + " from frr_client"
+            + " where id=?"
+            + " and pwd=password(?)")) {
 
-      if (rs.next()) {
-        Client c = new Client();
-        c.setClientNo(rs.getInt("client_no"));
-        c.setId(rs.getString("id"));
-        c.setPwd(rs.getString("pwd"));
-        c.setName(rs.getString("name"));
-        c.setBirthday(rs.getDate("vdt"));
-        c.setSex(rs.getString("gen"));
-        c.setTel(rs.getString("tel"));
-        c.setAddress(rs.getString("address"));
-        c.setSignUpDate(rs.getDate("sud"));
-        return c;
+      stmt.setString(1, id);
+      stmt.setString(2, password);
 
-      } else {
-        return null;
+
+      try (ResultSet rs = stmt.executeQuery()) {
+        if (rs.next()) {
+          Client c = new Client();
+          c.setClientNo(rs.getInt("client_no"));
+          c.setId(rs.getString("id"));
+          c.setPwd(rs.getString("pwd"));
+          c.setName(rs.getString("name"));
+          c.setBirthday(rs.getDate("vdt"));
+          c.setSex(rs.getString("gen"));
+          c.setTel(rs.getString("tel"));
+          c.setAddress(rs.getString("address"));
+          c.setSignUpDate(rs.getDate("sud"));
+          return c;
+
+        } else {
+          return null;
+        }
       }
     }
   }

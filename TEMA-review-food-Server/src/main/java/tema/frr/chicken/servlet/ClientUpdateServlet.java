@@ -30,12 +30,12 @@ public class ClientUpdateServlet implements Servlet {
     Client newClient = new Client();
 
     newClient.setId(oldClient.getId());
+    newClient.setPwd(oldClient.getPwd());
     newClient.setName(Prompt.getString(in, out, "이름(%s): \n", oldClient.getName()));
     newClient.setBirthday(Prompt.getDate(in, out, String.format("생일(%s): \n", oldClient.getBirthday()), oldClient.getBirthday().toString()));
     newClient.setSex(Prompt.getString(in, out, "성별(%s): \n", oldClient.getSex()));
     newClient.setTel(Prompt.getString(in, out, "전화번호(%s): \n", oldClient.getTel()));
     newClient.setAddress(Prompt.getString(in, out, "주소(%s): \n", oldClient.getAddress()));
-
 
     if (clientDao.update(oldClient) > 0) {
       out.println("고객을 변경했습니다.");
