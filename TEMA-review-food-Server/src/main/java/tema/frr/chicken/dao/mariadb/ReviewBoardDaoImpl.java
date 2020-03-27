@@ -10,7 +10,7 @@ import tema.frr.chicken.dao.ReviewBoardDao;
 import tema.frr.chicken.domain.ReviewBoard;
 import tema.frr.sql.DataSource;
 
-public class ReviewBoardDaoImpl implements ReviewBoardDao{
+public class ReviewBoardDaoImpl implements ReviewBoardDao {
 
   DataSource dataSource;
 
@@ -21,23 +21,23 @@ public class ReviewBoardDaoImpl implements ReviewBoardDao{
   @Override
   public int insert(ReviewBoard reviewBoard) throws Exception {
     try (Connection con = dataSource.getConnection();
-        PreparedStatement stmt = con.prepareStatement()) {
-      int result = stmt.executeUpdate("insert into frr_board(stnm, menu, price, stqul, stquan, revi)" +
-          " values(?, ?, ?, ?, ?, ?)");
+        PreparedStatement stmt = con.prepareStatement(
+            "insert into frr_board(stnm, menu, price, stqul, stquan, revi)" + " values(?, ?, ?, ?, ?, ?)")) {
       stmt.setString(1, reviewBoard.getStoreName());
       stmt.setString(2, reviewBoard.getMenu());
       stmt.setInt(3, reviewBoard.getPrice());
       stmt.setInt(4, reviewBoard.getStarQuality());
       stmt.setInt(5, reviewBoard.getStarQuantity());
       stmt.setString(6, reviewBoard.getReview());
-      return result;
+      return stmt.executeUpdate();
     }
   }
 
   @Override
   public List<ReviewBoard> findAll() throws Exception {
     try (Connection con = dataSource.getConnection();
-        PreparedStatement stmt = con.prepareStatement("select board_no, cg, stnm, menu, price, stqul, stquan, stprice revi from frr_board");
+        PreparedStatement stmt = con
+            .prepareStatement("select board_no, cg, stnm, menu, price, stqul, stquan, stprice revi from frr_board");
         ResultSet rs = stmt.executeQuery()) {
       ArrayList<ReviewBoard> list = new ArrayList<>();
 
@@ -62,7 +62,8 @@ public class ReviewBoardDaoImpl implements ReviewBoardDao{
   @Override
   public ReviewBoard findByBoardNo(int boardNo) throws Exception {
     try (Connection con = dataSource.getConnection();
-        PreparedStatement stmt = con.prepareStatement("select board_no, cg, stnm, menu, price, stqul, stquan, stprice revi from frr_board where board_no=?")) {
+        PreparedStatement stmt = con.prepareStatement(
+            "select board_no, cg, stnm, menu, price, stqul, stquan, stprice revi from frr_board where board_no=?")) {
       stmt.setInt(1, boardNo);
       try (ResultSet rs = stmt.executeQuery()) {
         if (rs.next()) {
@@ -88,7 +89,8 @@ public class ReviewBoardDaoImpl implements ReviewBoardDao{
   @Override
   public int update(ReviewBoard reviewBoard) throws Exception {
     try (Connection con = dataSource.getConnection();
-        PreparedStatement stmt = con.prepareStatement("update frr_board set stnm=?, menu=?, price=?, stqul=?, stquan=?, revi=? where board_no=?")) {
+        PreparedStatement stmt = con.prepareStatement(
+            "update frr_board set stnm=?, menu=?, price=?, stqul=?, stquan=?, revi=? where board_no=?")) {
       stmt.setString(1, reviewBoard.getStoreName());
       stmt.setString(2, reviewBoard.getMenu());
       stmt.setInt(3, reviewBoard.getPrice());
